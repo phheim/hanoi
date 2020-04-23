@@ -46,7 +46,7 @@ type AcceptanceSets = Set AcceptanceSet
 -- Remark: The properties do not contain implicit-labels, explicit-labels,
 -- as in the internal format all labels are explicit 
 -- (implicit ones have have to be parsed before)
-data HOAProperties
+data HOAProperty
   = ONLY_STATE_LABELS
   | ONLY_TRANS_LABELS
   | PURE_STATE_ACCEPTANCE
@@ -95,7 +95,8 @@ type AcceptanceCondition = Propostion AcceptanceType
 type Label = Propostion AP
 
 -----------------------------------------------------------------------------
--- | The internal presentation of an HOA
+-- | The internal presentation of an HOA, note that alias and implicit labels
+-- are not represented anymore
 data HOA =
   HOA
       -- | Number of states (set can be computed via the type)
@@ -104,6 +105,8 @@ data HOA =
     , initalStates :: Set State
       -- | Number of atomic propositions (set can be computed via the type)
     , atomicPropositions :: Int
+      -- | Name of the atomic proposition
+    , atomicPropositionName :: AP -> String
       -- | Acceptance name 
     , acceptanceName :: HOAAcceptanceName
       -- | Number of acceptance sets (the sets can be computed via the type)
@@ -115,7 +118,7 @@ data HOA =
       -- | Automaton name
     , name :: String
       -- | Properties
-    , properties :: HOAProperties
+    , properties :: Set HOAProperty
       -- | Set of edges for each state, an edge consists of target state
       -- a optional label and an optional set of acceptance sets
     , edges :: State -> Set (State, Maybe Label, Maybe AcceptanceSets)
@@ -123,6 +126,8 @@ data HOA =
     , stateLabel :: State -> Maybe Label
       -- | For each state a possible set of acceptance sets
     , stateAcceptance :: State -> Maybe AcceptanceSets
+      -- | Name of a state (might be empty)
+    , stateName :: State -> String
     }
 
 -----------------------------------------------------------------------------

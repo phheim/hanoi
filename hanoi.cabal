@@ -27,6 +27,9 @@ library
 
   exposed-modules:
     Hanoi
+  
+  other-modules:
+    HOA.Format
 
   hs-source-dirs:
     src/
