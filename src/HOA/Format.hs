@@ -1,0 +1,138 @@
+-----------------------------------------------------------------------------
+-- |
+-- Module      :  HOA.Format
+-- Maintainer  :  Philippe Heim (Heim@ProjectJARVIS.de)
+--
+-- The internal representation of an HOA
+--
+-----------------------------------------------------------------------------
+{-# LANGUAGE LambdaCase, FlexibleInstances, MultiParamTypeClasses,
+  DeriveGeneric, TemplateHaskell, RecordWildCards #-}
+
+-----------------------------------------------------------------------------
+module HOA.Format where
+
+-----------------------------------------------------------------------------
+import Data.Set as Set (Set)
+import Finite.TH (baseInstance, newInstance)
+
+-----------------------------------------------------------------------------
+-- | Representation of a propositional formula
+data Propostion a
+  = PVar a
+  | PConj [Propostion a]
+  | PDis [Propostion a]
+  | PNeg (Propostion a)
+  | PTrue
+  | PFalse
+  deriving (Eq, Ord, Show)
+
+-----------------------------------------------------------------------------
+-- | The type of a state, generated using the Finite library
+newInstance "State"
+
+-----------------------------------------------------------------------------
+-- | The type of an atomic proposition, generated using the Finite library
+newInstance "AP"
+
+-----------------------------------------------------------------------------
+-- | The type of an acceptance set, generated using the Finite library
+newInstance "AcceptanceSet"
+
+type AcceptanceSets = Set AcceptanceSet
+
+-----------------------------------------------------------------------------
+-- | The different properties of a HOA
+-- Remark: The properties do not contain implicit-labels, explicit-labels,
+-- as in the internal format all labels are explicit 
+-- (implicit ones have have to be parsed before)
+data HOAProperties
+  = ONLY_STATE_LABELS
+  | ONLY_TRANS_LABELS
+  | PURE_STATE_ACCEPTANCE
+  | PURE_TRANS_ACCEPTRACE
+  | UNIV_BRANCHING
+  | NO_UNIV_BRANCHING
+  | DETERMINISTIC
+  | COMPLETE
+  | UNAMBIGOUS
+  | STUTTER_INVARIANT
+  | INHERENTLY_WEAK
+  | TERMINAL
+  | TIGHT
+  | COLORED
+  deriving (Eq, Ord, Show)
+
+-----------------------------------------------------------------------------
+-- | All possible HOA acceptance names with the respective parameters
+data HOAAcceptanceName
+  = Buechi
+  | CoBuechi
+  | GeneralizedBuechi Int
+  | GeneralizedCoBuechi Int
+  | Strett Int
+  | Rabin Int
+  | ParityMinOdd Int
+  | ParityMaxOdd Int
+  | ParityMinEven Int
+  | ParityMaxEven Int
+  | All
+  | None
+
+-----------------------------------------------------------------------------
+-- | The definition of an acceptance condition, which is a propositional formula
+-- over acceptance sets that are visited finitely of infinitely often
+data AcceptanceType
+  = Fin AcceptanceSet
+  | Inf AcceptanceSet
+  deriving (Eq, Ord, Show)
+
+type AcceptanceCondition = Propostion AcceptanceType
+
+-----------------------------------------------------------------------------
+-- | The definition of a label, which is a propositional formula over 
+-- atomic propositions
+type Label = Propostion AP
+
+-----------------------------------------------------------------------------
+-- | The internal presentation of an HOA
+data HOA =
+  HOA
+      -- | Number of states (set can be computed via the type)
+    { size :: Int
+      -- | Set of initial states
+    , initalStates :: Set State
+      -- | Number of atomic propositions (set can be computed via the type)
+    , atomicPropositions :: Int
+      -- | Acceptance name 
+    , acceptanceName :: HOAAcceptanceName
+      -- | Number of acceptance sets (the sets can be computed via the type)
+    , acceptanceSets :: Int
+      -- | Acceptance condition
+    , acceptance :: AcceptanceCondition
+      -- | Tool name (might be empty)
+    , tool :: (String, Maybe String)
+      -- | Automaton name
+    , name :: String
+      -- | Properties
+    , properties :: HOAProperties
+      -- | Set of edges for each state, an edge consists of target state
+      -- a optional label and an optional set of acceptance sets
+    , edges :: State -> Set (State, Maybe Label, Maybe AcceptanceSets)
+      -- | For each state a possible label
+    , stateLabel :: State -> Maybe Label
+      -- | For each state a possible set of acceptance sets
+    , stateAcceptance :: State -> Maybe AcceptanceSets
+    }
+
+-----------------------------------------------------------------------------
+-- | The instantiation of the State type
+baseInstance [t|HOA|] [|size|] "State"
+
+-----------------------------------------------------------------------------
+-- | The instantiation of the atomic proposition type
+baseInstance [t|HOA|] [|atomicPropositions|] "AP"
+
+-----------------------------------------------------------------------------
+-- | The instantiation of the acceptance set type
+baseInstance [t|HOA|] [|acceptanceSets|] "AcceptanceSet"
