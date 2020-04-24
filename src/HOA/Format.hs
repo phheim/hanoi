@@ -57,11 +57,11 @@ data HOAProperty
 -----------------------------------------------------------------------------
 -- | All possible HOA acceptance names with the respective parameters
 data HOAAcceptanceName
-  = Buechi
-  | CoBuechi
-  | GeneralizedBuechi Int
-  | GeneralizedCoBuechi Int
-  | Strett Int
+  = Buchi
+  | CoBuchi
+  | GeneralizedBuchi Int
+  | GeneralizedCoBuchi Int
+  | Streett Int
   | Rabin Int
   | ParityMinOdd Int
   | ParityMaxOdd Int
