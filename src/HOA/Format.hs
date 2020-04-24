@@ -15,17 +15,8 @@ module HOA.Format where
 -----------------------------------------------------------------------------
 import Data.Set as Set (Set)
 import Finite.TH (baseInstance, newInstance)
-
------------------------------------------------------------------------------
--- | Representation of a propositional formula
-data Propostion a
-  = PVar a
-  | PConj [Propostion a]
-  | PDis [Propostion a]
-  | PNeg (Propostion a)
-  | PTrue
-  | PFalse
-  deriving (Eq, Ord, Show)
+import GHC.Generics (Generic)
+import Sat.Finite (Formula)
 
 -----------------------------------------------------------------------------
 -- | The type of a state, generated using the Finite library
@@ -85,14 +76,14 @@ data HOAAcceptanceName
 data AcceptanceType
   = Fin AcceptanceSet
   | Inf AcceptanceSet
-  deriving (Eq, Ord, Show)
+  deriving (Eq, Ord, Show, Generic)
 
-type AcceptanceCondition = Propostion AcceptanceType
+type AcceptanceCondition = Formula AcceptanceType
 
 -----------------------------------------------------------------------------
 -- | The definition of a label, which is a propositional formula over 
 -- atomic propositions
-type Label = Propostion AP
+type Label = Formula AP
 
 -----------------------------------------------------------------------------
 -- | The internal presentation of an HOA, note that alias and implicit labels
@@ -102,7 +93,7 @@ data HOA =
       -- | Number of states (set can be computed via the type)
     { size :: Int
       -- | Set of initial states
-    , initalStates :: Set State
+    , initialStates :: Set State
       -- | Number of atomic propositions (set can be computed via the type)
     , atomicPropositions :: Int
       -- | Name of the atomic proposition
