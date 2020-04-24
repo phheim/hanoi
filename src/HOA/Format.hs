@@ -76,8 +76,8 @@ data HOAAcceptanceName
 -- | The definition of an acceptance condition, which is a propositional formula
 -- over acceptance sets that are visited finitely of infinitely often
 data AcceptanceType
-  = Fin AcceptanceSet
-  | Inf AcceptanceSet
+  = Fin Bool AcceptanceSet
+  | Inf Bool AcceptanceSet
   deriving (Eq, Ord, Show, Generic)
 
 type AcceptanceCondition = Formula AcceptanceType
