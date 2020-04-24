@@ -18,11 +18,11 @@ import Finite.TH (baseInstance, newInstance)
 
 -----------------------------------------------------------------------------
 -- | Representation of a propositional formula
-data Propostion a
+data Proposition a
   = PVar a
-  | PConj [Propostion a]
-  | PDis [Propostion a]
-  | PNeg (Propostion a)
+  | PConj [Proposition a]
+  | PDis [Proposition a]
+  | PNeg (Proposition a)
   | PTrue
   | PFalse
   deriving (Eq, Ord, Show)
@@ -66,11 +66,11 @@ data HOAProperty
 -----------------------------------------------------------------------------
 -- | All possible HOA acceptance names with the respective parameters
 data HOAAcceptanceName
-  = Buechi
-  | CoBuechi
-  | GeneralizedBuechi Int
-  | GeneralizedCoBuechi Int
-  | Strett Int
+  = Buchi
+  | CoBuchi
+  | GeneralizedBuchi Int
+  | GeneralizedCoBuchi Int
+  | Streett Int
   | Rabin Int
   | ParityMinOdd Int
   | ParityMaxOdd Int
@@ -87,12 +87,12 @@ data AcceptanceType
   | Inf AcceptanceSet
   deriving (Eq, Ord, Show)
 
-type AcceptanceCondition = Propostion AcceptanceType
+type AcceptanceCondition = Proposition AcceptanceType
 
 -----------------------------------------------------------------------------
 -- | The definition of a label, which is a propositional formula over 
 -- atomic propositions
-type Label = Propostion AP
+type Label = Proposition AP
 
 -----------------------------------------------------------------------------
 -- | The internal presentation of an HOA, note that alias and implicit labels
@@ -102,7 +102,7 @@ data HOA =
       -- | Number of states (set can be computed via the type)
     { size :: Int
       -- | Set of initial states
-    , initalStates :: Set State
+    , initialStates :: Set State
       -- | Number of atomic propositions (set can be computed via the type)
     , atomicPropositions :: Int
       -- | Name of the atomic proposition
