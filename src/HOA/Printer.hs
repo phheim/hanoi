@@ -31,7 +31,8 @@ import HOA.Format
   , Label
   , State
   )
-import Sat.Finite (Formula)
+import Sat.Finite (FormulaView(..))
+import Sat.Finite (Formula, view)
 
 -----------------------------------------------------------------------------
 -- | FIXME: This is a dummy a (#) does not work with the auto formatter
@@ -164,4 +165,35 @@ strInd :: Finite a HOA => a -> String
 strInd a = show (index a - offset (v2t a))
 
 printFormula :: (a -> String) -> Formula a -> String
-printFormula _ _ = undefined
+printFormula showVar = printFormula'
+  where
+    printFormula' form =
+      case view form of
+        TTrue -> "t"
+        FFalse -> "f"
+        Var a -> showVar a
+        Not f -> "!" ++ printFormula' f
+        And fs ->
+          concat $
+          ["("] ++ (addInBetween ") & (" $ fmap printFormula' fs) ++ [")"]
+        Or fs ->
+          concat $
+          ["("] ++ (addInBetween ") | (" $ fmap printFormula' fs) ++ [")"]
+        Impl f1 f2 ->
+          let s1 = printFormula' f1
+              s2 = printFormula' f2
+           in "(!(" ++ s1 ++ ")) | " ++ s2
+        Equiv f1 f2 ->
+          let s1 = printFormula' f1
+              s2 = printFormula' f2
+           in "(" ++
+              s1 ++ "&" ++ s2 ++ ") | ((!(" ++ s1 ++ ")) & (!(" ++ s2 ++ ")))"
+        XOr f1 f2 ->
+          let s1 = printFormula' f1
+              s2 = printFormula' f2
+           in "((!(" ++
+              s1 ++ ")) & " ++ s2 ++ ") | ((!(" ++ s2 ++ ")) & " ++ s1 ++ ")"
+    --
+    addInBetween _ [] = []
+    addInBetween _ [x] = [x]
+    addInBetween a (x:xr) = x : a : addInBetween a xr
