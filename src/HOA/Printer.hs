@@ -7,8 +7,8 @@
 --
 -----------------------------------------------------------------------------
 {-# LANGUAGE LambdaCase, FlexibleInstances, MultiParamTypeClasses,
-  DeriveGeneric, TemplateHaskell, RecordWildCards, FlexibleContexts
-  #-}
+  DeriveGeneric, TemplateHaskell, RecordWildCards, FlexibleContexts,
+  ImplicitParams #-}
 
 -----------------------------------------------------------------------------
 module HOA.Printer
@@ -18,11 +18,11 @@ module HOA.Printer
 
 -----------------------------------------------------------------------------
 import Control.Exception (assert)
+import Data.List as List (sortOn)
 import Data.Set as Set (Set, toList)
-import Finite (Finite, index, offset, v2t, value, values)
+import Finite (Finite, FiniteBounds, index, offset, v2t, values)
 import HOA.Format
-  ( AP
-  , AcceptanceSet
+  ( AcceptanceSet
   , AcceptanceSets
   , AcceptanceType(..)
   , HOA(..)
@@ -33,10 +33,6 @@ import HOA.Format
   )
 import Sat.Finite (FormulaView(..))
 import Sat.Finite (Formula, view)
-
------------------------------------------------------------------------------
--- | FIXME: This is a dummy a (#) does not work with the auto formatter
-hashTag = v2t undefined
 
 -----------------------------------------------------------------------------
 -- | Converts a HOA to a string
@@ -51,44 +47,42 @@ printHOA singelLine hoa =
 -- | Converts a HOA to a list of strings (different potential lines)
 printHOALines :: HOA -> [String]
 printHOALines hoa@HOA {..} =
-  let startConj =
-        case toList initialStates of
-          [] -> assert False undefined
-          s:sr -> foldl (\a e -> a ++ "&" ++ strInd e) (strInd s) sr
-      apNamesSorted =
-        concatMap (++ " ") $
-        map
-          (atomicPropositionName . value . (+ (offset hashTag)))
-          [0 .. (atomicPropositions - 1)]
-      nameAcceptanceCond =
-        printFormula
-          (\case
-             Fin True s -> "Fin(" ++ strInd s ++ ")"
-             Fin False s -> "Fin(!" ++ strInd s ++ ")"
-             Inf True s -> "Inf(" ++ strInd s ++ ")"
-             Inf False s -> "Inf(!" ++ strInd s ++ ")")
-          acceptance
-   in [ "HOA: v1"
-      , "name: " ++ name
-      , "States: " ++ show size
-      , "Start: " ++ startConj
-      , "AP: " ++ (show atomicPropositions) ++ " " ++ apNamesSorted
-      , "Acceptance: " ++ (show acceptanceSets) ++ " " ++ nameAcceptanceCond
-      , "acc-name: " ++ (printAcceptanceName acceptanceName)
-      , "properties: " ++
-        (concatMap (\e -> printProperty e ++ " ") $ toList properties) ++
-        "explicit-labels"
-      , "controllable-AP: " ++
-        concatMap (\e -> (strInd e) ++ " ") (toList controlableAPs)
-      , "tool: " ++
-        case tool of
-          (name, Nothing) -> name
-          (name, Just parameter) -> name ++ " " ++ parameter
-      , "--BODY--"
-      ] ++
-      (concat (map printState values)) ++ ["--END--"]
+  let ?bounds = hoa
+   in let startConj =
+            case toList initialStates of
+              [] -> assert False undefined
+              s:sr -> foldl (\a e -> a ++ "&" ++ strInd e) (strInd s) sr
+          apNamesSorted =
+            concatMap (++ " ") $ map atomicPropositionName $ sortOn index values
+          nameAcceptanceCond =
+            printFormula
+              (\case
+                 Fin True s -> "Fin(" ++ strInd s ++ ")"
+                 Fin False s -> "Fin(!" ++ strInd s ++ ")"
+                 Inf True s -> "Inf(" ++ strInd s ++ ")"
+                 Inf False s -> "Inf(!" ++ strInd s ++ ")")
+              acceptance
+       in [ "HOA: v1"
+          , "name: " ++ name
+          , "States: " ++ show size
+          , "Start: " ++ startConj
+          , "AP: " ++ (show atomicPropositions) ++ " " ++ apNamesSorted
+          , "Acceptance: " ++ (show acceptanceSets) ++ " " ++ nameAcceptanceCond
+          , "acc-name: " ++ (printAcceptanceName acceptanceName)
+          , "properties: " ++
+            (concatMap (\e -> printProperty e ++ " ") $ toList properties) ++
+            "explicit-labels"
+          , "controllable-AP: " ++
+            concatMap (\e -> (strInd e) ++ " ") (toList controlableAPs)
+          , "tool: " ++
+            case tool of
+              (name, Nothing) -> name
+              (name, Just parameter) -> name ++ " " ++ parameter
+          , "--BODY--"
+          ] ++
+          (concat (map printState values)) ++ ["--END--"]
   where
-    printState :: State -> [String]
+    printState :: FiniteBounds HOA => State -> [String]
     printState s =
       ("State: " ++
        strInd s ++
@@ -100,7 +94,10 @@ printHOALines hoa@HOA {..} =
            "{" ++ (concatMap (\s -> strInd s ++ " ") (toList aSets)) ++ "}") :
       map printEdge (toList $ edges s)
     --
-    printEdge :: (State, Maybe Label, Maybe (Set AcceptanceSet)) -> String
+    printEdge ::
+         FiniteBounds HOA
+      => (State, Maybe Label, Maybe (Set AcceptanceSet))
+      -> String
     printEdge =
       \case
         (target, Nothing, Nothing) -> strInd target
@@ -112,11 +109,11 @@ printHOALines hoa@HOA {..} =
           printLabel label ++
           " " ++ (strInd target) ++ " " ++ printAccetingSets aSets
     --
-    printAccetingSets :: AcceptanceSets -> String
+    printAccetingSets :: FiniteBounds HOA => AcceptanceSets -> String
     printAccetingSets aSets =
       "{" ++ (concatMap (\s -> strInd s ++ " ") (toList aSets)) ++ "}"
     --
-    printLabel :: Label -> String
+    printLabel :: FiniteBounds HOA => Label -> String
     printLabel label = "[" ++ printFormula strInd label ++ "] "
 
 -----------------------------------------------------------------------------
@@ -161,7 +158,7 @@ printAcceptanceName =
 
 -----------------------------------------------------------------------------
 -- | Different library related printing methods
-strInd :: Finite a HOA => a -> String
+strInd :: (Finite HOA a, FiniteBounds HOA) => a -> String
 strInd a = show (index a - offset (v2t a))
 
 printFormula :: (a -> String) -> Formula a -> String
