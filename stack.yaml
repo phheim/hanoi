@@ -3,6 +3,6 @@ packages:
 - .
 extra-deps:
 - git: jarvisgit:libraries/finite
-  commit: 467efa611a25ea8e2af1a73f69f841dd57831664
+  commit: 84e4850833e5c22448f0790e13f985ea2216e6c7
 - git: jarvisgit:libraries/sat
   commit: 04b48f355ed685465c9affe7ba348f469ed3ed6f
