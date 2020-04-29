@@ -32,6 +32,7 @@ library
   other-modules:
     HOA.Format
     HOA.Printer
+    HOA.Sanitizer
 
   hs-source-dirs:
     src/
