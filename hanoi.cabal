@@ -31,6 +31,7 @@ library
   
   other-modules:
     HOA.Format
+    HOA.Printer
 
   hs-source-dirs:
     src/
