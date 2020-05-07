@@ -25,13 +25,24 @@ library
     , containers >= 0.6.0.1
     , finite >= 1.4.1
     , sat >= 1.0.4.0
+    , parsec
+
 
   exposed-modules:
     Hanoi
-  
-  other-modules:
     HOA.Format
     HOA.Printer
+    HOA.Parser
+    HOA.Parser.Data
+    HOA.Parser.Header
+    HOA.Parser.Body
+    HOA.Parser.LabelExpr
+    HOA.Parser.AccCond
+    HOA.Parser.AccName
+    HOA.Parser.Properties
+
+  other-modules:
+    HOA.Parser.Util
 
   hs-source-dirs:
     src/
