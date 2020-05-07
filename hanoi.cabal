@@ -30,12 +30,10 @@ library
 
   exposed-modules:
     Hanoi
-    HOA.Format
-    HOA.Printer
-    HOA.Parser
-    HOA.Sanitizer
 
   other-modules:
+    HOA.Format
+    HOA.Parser
     HOA.Parser.Util
     HOA.Parser.Data
     HOA.Parser.Header
@@ -44,6 +42,8 @@ library
     HOA.Parser.AccCond
     HOA.Parser.AccName
     HOA.Parser.Properties
+    HOA.Printer
+    HOA.Sanitizer
 
   hs-source-dirs:
     src/lib
