@@ -52,9 +52,8 @@ printHOALines hoa@HOA {..} =
             case toList initialStates of
               [] -> assert False undefined
               s:sr -> foldl (\a e -> a ++ "&" ++ strInd e) (strInd s) sr
-          apNamesSorted' =
+          apNamesSorted =
             intercalate "\" \"" $ map atomicPropositionName $ sortOn index values
-          apNamesSorted = "\"" ++ apNamesSorted' ++ "\""
           nameAcceptanceCond =
             printFormula
               (\case
@@ -64,10 +63,10 @@ printHOALines hoa@HOA {..} =
                  Inf False s -> "Inf(!" ++ strInd s ++ ")")
               acceptance
        in [ "HOA: v1"
-          , "name: " ++ name
+          , "name: " ++ (printString name)
           , "States: " ++ show size
           , "Start: " ++ startConj
-          , "AP: " ++ (show atomicPropositions) ++ " " ++ apNamesSorted
+          , "AP: " ++ (show atomicPropositions) ++ " " ++ (printString apNamesSorted)
           , "Acceptance: " ++ (show acceptanceSets) ++ " " ++ nameAcceptanceCond
           , "acc-name: " ++ (printAcceptanceName acceptanceName)
           , "properties: " ++
@@ -77,18 +76,20 @@ printHOALines hoa@HOA {..} =
             concatMap (\e -> (strInd e) ++ " ") (toList controlableAPs)
           , "tool: " ++
             case tool of
-              (name, Nothing) -> name
-              (name, Just parameter) -> name ++ " " ++ parameter
+              (name, Nothing) -> printString name
+              (name, Just parameter) -> (printString name) ++ " " ++ (printString parameter)
           , "--BODY--"
           ] ++
           (concat (map printState values)) ++ ["--END--"]
   where
+    printString :: String -> String
+    printString s = "\"" ++ s ++ "\""
     printState :: FiniteBounds HOA => State -> [String]
     printState s =
       ("State: " ++
        strInd s ++
        " " ++
-       stateName s ++
+       (printString (stateName s)) ++
        case stateAcceptance s of
          Nothing -> ""
          Just aSets ->

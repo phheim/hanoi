@@ -51,7 +51,7 @@ import Text.Parsec
   ( (<|>)
   , sepBy
   , sepBy1
-  , many1
+  , many
   , unexpected
   , optionMaybe
   )
@@ -100,7 +100,7 @@ headerParser = do
       <|> do {keyword "Alias:"; aliasParser hoa}
       <|> do {keyword "Acceptance:"; acceptParser hoa}
       <|> do {keyword "acc-name:"; acceptNameParser hoa}
-      <|> do {keyword "tool"; toolParser hoa}
+      <|> do {keyword "tool:"; toolParser hoa}
       <|> do {keyword "name:"; nameParser hoa}
       <|> do {keyword "properties:"; propParser hoa}
       <|> do {keyword "controllable-AP:"; capParser hoa}
@@ -118,7 +118,7 @@ headerParser = do
     apParser hoa = if atomicPropositions hoa /= -1 then errDoubleDef "AP" 
       else do
         num <- natParser;
-        aps <- sepBy stringParser (~~)
+        aps <- many stringParser
         if num /= length aps then unexpected "number of APs did not match actual APs"
         else headerItemParser hoa{atomicPropositions = num, atomicPropositionName = M.fromAscList $ zip [0..] aps} 
 
@@ -157,7 +157,7 @@ headerParser = do
 
     capParser hoa = if not $ null $ controlableAPs hoa then errDoubleDef "controllable-AP"
       else do
-            caps <- many1 natParser
+            caps <- many natParser
             headerItemParser hoa {controlableAPs = S.fromList caps} 
 
     endParser hoa = if acceptanceSets hoa == -1 then unexpected $ "Acceptance missing" 
