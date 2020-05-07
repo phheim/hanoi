@@ -149,12 +149,15 @@ printAcceptanceName =
     GeneralizedCoBuchi n -> "generalized-co-Buchi " ++ (show n)
     Streett n -> "Streett " ++ (show n)
     Rabin n -> "Rabin " ++ (show n)
+    GeneralizedRabin a b c ->
+      "generalized-Rabin " ++ (show a) ++ " " ++ (show b) ++ " " ++ (show c)
     ParityMinOdd n -> "parity min odd " ++ (show n)
     ParityMaxOdd n -> "parity max odd " ++ (show n)
     ParityMinEven n -> "parity min even " ++ (show n)
     ParityMaxEven n -> "parity max even " ++ (show n)
     All -> "all"
     None -> "none"
+    Unknown -> ""
 
 -----------------------------------------------------------------------------
 -- | Different library related printing methods
