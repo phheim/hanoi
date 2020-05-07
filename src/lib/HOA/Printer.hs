@@ -18,7 +18,7 @@ module HOA.Printer
 
 -----------------------------------------------------------------------------
 import Control.Exception (assert)
-import Data.List as List (sortOn)
+import Data.List as List (sortOn, intercalate)
 import Data.Set as Set (Set, toList)
 import Finite (Finite, FiniteBounds, index, offset, v2t, values)
 import HOA.Format
@@ -52,8 +52,9 @@ printHOALines hoa@HOA {..} =
             case toList initialStates of
               [] -> assert False undefined
               s:sr -> foldl (\a e -> a ++ "&" ++ strInd e) (strInd s) sr
-          apNamesSorted =
-            concatMap (++ " ") $ map atomicPropositionName $ sortOn index values
+          apNamesSorted' =
+            intercalate "\" \"" $ map atomicPropositionName $ sortOn index values
+          apNamesSorted = "\"" ++ apNamesSorted' ++ "\""
           nameAcceptanceCond =
             printFormula
               (\case
