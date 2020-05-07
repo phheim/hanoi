@@ -17,6 +17,7 @@ import Data.Set as Set (Set)
 import Finite.TH (baseInstance, newInstance)
 import GHC.Generics (Generic)
 import Sat.Finite (Formula)
+import Finite
 
 -----------------------------------------------------------------------------
 -- | The type of a state, generated using the Finite library
@@ -36,7 +37,7 @@ type AcceptanceSets = Set AcceptanceSet
 -- | The different properties of a HOA
 -- Remark: The properties do not contain implicit-labels, explicit-labels,
 -- as in the internal format all labels are explicit 
--- (implicit ones have have to be parsed before)
+-- (implicit ones have to be parsed before)
 data HOAProperty
   = ONLY_STATE_LABELS
   | ONLY_TRANS_LABELS
@@ -65,13 +66,15 @@ data HOAAcceptanceName
   | GeneralizedCoBuchi Int
   | Streett Int
   | Rabin Int
+  | GeneralizedRabin Int Int Int
   | ParityMinOdd Int
   | ParityMaxOdd Int
   | ParityMinEven Int
   | ParityMaxEven Int
   | All
   | None
-
+  | Unknown
+  deriving (Show)
 -----------------------------------------------------------------------------
 -- | The definition of an acceptance condition, which is a propositional formula
 -- over acceptance sets that are visited finitely of infinitely often
@@ -81,6 +84,10 @@ data AcceptanceType
   deriving (Eq, Ord, Show, Generic)
 
 type AcceptanceCondition = Formula AcceptanceType
+
+instance Finite HOA AcceptanceType
+
+instance Finite HOA Bool 
 
 -----------------------------------------------------------------------------
 -- | The definition of a label, which is a propositional formula over 
