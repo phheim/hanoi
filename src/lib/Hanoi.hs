@@ -20,6 +20,7 @@ module Hanoi
   , State
   -- Parsing
   , hoaParser
+  , parse
   -- Printing
   , printHOA
   , printHOALines
@@ -44,6 +45,6 @@ import Sat.Finite (Formula)
 
 import HOA.Printer (printHOA, printHOALines)
 
-import HOA.Parser (hoaParser)
+import HOA.Parser (hoaParser, parse)
 
 import HOA.Sanitizer (complete, sanitize)

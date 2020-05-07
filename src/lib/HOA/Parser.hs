@@ -10,6 +10,7 @@
 
 module HOA.Parser
   ( hoaParser
+  , parse
   ) where
 
 -----------------------------------------------------------------------------
@@ -28,6 +29,8 @@ import HOA.Parser.Body
 import HOA.Parser.Header
 
 import Text.Parsec.String (Parser)
+
+import qualified Text.Parsec as P (parse)
 
 import qualified Data.Set as S (Set, map)
 
@@ -93,4 +96,13 @@ hoaParser =
     convertAccType :: (FiniteBounds HOA) => P.AcceptanceType -> AcceptanceType
     convertAccType (P.Fin b n) = Fin b $ value n
     convertAccType (P.Inf b n) = Inf b $ value n
+
+-----------------------------------------------------------------------------
+type Error = String
+
+parse :: String -> Either Error HOA
+parse str =
+  case P.parse hoaParser "Parser Error" str of
+    Left err -> Left $ show err
+    Right x -> return x
 -----------------------------------------------------------------------------
