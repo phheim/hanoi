@@ -33,6 +33,10 @@ library
     HOA.Format
     HOA.Printer
     HOA.Parser
+    HOA.Sanitizer
+
+  other-modules:
+    HOA.Parser.Util
     HOA.Parser.Data
     HOA.Parser.Header
     HOA.Parser.Body
@@ -40,9 +44,6 @@ library
     HOA.Parser.AccCond
     HOA.Parser.AccName
     HOA.Parser.Properties
-
-  other-modules:
-    HOA.Parser.Util
 
   hs-source-dirs:
     src/
