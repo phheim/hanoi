@@ -21,6 +21,7 @@ import Text.Parsec
   , char
   , letter
   , alphaNum
+  , oneOf
   )
 
 import Text.Parsec.Token
@@ -63,6 +64,9 @@ globalDef =
   , identLetter    = alphaNum <|> char '_' <|> char '-'
   , caseSensitive  = True
   , reservedNames  = ["f", "t"]
+  , opStart        = oneOf ""
+  , opLetter       = oneOf ""
+  , reservedOpNames = ["!", "&", "|"]
   }
 
 ---------------------------------------------------------------------------------
