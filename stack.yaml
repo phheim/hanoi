@@ -2,7 +2,7 @@ resolver: lts-14.17
 packages:
 - .
 extra-deps:
-- git: jarvisgit:libraries/finite
-  commit: 84e4850833e5c22448f0790e13f985ea2216e6c7
-- git: jarvisgit:libraries/sat
-  commit: 04b48f355ed685465c9affe7ba348f469ed3ed6f
+- git: ssh://git@git.intelligent-conception.de:4352/libraries/finite
+  commit: 86a5adf9d5b56cb74780aa96ee29d3c3cc0381e3
+- git: ssh://git@git.intelligent-conception.de:4352/libraries/sat
+  commit: 117819b549bf5fb704ceb1268ad1db636a0d59cc

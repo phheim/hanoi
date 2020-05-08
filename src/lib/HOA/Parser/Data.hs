@@ -35,7 +35,7 @@ import Text.Parsec.Language
 import Data.Set
   ( Set
   )
-  
+
 import HOA.Format
   ( HOAAcceptanceName
   )
@@ -70,30 +70,30 @@ globalDef =
 
 data HOAHeader =
    HOAHeader
-      -- | Number of states (set can be computed via the type)
-    { size :: Int
-      -- | Set of initial states
-    , initialStates :: Set Int
-      -- | Number of atomic propositions (set can be computed via the type)
-    , atomicPropositions :: Int
-      -- | Name of the atomic proposition
-    , atomicPropositionName :: Map Int String
-      -- | Controlable APs, typcally outputs (Syntcomp Extension)
-    , controlableAPs :: Set Int
-      -- | Acceptance name 
-    , acceptanceName :: Maybe HOAAcceptanceName 
-      -- | Number of acceptance sets (the sets can be computed via the type)
-    , acceptanceSets :: Int
-      -- | Acceptance condition
-    , acceptance :: Formula AcceptanceType
-      -- | Tool name (might be empty)
-    , tool :: (String, Maybe String)
-      -- | Automaton name
-    , name :: String
-      -- | Properties
-    , properties :: Set HOAProperty
-      -- | Aliases
-    , aliases :: Map String (Formula Int)
+    { -- | Number of states (set can be computed via the type)
+      size :: Int
+    , -- | Set of initial states
+      initialStates :: Set Int
+    , -- | Number of atomic propositions (set can be computed via the type)
+      atomicPropositions :: Int
+    , -- | Name of the atomic proposition
+      atomicPropositionName :: Map Int String
+    , -- | Controlable APs, typcally outputs (Syntcomp Extension)
+      controlableAPs :: Set Int
+    , -- | Acceptance name
+      acceptanceName :: Maybe HOAAcceptanceName
+    , -- | Number of acceptance sets (the sets can be computed via the type)
+      acceptanceSets :: Int
+    , -- | Acceptance condition
+      acceptance :: Formula AcceptanceType
+    , -- | Tool name (might be empty)
+      tool :: (String, Maybe String)
+    , -- | Automaton name
+      name :: String
+    , -- | Properties
+      properties :: Set HOAProperty
+    , -- | Aliases
+      aliases :: Map String (Formula Int)
     }
 
 -------------------------------------------------------------------------

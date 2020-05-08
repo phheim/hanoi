@@ -36,7 +36,7 @@ type AcceptanceSets = Set AcceptanceSet
 -----------------------------------------------------------------------------
 -- | The different properties of a HOA
 -- Remark: The properties do not contain implicit-labels, explicit-labels,
--- as in the internal format all labels are explicit 
+-- as in the internal format all labels are explicit
 -- (implicit ones have to be parsed before)
 data HOAProperty
   = ONLY_STATE_LABELS
@@ -87,10 +87,10 @@ type AcceptanceCondition = Formula AcceptanceType
 
 instance Finite HOA AcceptanceType
 
-instance Finite HOA Bool 
+instance Finite HOA Bool
 
 -----------------------------------------------------------------------------
--- | The definition of a label, which is a propositional formula over 
+-- | The definition of a label, which is a propositional formula over
 -- atomic propositions
 type Label = Formula AP
 
@@ -99,37 +99,37 @@ type Label = Formula AP
 -- are not represented anymore
 data HOA =
   HOA
-      -- | Number of states (set can be computed via the type)
-    { size :: Int
-      -- | Set of initial states
-    , initialStates :: Set State
-      -- | Number of atomic propositions (set can be computed via the type)
-    , atomicPropositions :: Int
-      -- | Name of the atomic proposition
-    , atomicPropositionName :: AP -> String
-      -- | Controlable APs, typcally outputs (Syntcomp Extension)
-    , controlableAPs :: Set AP
-      -- | Acceptance name 
-    , acceptanceName :: HOAAcceptanceName
-      -- | Number of acceptance sets (the sets can be computed via the type)
-    , acceptanceSets :: Int
-      -- | Acceptance condition
-    , acceptance :: AcceptanceCondition
-      -- | Tool name (might be empty)
-    , tool :: (String, Maybe String)
-      -- | Automaton name
-    , name :: String
-      -- | Properties
-    , properties :: Set HOAProperty
-      -- | Set of edges for each state, an edge consists of target state
+    { -- | Number of states (set can be computed via the type)
+      size :: Int
+    , -- | Set of initial states
+      initialStates :: Set State
+    , -- | Number of atomic propositions (set can be computed via the type)
+      atomicPropositions :: Int
+    , -- | Name of the atomic proposition
+      atomicPropositionName :: AP -> String
+    , -- | Controlable APs, typcally outputs (Syntcomp Extension)
+      controlableAPs :: Set AP
+    , -- | Acceptance name
+      acceptanceName :: HOAAcceptanceName
+    , -- | Number of acceptance sets (the sets can be computed via the type)
+      acceptanceSets :: Int
+    , -- | Acceptance condition
+      acceptance :: AcceptanceCondition
+    , -- | Tool name (might be empty)
+      tool :: (String, Maybe String)
+    , -- | Automaton name
+      name :: String
+    , -- | Properties
+      properties :: Set HOAProperty
+    , -- | Set of edges for each state, an edge consists of target state
       -- a optional label and an optional set of acceptance sets
-    , edges :: State -> Set (State, Maybe Label, Maybe AcceptanceSets)
-      -- | For each state a possible label
-    , stateLabel :: State -> Maybe Label
-      -- | For each state a possible set of acceptance sets
-    , stateAcceptance :: State -> Maybe AcceptanceSets
-      -- | Name of a state (might be empty)
-    , stateName :: State -> String
+      edges :: State -> Set (State, Maybe Label, Maybe AcceptanceSets)
+    , -- | For each state a possible label
+      stateLabel :: State -> Maybe Label
+    , -- | For each state a possible set of acceptance sets
+      stateAcceptance :: State -> Maybe AcceptanceSets
+    , -- | Name of a state (might be empty)
+      stateName :: State -> String
     }
 
 -----------------------------------------------------------------------------
