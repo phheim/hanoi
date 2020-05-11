@@ -27,7 +27,7 @@ tests :: IO [TestInstance]
 tests = do
   let seeds = [100 .. 200]
   let apCounts = [1 .. 10]
-  spotTests <- createTests $ concatMap (\s -> map (\a -> (s, a)) apCounts) seeds
+  spotTests <- createTests [(s,a) | s <- seeds, a <- apCounts]
   case spotTests of
     Left err -> do
       putStrLn err
@@ -47,7 +47,7 @@ randHOA seed apCnt = do
   case potRandAut of
     Nothing -> return $ Left "randaut not found"
     Just randAut -> do
-      (_, hoa, _) <-
+      (_,hoa,_) <-
         readProcessWithExitCode randAut (aps ++ ["--seed=" ++ (show seed)]) ""
       return $ Right hoa
 
