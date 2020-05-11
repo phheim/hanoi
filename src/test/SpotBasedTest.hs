@@ -21,6 +21,7 @@ import Hanoi (parse, printHOA)
 import System.Directory (findExecutable)
 import System.IO.Temp (writeSystemTempFile)
 import System.Process (readProcessWithExitCode)
+import System.Exit (ExitCode(..))
 
 -----------------------------------------------------------------------------
 tests :: IO [TestInstance]
@@ -60,8 +61,11 @@ checkValidHOA hoa = do
     Nothing -> return $ Left "autfilt not found"
     Just autfilt -> do
       hoaFile <- writeSystemTempFile "test.hoa" hoa
-      (_, _, err) <- readProcessWithExitCode autfilt [hoaFile] ""
-      return $ Right $ err == ""
+      (ec,_,err) <- readProcessWithExitCode autfilt [hoaFile] ""
+      case ec of
+        ExitSuccess -> return $ Right True
+        ExitFailure 1 -> return $ Right False
+        ExitFailure _ -> return $ Left err
 
 -----------------------------------------------------------------------------
 -- | Check if two automatons are isomorphic usings spots autfill
@@ -73,12 +77,15 @@ checkIsomorphic h1 h2 = do
     Just autfilt -> do
       h1File <- writeSystemTempFile "a.hoa" h1
       h2File <- writeSystemTempFile "b.hoa" h2
-      (_, stdOut, _) <-
+      (ec,_,err) <-
         readProcessWithExitCode
           autfilt
           ["--are-isomorphic=" ++ h1File, h2File]
           ""
-      return $ Right $ stdOut /= ""
+      case ec of
+        ExitSuccess -> return $ Right True
+        ExitFailure 1 -> return $ Right False
+        ExitFailure _ -> return $ Left err
 
 -----------------------------------------------------------------------------
 -- | Generates a parser/printer test given an HOA and an name index
