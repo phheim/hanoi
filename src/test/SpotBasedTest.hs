@@ -54,7 +54,7 @@ randHOA seed apCnt = do
 
 -----------------------------------------------------------------------------
 -- | Check if a hoa is a valid one according to spot
-checkValidHOA :: String -> IO (Either Error Bool)
+checkValidHOA :: String -> IO (Either Error (Maybe Error))
 checkValidHOA hoa = do
   potAutFilt <- findExecutable "autfilt"
   case potAutFilt of
@@ -63,8 +63,8 @@ checkValidHOA hoa = do
       hoaFile <- writeSystemTempFile "test.hoa" hoa
       (ec,_,err) <- readProcessWithExitCode autfilt [hoaFile] ""
       case ec of
-        ExitSuccess -> return $ Right True
-        ExitFailure _ -> return $ Right False
+        ExitSuccess -> return $ Right Nothing
+        ExitFailure _ -> return $ Right $ Just err
 
 -----------------------------------------------------------------------------
 -- | Check if two automatons are isomorphic usings spots autfill
@@ -104,11 +104,15 @@ generateTest hoa ind =
                   case valid of
                     Left err ->
                       return $ Finished $ Fail $ "TESTING FAILURE: " ++ err
-                    Right False -> do
-                      putStrLn "Printed HOA is not valid and looks like:"
+                    Right (Just err) -> do
+                      putStrLn "Printed HOA is not valid. Error:"
+                      putStrLn err
+                      putStrLn "Original:"
+                      putStrLn hoa
+                      putStrLn "Printed:"
                       putStrLn printed
                       return $ Finished $ Fail $ "PRINTERBUG"
-                    Right True -> do
+                    Right Nothing -> do
                       isomorphic <- checkIsomorphic hoa printed
                       case isomorphic of
                         Left err ->
