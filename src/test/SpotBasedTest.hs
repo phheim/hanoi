@@ -64,8 +64,7 @@ checkValidHOA hoa = do
       (ec,_,err) <- readProcessWithExitCode autfilt [hoaFile] ""
       case ec of
         ExitSuccess -> return $ Right True
-        ExitFailure 1 -> return $ Right False
-        ExitFailure _ -> return $ Left err
+        ExitFailure _ -> return $ Right False
 
 -----------------------------------------------------------------------------
 -- | Check if two automatons are isomorphic usings spots autfill
