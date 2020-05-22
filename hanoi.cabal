@@ -44,12 +44,14 @@ library
     HOA.Parser.Properties
     HOA.Printer
     HOA.Sanitizer
+    Spot.Autfilt
 
   hs-source-dirs:
     src/lib
 
   default-language:
     Haskell2010
+
 
 test-suite default
 
