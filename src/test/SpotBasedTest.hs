@@ -17,11 +17,10 @@ module SpotBasedTest
 import Distribution.TestSuite
 
 import Hanoi (parse, printHOA)
+import Spot.Autfilt
 
 import System.Directory (findExecutable)
-import System.IO.Temp (writeSystemTempFile)
 import System.Process (readProcessWithExitCode)
-import System.Exit (ExitCode(..))
 
 -----------------------------------------------------------------------------
 tests :: IO [TestInstance]
@@ -56,35 +55,13 @@ randHOA seed apCnt = do
 -- | Check if a hoa is a valid one according to spot
 checkValidHOA :: String -> IO (Either Error (Maybe Error))
 checkValidHOA hoa = do
-  potAutFilt <- findExecutable "autfilt"
-  case potAutFilt of
-    Nothing -> return $ Left "autfilt not found"
-    Just autfilt -> do
-      hoaFile <- writeSystemTempFile "test.hoa" hoa
-      (ec,_,err) <- readProcessWithExitCode autfilt [hoaFile] ""
-      case ec of
-        ExitSuccess -> return $ Right Nothing
-        ExitFailure _ -> return $ Right $ Just err
-
------------------------------------------------------------------------------
--- | Check if two automatons are isomorphic usings spots autfill
-checkIsomorphic :: String -> String -> IO (Either Error Bool)
-checkIsomorphic h1 h2 = do
-  potAutFilt <- findExecutable "autfilt"
-  case potAutFilt of
-    Nothing -> return $ Left "autfilt not found"
-    Just autfilt -> do
-      h1File <- writeSystemTempFile "a.hoa" h1
-      h2File <- writeSystemTempFile "b.hoa" h2
-      (ec,_,err) <-
-        readProcessWithExitCode
-          autfilt
-          ["--are-isomorphic=" ++ h1File, h2File]
-          ""
-      case ec of
-        ExitSuccess -> return $ Right True
-        ExitFailure 1 -> return $ Right False
-        ExitFailure _ -> return $ Left err
+  let input = defaultAutfiltInput {automaton = hoa}
+  res <- autfilt input
+  case res of
+    AutfiltSuccess _ -> return $ Right Nothing
+    AutfiltNoMatch -> return $ Right $ Just "no match"
+    AutfiltFailure err -> return $ Right $ Just err
+    AutfiltException err -> return $ Left err
 
 -----------------------------------------------------------------------------
 -- | Generates a parser/printer test given an HOA and an name index
@@ -113,7 +90,7 @@ generateTest hoa ind =
                       putStrLn printed
                       return $ Finished $ Fail $ "PRINTERBUG"
                     Right Nothing -> do
-                      isomorphic <- checkIsomorphic hoa printed
+                      isomorphic <- areIsomorphic2 hoa printed
                       case isomorphic of
                         Left err ->
                           return $ Finished $ Fail $ "TESTING FAILURE: " ++ err

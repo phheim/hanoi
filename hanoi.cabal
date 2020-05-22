@@ -76,6 +76,7 @@ test-suite default
     HOA.Parser.Properties
     HOA.Printer
     HOA.Sanitizer
+    Spot.Autfilt
 
   hs-source-dirs:
     src/test
