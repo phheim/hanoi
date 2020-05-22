@@ -26,6 +26,9 @@ library
     , finite >= 1.4.1
     , sat >= 1.0.6.0
     , parsec
+    , directory >= 1.3.3.0
+    , process >= 1.6.5.0
+    , temporary >= 1.3
 
 
   exposed-modules:
