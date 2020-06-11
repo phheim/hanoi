@@ -3,7 +3,7 @@
 -- Module      :  HOA.Parser.Body
 -- Maintainer  :  Gideon Geier (geier@projectjarvis.de)
 --
--- Parser for Body section.
+-- Parser for the Body section.
 --
 -----------------------------------------------------------------------------
 
@@ -62,10 +62,11 @@ import qualified Data.Map.Strict as M
   )
 
 -----------------------------------------------------------------------------
+-- | The body parser takes the number of atomic propositions to parse implicitly labeled edges.
+-- | It takes a the map of Aliases as an environment to parse explicit labels. 
 
 bodyParser
   :: Int -> (M.Map String (Formula Int)) -> Parser [(Int, (String, Maybe (Formula Int), Maybe (Set Int), Set (Int, Maybe (Formula Int), Maybe (Set Int))))]
--- edges, label, acceptance, name 
 bodyParser numAPs env = do
     states <- many1 stateParser 
     keyword "--END--"
@@ -115,7 +116,8 @@ bodyParser numAPs env = do
         return $ S.fromList nats
 
     labelParser = labelExprParser env
-   
+  
+    -- creates a label with numAP many atomic propositions and binary valuation according to n 
     implicitLabel :: Int -> Int -> Formula Int 
     implicitLabel numAP n = fAnd $ map props $ take numAP $ zip [0..] $ bits n 
    

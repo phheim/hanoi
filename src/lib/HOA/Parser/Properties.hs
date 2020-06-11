@@ -1,9 +1,9 @@
 -----------------------------------------------------------------------------
 -- |
--- Module      :  HOA.Parser.LabelExpr
+-- Module      :  HOA.Parser.Properties
 -- Maintainer  :  Gideon Geier (geier@projectjarvis.de)
 --
--- Parser for LabelExpressions in Aliases.
+-- Parser for the properties header-item.
 --
 -----------------------------------------------------------------------------
 

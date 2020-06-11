@@ -74,11 +74,11 @@ globalDef =
 
 data HOAHeader =
    HOAHeader
-    { -- | Number of states (set can be computed via the type)
+    { -- | Number of states
       size :: Int
     , -- | Set of initial states
       initialStates :: Set Int
-    , -- | Number of atomic propositions (set can be computed via the type)
+    , -- | Number of atomic propositions 
       atomicPropositions :: Int
     , -- | Name of the atomic proposition
       atomicPropositionName :: Map Int String
@@ -86,7 +86,7 @@ data HOAHeader =
       controlableAPs :: Set Int
     , -- | Acceptance name
       acceptanceName :: Maybe HOAAcceptanceName
-    , -- | Number of acceptance sets (the sets can be computed via the type)
+    , -- | Number of acceptance sets
       acceptanceSets :: Int
     , -- | Acceptance condition
       acceptance :: Formula AcceptanceType

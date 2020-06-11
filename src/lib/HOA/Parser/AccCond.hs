@@ -1,9 +1,9 @@
 -----------------------------------------------------------------------------
 -- |
--- Module      :  HOA.Parser.LabelExpr
+-- Module      :  HOA.Parser.AccCond
 -- Maintainer  :  Gideon Geier (geier@projectjarvis.de)
 --
--- Parser for LabelExpressions in Aliases.
+-- Parser for the acceptance-cond part of the Acceptance header-item.
 --
 -----------------------------------------------------------------------------
 

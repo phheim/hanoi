@@ -49,7 +49,10 @@ hoaParser =
           , atomicPropositions = P.atomicPropositions header
           , acceptanceSets = P.acceptanceSets header
           }
-     in do let names = map (\(s, (n, _, _, _)) -> (value s, n)) states
+     in do 
+           -- process raw parsed states to internal format
+           -- using the finite library
+           let names = map (\(s, (n, _, _, _)) -> (value s, n)) states
            let labels =
                  map
                    (\(s, (_, l, _, _)) ->

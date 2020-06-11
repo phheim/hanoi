@@ -3,7 +3,7 @@
 -- Module      :  HOA.Parser.Header
 -- Maintainer  :  Gideon Geier (geier@projectjarvis.de)
 --
--- Parsers for Header and Body section.
+-- Parser for the Header section.
 --
 -----------------------------------------------------------------------------
 
@@ -92,7 +92,10 @@ headerParser = do
                             properties = S.empty,
                             aliases = M.empty}
   
-  where 
+  where
+    -- recursive parser: all parsers called, except endParser, call headerItemParser again
+    -- (after parsing their section and adding it to hoa) 
+    -- this is necessary because there is no fixed order for the header-items
     headerItemParser hoa = 
           do {keyword "States:"; statesParser hoa}
       <|> do {keyword "Start:"; startParser hoa}

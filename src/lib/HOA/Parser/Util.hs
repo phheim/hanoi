@@ -134,7 +134,9 @@ keyword = void . reserved tokenparser
 (~~) = whiteSpace tokenparser
 
 -----------------------------------------------------------------------------
-
+-- | Translates Parsing HOAProperties to the HOAProperties of the Format
+--  looses the implicit/explicit label properties,
+--  because after parsing everything is made explicit
 toFormatProperties :: Set HOAProperty -> Set (F.HOAProperty)
 toFormatProperties = foldl translateProperty empty
 
@@ -159,7 +161,7 @@ translateProperty s IMPLICIT_LABELS         = s
 translateProperty s EXPLICIT_LABELS         = s
 
 -----------------------------------------------------------------------------
-
+-- | Translates a Formula from Sat.Smart to Sat.Finite
 smartFormulaToFinite :: (Finite b a, FiniteBounds b)
   => Sm.Formula a -> Fin.Formula a
 smartFormulaToFinite = (Fin.finalize . smartFormulaToFinite') . Sm.view
