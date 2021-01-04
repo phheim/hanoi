@@ -30,7 +30,7 @@ import HOA.Parser.Header
 
 import Text.Parsec.String (Parser)
 
-import qualified Text.Parsec as P (parse)
+import qualified Text.Parsec as P (parse, unexpected)
 
 import qualified Data.Set as S (Set, map)
 
@@ -50,43 +50,45 @@ hoaParser =
           , acceptanceSets = P.acceptanceSets header
           }
      in do 
-           -- process raw parsed states to internal format
-           -- using the finite library
-           let names = map (\(s, (n, _, _, _)) -> (value s, n)) states
-           let labels =
-                 map
-                   (\(s, (_, l, _, _)) ->
-                      (value s, fmap smartFormulaToFinite $ fmap (fmap value) l))
-                   states
-           let accept =
-                 map
-                   (\(s, (_, _, a, _)) -> (value s, fmap (S.map value) a))
-                   states
-           let edges =
-                 map
-                   (\(s, (_, _, _, e)) -> (value s, S.map convertEdge e))
-                   states
-           return $
-             HOA
-               { size = P.size header
-               , initialStates = S.map value $ P.initialStates header
-               , atomicPropositions = P.atomicPropositions header
-               , atomicPropositionName =
-                   (!) $ mapKeysMonotonic value $ P.atomicPropositionName header
-               , controlableAPs = S.map value $ P.controlableAPs header
-               , acceptanceName = fromMaybe Unknown $ P.acceptanceName header
-               , acceptanceSets = P.acceptanceSets header
-               , acceptance =
-                   smartFormulaToFinite $
-                   fmap convertAccType $ P.acceptance header
-               , tool = P.tool header
-               , name = P.name header
-               , properties = toFormatProperties $ P.properties header
-               , edges = (!) $ fromList edges
-               , stateLabel = (!) $ fromList labels
-               , stateAcceptance = (!) $ fromList accept
-               , stateName = (!) $ fromList names
-               }
+           if P.size header /= 0 && P.size header /= (length states) then P.unexpected "Number of States does not match number given in \"States:\""
+           else do  
+               -- process raw parsed states to internal format
+               -- using the finite library
+               let names = map (\(s, (n, _, _, _)) -> (value s, n)) states
+               let labels =
+                     map
+                       (\(s, (_, l, _, _)) ->
+                          (value s, fmap smartFormulaToFinite $ fmap (fmap value) l))
+                       states
+               let accept =
+                     map
+                       (\(s, (_, _, a, _)) -> (value s, fmap (S.map value) a))
+                       states
+               let edges =
+                     map
+                       (\(s, (_, _, _, e)) -> (value s, S.map convertEdge e))
+                       states
+               return $
+                 HOA
+                   { size = length states 
+                   , initialStates = S.map value $ P.initialStates header
+                   , atomicPropositions = P.atomicPropositions header
+                   , atomicPropositionName =
+                       (!) $ mapKeysMonotonic value $ P.atomicPropositionName header
+                   , controlableAPs = S.map value $ P.controlableAPs header
+                   , acceptanceName = fromMaybe Unknown $ P.acceptanceName header
+                   , acceptanceSets = P.acceptanceSets header
+                   , acceptance =
+                       smartFormulaToFinite $
+                       fmap convertAccType $ P.acceptance header
+                   , tool = P.tool header
+                   , name = P.name header
+                   , properties = toFormatProperties $ P.properties header
+                   , edges = (!) $ fromList edges
+                   , stateLabel = (!) $ fromList labels
+                   , stateAcceptance = (!) $ fromList accept
+                   , stateName = (!) $ fromList names
+                   }
   where
     convertEdge ::
          (FiniteBounds HOA)
