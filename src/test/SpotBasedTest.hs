@@ -26,7 +26,7 @@ import System.Process (readProcessWithExitCode)
 -----------------------------------------------------------------------------
 tests :: IO [TestInstance]
 tests = do
-  let seeds = [100 .. 200]
+  let seeds = [1 .. 100]
   let apCounts = [1 .. 10]
   spotTests <- createTests [(s,a) | s <- seeds, a <- apCounts]
   case spotTests of
@@ -120,7 +120,7 @@ createTests seeds = do
   case potHOAList of
     Left err -> return $ Left err
     Right hoas ->
-      return $ Right $ map (\(n, h) -> generateTest h n) $ zip [0 ..] hoas
+      return $ Right $ map (\(n, h) -> generateTest h n) $ zip [1 ..] hoas
   where
     help :: [Either Error String] -> Either Error [String]
     help [] = Right []
