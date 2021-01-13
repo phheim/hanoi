@@ -107,8 +107,8 @@ data HOA =
       atomicPropositions :: Int
     , -- | Name of the atomic proposition
       atomicPropositionName :: AP -> String
-    , -- | Controlable APs, typcally outputs (Syntcomp Extension)
-      controlableAPs :: Set AP
+    , -- | Controllable APs, typically outputs (Syntcomp Extension)
+      controllableAPs :: Set AP
     , -- | Acceptance name
       acceptanceName :: HOAAcceptanceName
     , -- | Number of acceptance sets (the sets can be computed via the type)

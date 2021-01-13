@@ -82,8 +82,8 @@ data HOAHeader =
       atomicPropositions :: Int
     , -- | Name of the atomic proposition
       atomicPropositionName :: Map Int String
-    , -- | Controlable APs, typcally outputs (Syntcomp Extension)
-      controlableAPs :: Set Int
+    , -- | Controllable APs, typically outputs (Syntcomp Extension)
+      controllableAPs :: Set Int
     , -- | Acceptance name
       acceptanceName :: Maybe HOAAcceptanceName
     , -- | Number of acceptance sets

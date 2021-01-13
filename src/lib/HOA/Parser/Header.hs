@@ -82,7 +82,7 @@ headerParser = do
                             initialStates =  S.empty,
                             atomicPropositions = -1,
                             atomicPropositionName = M.empty,
-                            controlableAPs = S.empty,
+                            controllableAPs = S.empty,
                             acceptanceName = Nothing,
                             acceptanceSets = -1,
                             acceptance = fTrue,
@@ -157,10 +157,10 @@ headerParser = do
             prop <- propertiesParser 
             headerItemParser hoa {properties = union (properties hoa) prop}
 
-    capParser hoa = if not $ null $ controlableAPs hoa then errDoubleDef "controllable-AP"
+    capParser hoa = if not $ null $ controllableAPs hoa then errDoubleDef "controllable-AP"
       else do
             caps <- many natParser
-            headerItemParser hoa {controlableAPs = S.fromList caps} 
+            headerItemParser hoa {controllableAPs = S.fromList caps}
 
     endParser hoa = if acceptanceSets hoa == -1 then unexpected "Acceptance missing" 
       else

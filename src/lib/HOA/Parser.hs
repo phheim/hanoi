@@ -78,7 +78,7 @@ hoaParser =
         , atomicPropositions = P.atomicPropositions header
         , atomicPropositionName =
             (!) $ mapKeysMonotonic value $ P.atomicPropositionName header
-        , controlableAPs = S.map value $ P.controlableAPs header
+        , controllableAPs = S.map value $ P.controllableAPs header
         , acceptanceName = fromMaybe Unknown $ P.acceptanceName header
         , acceptanceSets = P.acceptanceSets header
         , acceptance =

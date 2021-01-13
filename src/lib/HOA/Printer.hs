@@ -73,7 +73,7 @@ printHOALines hoa@HOA {..} =
             (concatMap (\e -> printProperty e ++ " ") $ toList properties) ++
             "explicit-labels"
           , "controllable-AP: " ++
-            concatMap (\e -> (strInd e) ++ " ") (toList controlableAPs)
+            concatMap (\e -> (strInd e) ++ " ") (toList controllableAPs)
           , "tool: " ++
             case tool of
               (name, Nothing) -> printString name
