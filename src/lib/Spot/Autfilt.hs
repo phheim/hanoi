@@ -1,6 +1,6 @@
 ----------------------------------------------------------------------------
 -- |
--- Module      :  Autfilt
+-- Module      :  Spot.Autfilt
 -- Maintainer  :  Marvin Stenger 
 --
 -- TODO
