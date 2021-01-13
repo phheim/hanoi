@@ -17,7 +17,8 @@ module HOA.Printer
   ) where
 
 -----------------------------------------------------------------------------
-import Control.Exception (assert)
+
+import Data.Maybe (maybeToList)
 import Data.List as List (sortOn, intercalate)
 import Data.Set as Set (Set, toList)
 import Finite (Finite, FiniteBounds, index, offset, v2t, values)
@@ -47,76 +48,100 @@ printHOA singelLine hoa =
 -- | Converts a HOA to a list of strings (different potential lines)
 printHOALines :: HOA -> [String]
 printHOALines hoa@HOA {..} =
-  let ?bounds = hoa
-   in let startConj =
-            case toList initialStates of
-              [] -> assert False undefined
-              s:sr -> foldl (\a e -> a ++ "&" ++ strInd e) (strInd s) sr
-          apNamesSorted =
-            intercalate "\" \"" $ map atomicPropositionName $ sortOn index values
-          nameAcceptanceCond =
-            printFormula
-              (\case
-                 Fin True s -> "Fin(" ++ strInd s ++ ")"
-                 Fin False s -> "Fin(!" ++ strInd s ++ ")"
-                 Inf True s -> "Inf(" ++ strInd s ++ ")"
-                 Inf False s -> "Inf(!" ++ strInd s ++ ")")
-              acceptance
-       in [ "HOA: v1"
-          , "name: " ++ (printString name)
-          , "States: " ++ show size
-          , "Start: " ++ startConj
-          , "AP: " ++ (show atomicPropositions) ++ " " ++ (printString apNamesSorted)
-          , "Acceptance: " ++ (show acceptanceSets) ++ " " ++ nameAcceptanceCond
-          , "acc-name: " ++ (printAcceptanceName acceptanceName)
-          , "properties: " ++
-            (concatMap (\e -> printProperty e ++ " ") $ toList properties) ++
-            "explicit-labels"
-          , "controllable-AP: " ++
-            concatMap (\e -> (strInd e) ++ " ") (toList controllableAPs)
-          , "tool: " ++
-            case tool of
-              (name, Nothing) -> printString name
-              (name, Just parameter) -> (printString name) ++ " " ++ (printString parameter)
-          , "--BODY--"
-          ] ++
-          (concatMap printState values) ++ ["--END--"]
+  let ?bounds = hoa in
+  let
+    startConj = intercalate "&" $ map strInd $ toList initialStates
+    apNamesSorted = map (quote . atomicPropositionName) $ sortOn index values
+    nameAcceptanceCond =
+        printFormula
+          (\case
+              Fin True s -> "Fin(" ++ strInd s ++ ")"
+              Fin False s -> "Fin(!" ++ strInd s ++ ")"
+              Inf True s -> "Inf(" ++ strInd s ++ ")"
+              Inf False s -> "Inf(!" ++ strInd s ++ ")")
+          acceptance
+  in
+  [ "HOA: v1"
+  , "name: " ++ (quote name)
+  , "States: " ++ show size
+  , "Start: " ++ startConj
+  , "AP: "
+    ++ unwords ((show atomicPropositions) : apNamesSorted)
+  , "Acceptance: " ++ (show acceptanceSets) ++ " " ++ nameAcceptanceCond
+  , "acc-name: " ++ (printAcceptanceName acceptanceName)
+  , "properties: "
+    ++ unwords ("explicit-labels" : (map printProperty $ toList properties))
+  , "controllable-AP: "
+    ++ unwords (map strInd $ toList controllableAPs)
+  , "tool: "
+    ++ case tool of
+        (name, Nothing) -> quote name
+        (name, Just parameter) -> (quote name) ++ " " ++ (quote parameter)
+  ]
+  ++
+  ["--BODY--"]
+  ++
+  concatMap printState values
+  ++
+  ["--END--"]
+
   where
-    printString :: String -> String
-    printString s = "\"" ++ s ++ "\""
     printState :: FiniteBounds HOA => State -> [String]
     printState s =
-      ("State: " ++
-       strInd s ++
-       " " ++
-       (printString (stateName s)) ++
-       case stateAcceptance s of
-         Nothing -> ""
-         Just aSets ->
-           "{" ++ (concatMap (\s -> strInd s ++ " ") (toList aSets)) ++ "}") :
+      ("State: "
+        ++ strInd s
+        ++ " "
+        ++ quote (stateName s)
+        ++ case stateAcceptance s of
+            Nothing -> ""
+            Just aSets ->
+              brCurly $ unwords (map strInd $ toList aSets)
+      )
+      :
       map printEdge (toList $ edges s)
-    --
+
     printEdge ::
-         FiniteBounds HOA
+          FiniteBounds HOA
       => (State, Maybe Label, Maybe (Set AcceptanceSet))
       -> String
-    printEdge =
-      \case
-        (target, Nothing, Nothing) -> strInd target
-        (target, Just label, Nothing) ->
-          printLabel label ++ " " ++ (strInd target)
-        (target, Nothing, Just aSets) ->
-          (strInd target) ++ " " ++ printAccetingSets aSets
-        (target, Just label, Just aSets) ->
-          printLabel label ++
-          " " ++ (strInd target) ++ " " ++ printAccetingSets aSets
-    --
+    printEdge edge =
+      let (target, label, aSets) = edge
+      in
+      unwords . concat $
+        [ maybeToList $ printLabel <$> label
+        , [strInd target]
+        , maybeToList $ printAccetingSets <$> aSets
+        ]
+
     printAccetingSets :: FiniteBounds HOA => AcceptanceSets -> String
     printAccetingSets aSets =
-      "{" ++ (concatMap (\s -> strInd s ++ " ") (toList aSets)) ++ "}"
-    --
+      brCurly $ unwords $ map strInd $ toList aSets
+
     printLabel :: FiniteBounds HOA => Label -> String
-    printLabel label = "[" ++ printFormula strInd label ++ "] "
+    printLabel label = brBox $ printFormula strInd label
+
+-----------------------------------------------------------------------------
+-- | Different library related printing methods
+
+strInd :: (Finite HOA a, FiniteBounds HOA) => a -> String
+strInd a = show (index a - offset (v2t a))
+
+wrap :: String -> String -> String -> String
+wrap prefix suffix s = prefix ++ s ++ suffix
+
+quote :: String -> String
+quote = wrap "\"" "\""
+
+brRound :: String -> String
+brRound = wrap "(" ")"
+
+brBox :: String -> String
+brBox = wrap "[" "]"
+
+brCurly :: String -> String
+brCurly = wrap "{" "}"
+
+
 
 -----------------------------------------------------------------------------
 -- | Converts a HOA property to a string
@@ -161,10 +186,6 @@ printAcceptanceName =
     None -> "none"
     Unknown -> ""
 
------------------------------------------------------------------------------
--- | Different library related printing methods
-strInd :: (Finite HOA a, FiniteBounds HOA) => a -> String
-strInd a = show (index a - offset (v2t a))
 
 printFormula :: (a -> String) -> Formula a -> String
 printFormula showVar = printFormula'
@@ -176,11 +197,9 @@ printFormula showVar = printFormula'
         Var a -> showVar a
         Not f -> "!" ++ printFormula' f
         And fs ->
-          concat $
-          ["("] ++ (addInBetween ") & (" $ fmap printFormula' fs) ++ [")"]
+          intercalate " & " $ fmap (brRound . printFormula') fs
         Or fs ->
-          concat $
-          ["("] ++ (addInBetween ") | (" $ fmap printFormula' fs) ++ [")"]
+          intercalate " | " $ fmap (brRound . printFormula') fs
         Impl f1 f2 ->
           let s1 = printFormula' f1
               s2 = printFormula' f2
@@ -195,7 +214,3 @@ printFormula showVar = printFormula'
               s2 = printFormula' f2
            in "((!(" ++
               s1 ++ ")) & " ++ s2 ++ ") | ((!(" ++ s2 ++ ")) & " ++ s1 ++ ")"
-    --
-    addInBetween _ [] = []
-    addInBetween _ [x] = [x]
-    addInBetween a (x:xr) = x : a : addInBetween a xr
