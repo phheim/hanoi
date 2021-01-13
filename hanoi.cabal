@@ -49,6 +49,7 @@ library
     HOA.Sanitizer
     HOA.Utils
     Spot.Autfilt
+    Spot.Randaut
 
   hs-source-dirs:
     src/lib
