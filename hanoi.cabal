@@ -83,6 +83,7 @@ test-suite default
     HOA.Printer
     HOA.Sanitizer
     Spot.Autfilt
+    Spot.Randaut
 
   hs-source-dirs:
     src/test

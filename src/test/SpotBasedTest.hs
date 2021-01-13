@@ -19,6 +19,7 @@ import Distribution.TestSuite
 
 import Hanoi (parse, printHOA)
 import Spot.Autfilt
+import Spot.Randaut (RandautResult(..), randautCMD)
 
 import System.Directory (findExecutable)
 import System.Process (readProcessWithExitCode)
@@ -39,18 +40,17 @@ tests = do
 type Error = String
 
 -----------------------------------------------------------------------------
--- | Generate a random HOA using spots randAut into given a seed and
+-- | Generate a random HOA using spots randaut into given a seed and
 -- a number of APs
 randHOA :: Int -> Int -> IO (Either Error String)
-randHOA seed apCnt = do
-  let aps = map (\n -> " ap" ++ (show n)) [0 .. (apCnt - 1)]
-  potRandAut <- findExecutable "randaut"
-  case potRandAut of
-    Nothing -> return $ Left "randaut not found"
-    Just randAut -> do
-      (_,hoa,_) <-
-        readProcessWithExitCode randAut (aps ++ ["--seed=" ++ (show seed)]) ""
-      return $ Right hoa
+randHOA seed apCnt =
+  let aps = map (\n -> "ap" ++ (show n)) [0 .. (apCnt - 1)]
+  in
+  randautCMD "" (aps ++ ["--seed=" ++ (show seed)])
+  >>= \case
+    RandautSuccess hoa -> return $ Right hoa
+    RandautFailure err -> return $ Left err
+    RandautException err -> return $ Left err
 
 -----------------------------------------------------------------------------
 -- | Check if a hoa is a valid one according to spot
