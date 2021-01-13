@@ -47,6 +47,7 @@ library
     HOA.Parser.Properties
     HOA.Printer
     HOA.Sanitizer
+    HOA.Utils
     Spot.Autfilt
 
   hs-source-dirs:

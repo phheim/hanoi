@@ -29,6 +29,9 @@ module Hanoi
   , sanitize
   -- Checking
   , checkValidHOA
+  -- Utils
+  , successors
+  , numSuccessors
   ) where
 
 import HOA.Format
@@ -50,6 +53,11 @@ import HOA.Printer (printHOA, printHOALines)
 import HOA.Parser (hoaParser, parse)
 
 import HOA.Sanitizer (complete, sanitize)
+
+import HOA.Utils
+  ( successors
+  , numSuccessors
+  )
 
 import Spot.Autfilt
   ( autfilt
