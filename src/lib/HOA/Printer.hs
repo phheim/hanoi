@@ -40,8 +40,8 @@ printHOA :: Bool -> HOA -> String
 printHOA singelLine hoa =
   let lines = printHOALines hoa
    in if singelLine
-        then concatMap (++ " ") lines
-        else concatMap (++ "\n") lines
+        then unwords lines
+        else unlines lines
 
 -----------------------------------------------------------------------------
 -- | Converts a HOA to a list of strings (different potential lines)
@@ -80,7 +80,7 @@ printHOALines hoa@HOA {..} =
               (name, Just parameter) -> (printString name) ++ " " ++ (printString parameter)
           , "--BODY--"
           ] ++
-          (concat (map printState values)) ++ ["--END--"]
+          (concatMap printState values) ++ ["--END--"]
   where
     printString :: String -> String
     printString s = "\"" ++ s ++ "\""

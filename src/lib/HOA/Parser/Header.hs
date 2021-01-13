@@ -49,7 +49,6 @@ import Control.Monad
 
 import Text.Parsec
   ( (<|>)
-  , sepBy
   , sepBy1
   , many
   , unexpected
@@ -163,8 +162,8 @@ headerParser = do
             caps <- many natParser
             headerItemParser hoa {controlableAPs = S.fromList caps} 
 
-    endParser hoa = if acceptanceSets hoa == -1 then unexpected $ "Acceptance missing" 
-      else do
+    endParser hoa = if acceptanceSets hoa == -1 then unexpected "Acceptance missing" 
+      else
             if atomicPropositions hoa == -1 then return hoa {atomicPropositions = 0}
             else return hoa
 
@@ -178,6 +177,6 @@ versionParser
   :: Parser String 
 
 versionParser =
-  (keyword "HOA:" >> identParser)
+  keyword "HOA:" >> identParser
 
 -----------------------------------------------------------------------------

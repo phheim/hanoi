@@ -258,19 +258,11 @@ instance AutfiltArgument SimplificationLevel where
 
 instance AutfiltArgument AutfiltInput where
   toArgs AutfiltInput{..} =
-    (
-      case trustHOA of
-        False -> ["--trust-hoa=false"]
-        _ -> []
-    )
+    ["--trust-hoa=false"| not trustHOA]
     ++
     (toArgs acceptance)
     ++
-    (
-      case complete of
-        True -> ["--complete"]
-        _ -> []
-    )
+    ["--complete" | complete]
     ++
     (toArgs simplificationGoal)
     ++
@@ -340,25 +332,24 @@ isWeak :: String -> IO (Either String Bool)
 isWeak = checkAutomaton "--is-weak"
 
 checkAutomata :: String -> [String] -> IO (Either String Bool)
-checkAutomata arg hoas = do
-  case hoas of
-    [] -> return $ Left "nothing given to check"
-    [_] -> return $ Right True
-    head:hoas -> do
-      headFile <- writeSystemTempFile "head.hoa" head
-      let args = [arg ++ "=" ++ headFile]
-      results <- mapM (\hoa -> check args hoa) hoas
-      return $
-        foldl1 
-          (\eAcc e ->
-            case eAcc of
-              Left err -> Left err
-              Right bAcc ->
-                case e of
-                  Left err -> Left err
-                  Right b -> Right $ bAcc && b
-          )
-          results
+checkAutomata arg = \case
+  [] -> return $ Left "nothing given to check"
+  [_] -> return $ Right True
+  head:hoas -> do
+    headFile <- writeSystemTempFile "head.hoa" head
+    let args = [arg ++ "=" ++ headFile]
+    results <- mapM (check args) hoas
+    return $
+      foldl1 
+        (\eAcc e ->
+          case eAcc of
+            Left err -> Left err
+            Right bAcc ->
+              case e of
+                Left err -> Left err
+                Right b -> Right $ bAcc && b
+        )
+        results
 
 checkAutomata2 :: String -> String -> String -> IO (Either String Bool)
 checkAutomata2 arg h1 h2 = checkAutomata arg [h1,h2]
@@ -443,14 +434,13 @@ transformStripAcceptance = transformAutomaton "--strip-acceptance"
 
 
 combineAutomata :: String -> [String] -> IO (Either String String)
-combineAutomata param hoas = do
-  case hoas of
-    [] -> return $ Left "nothing given to combine"
-    [hoa] -> return $ Right hoa
-    hoa:hoas -> do
-      hoaFiles <- mapM (writeSystemTempFile ".hoa") hoas
-      let args = map (\file -> param ++ "=" ++ file) hoaFiles
-      transform args hoa
+combineAutomata param = \case
+  [] -> return $ Left "nothing given to combine"
+  [hoa] -> return $ Right hoa
+  hoa:hoas -> do
+    hoaFiles <- mapM (writeSystemTempFile ".hoa") hoas
+    let args = map (\file -> param ++ "=" ++ file) hoaFiles
+    transform args hoa
 
 combineAnd :: [String] -> IO (Either String String)
 combineAnd = combineAutomata "--product"
@@ -460,22 +450,19 @@ combineOr = combineAutomata "--sum"
 
 
 transformExclusiveAPs :: String -> [[String]] -> Bool -> IO (Either String String)
-transformExclusiveAPs hoa apss simplify = do
+transformExclusiveAPs hoa apss simplify =
   let args = 
         (map (\aps -> "--exclusive-ap=" ++ (intercalate "," aps)) apss)
         ++
-        (
-          if simplify
-          then ["--simplify-exclusive-ap"]
-          else []
-        )
+        ["--simplify-exclusive-ap" | simplify]
+  in
   transform args hoa
 
 
 -- remove atomic propositions either by existential
 -- quantification, or by assigning them 0 or 1
 transformRemoveAPs :: String -> [(String,Maybe Bool)] -> IO (Either String String)
-transformRemoveAPs hoa assignments = do
+transformRemoveAPs hoa assignments =
   let param = 
         "--remove-ap="
         ++
@@ -494,6 +481,7 @@ transformRemoveAPs hoa assignments = do
             assignments
             )
         )
+  in
   transformAutomaton param hoa
 
 -- minimize the automaton using a SAT solver
@@ -505,7 +493,7 @@ transformRemoveAPs hoa assignments = do
 -- SATsolver can be set thanks to the SPOT_SATSOLVER
 -- environment variable(see spot-x).
 transformSATMinimize :: String -> Maybe String -> IO (Either String String)
-transformSATMinimize hoa options = do
+transformSATMinimize hoa options =
   let param = 
         "--sat-minimize"
         ++
@@ -514,4 +502,5 @@ transformSATMinimize hoa options = do
             Nothing -> ""
             Just options -> "=" ++ options
         )          
+  in
   transformAutomaton param hoa

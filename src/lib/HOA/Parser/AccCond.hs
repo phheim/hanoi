@@ -52,7 +52,7 @@ accCondParser = expr
     table = [   [binary "&" (\x y -> fAnd [x,y]) AssocLeft],
                 [binary "|" (\x y -> fOr [x,y]) AssocLeft]
             ]
-    binary  name fun assoc = Infix (do{ rOp name; return fun }) assoc
+    binary  name fun = Infix (do{ rOp name; return fun })
     term = parenParser expr
         <|> boolExrp
         <|> setExpr "Fin" Fin
@@ -62,11 +62,11 @@ accCondParser = expr
     falseExpr = do
             _ <- char 'f' 
             (~~)
-            return $ fFalse 
+            return fFalse 
     trueExpr = do
             _ <- char 't' 
             (~~)
-            return $ fTrue 
+            return fTrue 
     setExpr str op = do
             keyword str
             (b, set) <- parenParser condParser

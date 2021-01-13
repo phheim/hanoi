@@ -51,7 +51,7 @@ import Text.ParserCombinators.Parsec.Char
 
 -----------------------------------------------------------------------------
 
-labelExprParser :: (Map String (Formula Int)) -> Parser (Formula Int)
+labelExprParser :: Map String (Formula Int) -> Parser (Formula Int)
 labelExprParser env = expr
   where
     expr = buildExpressionParser table term
@@ -59,8 +59,8 @@ labelExprParser env = expr
                 [binary "&" (\x y -> fAnd [x,y]) AssocLeft],
                 [binary "|" (\x y -> fOr  [x,y]) AssocLeft]
             ]
-    binary  name fun assoc = Infix  (do{ rOp name; return fun }) assoc
-    prefix  name fun       = Prefix (do{ rOp name; return fun })
+    binary  name fun = Infix  (do{ rOp name; return fun })
+    prefix  name fun = Prefix (do{ rOp name; return fun })
     term = parenParser expr
         <|> boolLabel
         <|> intLabel

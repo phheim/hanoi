@@ -36,7 +36,8 @@ import Text.Parsec.String
 -----------------------------------------------------------------------------
 
 propertiesParser :: Parser (Set HOAProperty) 
-propertiesParser = (fmap fromList $ sepBy1 properties (~~))
+propertiesParser =
+  fmap fromList $ sepBy1 properties (~~)
   where
     properties =(keyword "state-labels"     >> return ONLY_STATE_LABELS)  
             <|> (keyword "trans-labels"     >> return ONLY_TRANS_LABELS) 

@@ -66,7 +66,7 @@ import qualified Data.Map.Strict as M
 -- | It takes a the map of Aliases as an environment to parse explicit labels. 
 
 bodyParser
-  :: Int -> (M.Map String (Formula Int)) -> Parser [(Int, (String, Maybe (Formula Int), Maybe (Set Int), Set (Int, Maybe (Formula Int), Maybe (Set Int))))]
+  :: Int -> M.Map String (Formula Int) -> Parser [(Int, (String, Maybe (Formula Int), Maybe (Set Int), Set (Int, Maybe (Formula Int), Maybe (Set Int))))]
 bodyParser numAPs env = do
     states <- many1 stateParser 
     keyword "--END--"
@@ -76,7 +76,7 @@ bodyParser numAPs env = do
     stateParser = do
         (state, mLabel, name, mAccSet) <- stateNameParser
         edges <- many edgeParser
-        if (isNothing mLabel) then do
+        if isNothing mLabel then do
             let representEdges = map head edges
             let implicitLabels = foldr (\(_, l, _) -> (&&) (isNothing l)) True representEdges 
             if implicitLabels then do
@@ -88,7 +88,7 @@ bodyParser numAPs env = do
                 else unexpected $ "Implicit labeled edges should be: " ++ show expectedEdges ++ " but were: " ++ show actualEdges
             else do            
                 let explicitLabels = foldr (\(_, l, _) -> (&&) (isJust l)) True representEdges
-                if (not explicitLabels) then unexpected "Edge Labels inconsitent (some labeled, some not labeled)"
+                if not explicitLabels then unexpected "Edge Labels inconsitent (some labeled, some not labeled)"
                 else return (state, (name, mLabel, mAccSet, S.fromList $ concat edges))
         else return (state, (name, mLabel, mAccSet, S.fromList $ concat edges))
 

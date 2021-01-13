@@ -137,10 +137,10 @@ keyword = void . reserved tokenparser
 -- | Translates Parsing HOAProperties to the HOAProperties of the Format
 --  looses the implicit/explicit label properties,
 --  because after parsing everything is made explicit
-toFormatProperties :: Set HOAProperty -> Set (F.HOAProperty)
+toFormatProperties :: Set HOAProperty -> Set F.HOAProperty
 toFormatProperties = foldl translateProperty empty
 
-translateProperty :: Set (F.HOAProperty) -> HOAProperty -> Set (F.HOAProperty)
+translateProperty :: Set F.HOAProperty -> HOAProperty -> Set F.HOAProperty
 translateProperty s ONLY_STATE_LABELS       = insert F.ONLY_STATE_LABELS     s
 translateProperty s ONLY_TRANS_LABELS       = insert F.ONLY_TRANS_LABELS     s
 translateProperty s PURE_STATE_ACCEPTANCE   = insert F.PURE_STATE_ACCEPTANCE s

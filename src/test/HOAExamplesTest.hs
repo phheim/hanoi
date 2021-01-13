@@ -18,7 +18,7 @@ import SpotBasedTest (generateTest)
 
 -----------------------------------------------------------------------------
 exampleTests :: [TestInstance]
-exampleTests = map (uncurry generateTest) $ zip hoaExamples [2001, 2002, 2003, 2032, 2004, 2005, 2006, 2007, 2008, 2011]
+exampleTests = zipWith generateTest hoaExamples [2001, 2002, 2003, 2032, 2004, 2005, 2006, 2007, 2008, 2011]
 
 
 hoaExamples :: [String]

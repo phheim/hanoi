@@ -87,7 +87,9 @@ wrap :: (String -> Either String b) -> HOA -> Either String b
 wrap f hoa = f (printHOA False hoa)
 
 wrapTransform :: (String -> Either String String) -> HOA -> Either String HOA
-wrapTransform f hoa = (wrap f hoa) >>= parse
+wrapTransform f hoa =
+  wrap f hoa
+  >>= parse
 
 wrapFile :: (String -> Either String b) -> String -> IO (Either String b)
 wrapFile f path = do
@@ -97,7 +99,7 @@ wrapFile f path = do
       let err = show (ex :: IOException)
       return $ Left err
     Right content ->
-      return $ (parse content) >>= (wrap f)
+      return $ parse content >>= wrap f
 
 wrapFileTransform :: (String -> Either String String) -> String -> IO (Either String HOA)
 wrapFileTransform f path = do

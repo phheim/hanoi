@@ -75,7 +75,7 @@ generateTest hoa ind =
                 Left err -> do
                   putStrLn $ "Parser returned with error: " ++ err ++ " on:"
                   putStrLn hoa
-                  return $ Finished $ Fail $ "PARSERBUG"
+                  return $ Finished $ Fail "PARSERBUG"
                 Right parsedHoa -> do
                   let printed = printHOA False parsedHoa
                   valid <- checkValidHOA printed
@@ -89,7 +89,7 @@ generateTest hoa ind =
                       putStrLn hoa
                       putStrLn "Printed:"
                       putStrLn printed
-                      return $ Finished $ Fail $ "PRINTERBUG"
+                      return $ Finished $ Fail "PRINTERBUG"
                     Right Nothing -> do
                       isomorphic <- areIsomorphic2 hoa printed
                       case isomorphic of
@@ -102,7 +102,7 @@ generateTest hoa ind =
                           putStrLn hoa
                           putStrLn "Printed:"
                           putStrLn printed
-                          return $ Finished $ Fail $ "PARSER- or PRINTERBUG"
+                          return $ Finished $ Fail "PARSER- or PRINTERBUG"
                         Right True -> return $ Finished Pass
           , name = "Spot based parser/printer test " ++ (show ind)
           , tags = ["spot", "parser", "printer"]
@@ -115,7 +115,7 @@ generateTest hoa ind =
 -- | Creates a list of test given a seed, atomic proposition list
 createTests :: [(Int, Int)] -> IO (Either Error [TestInstance])
 createTests seeds = do
-  potHOAs <- sequence $ map (\(s, ap) -> randHOA s ap) seeds
+  potHOAs <- mapM (\(s, ap) -> randHOA s ap) seeds
   let potHOAList = help potHOAs
   case potHOAList of
     Left err -> return $ Left err
