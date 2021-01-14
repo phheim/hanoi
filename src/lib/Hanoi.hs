@@ -98,7 +98,7 @@ checkValidHOA hoa = do
 
 
 wrap :: (String -> Either String b) -> HOA -> Either String b
-wrap f hoa = f (printHOA False hoa)
+wrap f hoa = f (printHOA hoa)
 
 wrapTransform :: (String -> Either String String) -> HOA -> Either String HOA
 wrapTransform f hoa =

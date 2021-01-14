@@ -64,12 +64,8 @@ import Sat.Finite
 
 -----------------------------------------------------------------------------
 -- | Converts a HOA to a string
-printHOA :: Bool -> HOA -> String
-printHOA singelLine hoa =
-  let lines = printHOALines hoa
-   in if singelLine
-        then unwords lines
-        else unlines lines
+printHOA :: HOA -> String
+printHOA = unlines . printHOALines
 
 -----------------------------------------------------------------------------
 -- | Converts a HOA to a list of strings (different potential lines)

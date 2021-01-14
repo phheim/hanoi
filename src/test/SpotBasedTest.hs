@@ -88,7 +88,7 @@ generateTest hoa ind =
                   putStrLn hoa
                   return $ Finished $ Fail "PARSERBUG"
                 Right parsedHoa -> do
-                  let printed = printHOA False parsedHoa
+                  let printed = printHOA parsedHoa
                   valid <- checkValidHOA printed
                   case valid of
                     Left err ->
