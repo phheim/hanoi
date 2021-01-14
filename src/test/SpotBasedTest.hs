@@ -1,28 +1,39 @@
 ----------------------------------------------------------------------------
 -- |
 -- Module      :  SpotBasedTest
--- Maintainer  :  Philippe Heim 
+-- Maintainer  :  Philippe Heim
 --
 -- Tests done using spots hoa tools
 --
 -----------------------------------------------------------------------------
-{-# LANGUAGE LambdaCase, RecordWildCards #-}
+{-# LANGUAGE LambdaCase      #-}
+{-# LANGUAGE RecordWildCards #-}
 
 -----------------------------------------------------------------------------
 module SpotBasedTest
-  ( tests
-  , generateTest
+  ( generateTest
+  , tests
   ) where
 
 -----------------------------------------------------------------------------
 import Distribution.TestSuite
 
-import Hanoi (parse, printHOA)
+import Hanoi
+  ( parse
+  , printHOA
+  )
 import Spot.Autfilt
-import Spot.Randaut (RandautResult(..), randautCMD)
+import Spot.Randaut
+  ( RandautResult(..)
+  , randautCMD
+  )
 
-import System.Directory (findExecutable)
-import System.Process (readProcessWithExitCode)
+import System.Directory
+  ( findExecutable
+  )
+import System.Process
+  ( readProcessWithExitCode
+  )
 
 -----------------------------------------------------------------------------
 tests :: IO [TestInstance]
@@ -48,8 +59,8 @@ randHOA seed apCnt =
   in
   randautCMD "" (aps ++ ["--seed=" ++ (show seed)])
   >>= \case
-    RandautSuccess hoa -> return $ Right hoa
-    RandautFailure err -> return $ Left err
+    RandautSuccess hoa   -> return $ Right hoa
+    RandautFailure err   -> return $ Left err
     RandautException err -> return $ Left err
 
 -----------------------------------------------------------------------------
@@ -59,9 +70,9 @@ checkValidHOA hoa = do
   let input = defaultAutfiltInput {automaton = hoa}
   res <- autfilt input
   case res of
-    AutfiltSuccess _ -> return $ Right Nothing
-    AutfiltNoMatch -> return $ Right $ Just "no match"
-    AutfiltFailure err -> return $ Right $ Just err
+    AutfiltSuccess _     -> return $ Right Nothing
+    AutfiltNoMatch       -> return $ Right $ Just "no match"
+    AutfiltFailure err   -> return $ Right $ Just err
     AutfiltException err -> return $ Left err
 
 -----------------------------------------------------------------------------

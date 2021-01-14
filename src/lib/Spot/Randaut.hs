@@ -1,31 +1,34 @@
 ----------------------------------------------------------------------------
 -- |
 -- Module      :  Spot.Randaut
--- Maintainer  :  Marvin Stenger 
+-- Maintainer  :  Marvin Stenger
 --
 -- TODO
 --
 -----------------------------------------------------------------------------
-{-# LANGUAGE 
-    LambdaCase
-  , NamedFieldPuns
-  , RecordWildCards
-  , ImplicitParams
-  , DuplicateRecordFields
-  #-}
+{-# LANGUAGE DuplicateRecordFields #-}
+{-# LANGUAGE ImplicitParams        #-}
+{-# LANGUAGE LambdaCase            #-}
+{-# LANGUAGE NamedFieldPuns        #-}
+{-# LANGUAGE RecordWildCards       #-}
 
 -----------------------------------------------------------------------------
-module Spot.Randaut 
-  (
-    RandautResult(..)
+module Spot.Randaut
+  ( RandautResult(..)
   , randautCMD
   ) where
 
 -----------------------------------------------------------------------------
 
-import System.Directory (findExecutable)
-import System.Process (readProcessWithExitCode)
-import System.Exit (ExitCode(..))
+import System.Directory
+  ( findExecutable
+  )
+import System.Exit
+  ( ExitCode(..)
+  )
+import System.Process
+  ( readProcessWithExitCode
+  )
 
 -----------------------------------------------------------------------------
 data RandautResult =
@@ -45,5 +48,5 @@ randautCMD stdin args =
     Just randaut -> do
       (ec,out,err) <- readProcessWithExitCode randaut args stdin
       case ec of
-        ExitSuccess -> return $ RandautSuccess out
+        ExitSuccess   -> return $ RandautSuccess out
         ExitFailure _ -> return $ RandautFailure err

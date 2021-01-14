@@ -6,18 +6,27 @@
 -- A sanitizer for the HOA format
 --
 -----------------------------------------------------------------------------
-{-# LANGUAGE LambdaCase, FlexibleInstances, MultiParamTypeClasses,
-  DeriveGeneric, TemplateHaskell, RecordWildCards, ImplicitParams #-}
+{-# LANGUAGE DeriveGeneric         #-}
+{-# LANGUAGE FlexibleInstances     #-}
+{-# LANGUAGE ImplicitParams        #-}
+{-# LANGUAGE LambdaCase            #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE RecordWildCards       #-}
+{-# LANGUAGE TemplateHaskell       #-}
 
 -----------------------------------------------------------------------------
 module HOA.Sanitizer
-  ( sanitize
-  , complete
+  ( complete
+  , sanitize
   ) where
 
 -----------------------------------------------------------------------------
-import Data.Maybe (isNothing)
-import Data.Set (insert)
+import Data.Maybe
+  ( isNothing
+  )
+import Data.Set
+  ( insert
+  )
 import Finite
 import HOA.Format
 
@@ -43,12 +52,12 @@ sanitize hoa =
     test _ [] = Nothing
     test aut ((f, Nothing):tr) =
       case f aut of
-        Nothing -> test aut tr
+        Nothing  -> test aut tr
         Just err -> Just err
     test aut ((f, Just prop):tr) =
       if prop `elem` properties aut
         then case f aut of
-               Nothing -> test aut tr
+               Nothing  -> test aut tr
                Just err -> Just err
         else test aut tr
 
@@ -68,7 +77,7 @@ complete hoa =
     add aut ((_, Nothing):xr) = add aut xr
     add aut ((f, Just prop):xr) =
       case f aut of
-        Just _ -> add aut xr -- Note: In this case, the automaton does not fulfill the propoerty
+        Just _  -> add aut xr -- Note: In this case, the automaton does not fulfill the propoerty
         Nothing -> add aut {properties = insert prop (properties aut)} xr
 
 -----------------------------------------------------------------------------

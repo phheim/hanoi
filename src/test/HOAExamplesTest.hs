@@ -14,7 +14,9 @@ module HOAExamplesTest
 -----------------------------------------------------------------------------
 import Distribution.TestSuite
 
-import SpotBasedTest (generateTest)
+import SpotBasedTest
+  ( generateTest
+  )
 
 -----------------------------------------------------------------------------
 exampleTests :: [TestInstance]
@@ -23,7 +25,7 @@ exampleTests = zipWith generateTest hoaExamples [2001, 2002, 2003, 2032, 2004, 2
 
 hoaExamples :: [String]
 hoaExamples =
-  [ unlines -- aut1.hoa 
+  [ unlines -- aut1.hoa
     [ "HOA: v1"
     , "States: 2"
     , "Start: 0"
@@ -38,7 +40,7 @@ hoaExamples =
     , "  [t] 1 {1}"
     , "--END--"
     ]
-   
+
   , unlines -- aut2.hoa
     [ "HOA: v1"
     , "States: 3"

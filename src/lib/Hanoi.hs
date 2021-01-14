@@ -12,11 +12,11 @@ module Hanoi
   , AcceptanceCondition
   , AcceptanceSet
   , AcceptanceType
+  , Formula
   , HOA(..)
   , HOAAcceptanceName(..)
   , HOAProperty(..)
   , Label
-  , Formula
   , State
   -- Parsing
   , hoaParser
@@ -30,8 +30,8 @@ module Hanoi
   -- Checking
   , checkValidHOA
   -- Utils
-  , successors
   , numSuccessors
+  , successors
   ) where
 
 import HOA.Format
@@ -46,30 +46,44 @@ import HOA.Format
   , State
   )
 
-import Sat.Finite (Formula)
+import Sat.Finite
+  ( Formula
+  )
 
-import HOA.Printer (printHOA, printHOALines)
+import HOA.Printer
+  ( printHOA
+  , printHOALines
+  )
 
-import HOA.Parser (hoaParser, parse)
+import HOA.Parser
+  ( hoaParser
+  , parse
+  )
 
-import HOA.Sanitizer (complete, sanitize)
+import HOA.Sanitizer
+  ( complete
+  , sanitize
+  )
 
 import HOA.Utils
-  ( successors
-  , numSuccessors
+  ( numSuccessors
+  , successors
   )
 
 import Spot.Autfilt
-  ( autfilt
-  , AutfiltInput(automaton)
-  , defaultAutfiltInput
+  ( AutfiltInput(automaton)
   , AutfiltResult(..)
+  , autfilt
+  , defaultAutfiltInput
   )
 
-import System.IO (readFile)
 import Control.Exception
   ( IOException
-  , try)
+  , try
+  )
+import System.IO
+  ( readFile
+  )
 
 -- | Check if a hoa is a valid one according to spot
 checkValidHOA :: String -> IO (Either String Bool)
@@ -77,9 +91,9 @@ checkValidHOA hoa = do
   let input = defaultAutfiltInput {automaton = hoa}
   res <- autfilt input
   case res of
-    AutfiltSuccess _ -> return $ Right True
-    AutfiltNoMatch -> return $ Right False
-    AutfiltFailure _ -> return $ Right False
+    AutfiltSuccess _     -> return $ Right True
+    AutfiltNoMatch       -> return $ Right False
+    AutfiltFailure _     -> return $ Right False
     AutfiltException err -> return $ Left err
 
 

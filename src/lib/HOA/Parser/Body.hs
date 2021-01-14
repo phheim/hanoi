@@ -25,28 +25,28 @@ import Sat.Smart
   )
 
 import Data.Bits
-  ( testBit
-  , shiftR
+  ( shiftR
+  , testBit
   )
 
 import Data.Maybe
-  ( isJust
+  ( Maybe(..)
+  , isJust
   , isNothing
-  , Maybe(..) 
   )
 
 import Data.Set as S
-  ( fromList
-  , Set
+  ( Set
+  , fromList
   )
 
 import Text.Parsec
-  ( sepBy1
-  , many
+  ( many
   , many1
-  , unexpected
   , option
   , optionMaybe
+  , sepBy1
+  , unexpected
   )
 
 import Text.Parsec.String
@@ -63,30 +63,30 @@ import qualified Data.Map.Strict as M
 
 -----------------------------------------------------------------------------
 -- | The body parser takes the number of atomic propositions to parse implicitly labeled edges.
--- | It takes a the map of Aliases as an environment to parse explicit labels. 
+-- | It takes a the map of Aliases as an environment to parse explicit labels.
 
 bodyParser
   :: Int -> M.Map String (Formula Int) -> Parser [(Int, (String, Maybe (Formula Int), Maybe (Set Int), Set (Int, Maybe (Formula Int), Maybe (Set Int))))]
 bodyParser numAPs env = do
-    states <- many1 stateParser 
+    states <- many1 stateParser
     keyword "--END--"
-    return states 
+    return states
   where
-    stateParser :: Parser (Int, (String, Maybe (Formula Int), Maybe (Set Int), Set (Int, Maybe (Formula Int), Maybe (Set Int)))) 
+    stateParser :: Parser (Int, (String, Maybe (Formula Int), Maybe (Set Int), Set (Int, Maybe (Formula Int), Maybe (Set Int))))
     stateParser = do
         (state, mLabel, name, mAccSet) <- stateNameParser
         edges <- many edgeParser
         if isNothing mLabel then do
             let representEdges = map head edges
-            let implicitLabels = foldr (\(_, l, _) -> (&&) (isNothing l)) True representEdges 
+            let implicitLabels = foldr (\(_, l, _) -> (&&) (isNothing l)) True representEdges
             if implicitLabels then do
                 let expectedEdges = 2^numAPs
-                let actualEdges = length representEdges 
+                let actualEdges = length representEdges
                 if  expectedEdges == actualEdges then do
                     let labeledEdges = map (\(n, xs) -> map (\(s, _, mA) -> (s, Just $ implicitLabel numAPs n, mA)) xs) $ zip [0..] edges
                     return (state, (name, mLabel, mAccSet, S.fromList $ concat labeledEdges))
                 else unexpected $ "Implicit labeled edges should be: " ++ show expectedEdges ++ " but were: " ++ show actualEdges
-            else do            
+            else do
                 let explicitLabels = foldr (\(_, l, _) -> (&&) (isJust l)) True representEdges
                 if not explicitLabels then unexpected "Edge Labels inconsitent (some labeled, some not labeled)"
                 else return (state, (name, mLabel, mAccSet, S.fromList $ concat edges))
@@ -116,11 +116,11 @@ bodyParser numAPs env = do
         return $ S.fromList nats
 
     labelParser = labelExprParser env
-  
-    -- creates a label with numAP many atomic propositions and binary valuation according to n 
-    implicitLabel :: Int -> Int -> Formula Int 
-    implicitLabel numAP n = fAnd $ map props $ take numAP $ zip [0..] $ bits n 
-   
+
+    -- creates a label with numAP many atomic propositions and binary valuation according to n
+    implicitLabel :: Int -> Int -> Formula Int
+    implicitLabel numAP n = fAnd $ map props $ take numAP $ zip [0..] $ bits n
+
     props :: (Int, Bool) -> Formula Int
     props (n, True)  = fVar n
     props (n, False) = fNot $ fVar n

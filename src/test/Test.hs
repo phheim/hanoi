@@ -6,7 +6,8 @@
 -- Standard TestSuite.
 --
 -----------------------------------------------------------------------------
-{-# LANGUAGE LambdaCase, RecordWildCards #-}
+{-# LANGUAGE LambdaCase      #-}
+{-# LANGUAGE RecordWildCards #-}
 
 -----------------------------------------------------------------------------
 module Test
@@ -16,8 +17,12 @@ module Test
 -----------------------------------------------------------------------------
 import Distribution.TestSuite
 
-import SpotBasedTest (tests)
-import HOAExamplesTest (exampleTests)
+import HOAExamplesTest
+  ( exampleTests
+  )
+import SpotBasedTest
+  ( tests
+  )
 
 -----------------------------------------------------------------------------
 -- | The Tests

@@ -31,14 +31,14 @@ import Data.Map.Strict as M
   )
 
 import Text.Parsec
-  ( (<|>)
-  , unexpected
+  ( unexpected
+  , (<|>)
   )
 
 import Text.Parsec.Expr
-  ( buildExpressionParser
+  ( Assoc(..)
   , Operator(..)
-  , Assoc(..)
+  , buildExpressionParser
   )
 
 import Text.Parsec.String
@@ -67,19 +67,19 @@ labelExprParser env = expr
         <|> stringLabel
     boolLabel = falseLabel <|> trueLabel
     falseLabel = do
-            _ <- char 'f' 
+            _ <- char 'f'
             (~~)
-            return fFalse 
+            return fFalse
     trueLabel = do
-            _ <- char 't' 
+            _ <- char 't'
             (~~)
-            return fTrue 
+            return fTrue
     intLabel = do
             num <- natParser
             return $ fVar num
     stringLabel = do
-            _ <- char '@' 
+            _ <- char '@'
             id <- identParser
-            case M.lookup id env of 
+            case M.lookup id env of
                 Just expr -> return expr
                 Nothing   -> unexpected $ "@"++id++ " undefined"

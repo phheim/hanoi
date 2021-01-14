@@ -6,9 +6,14 @@
 -- Prints the internal HOA format
 --
 -----------------------------------------------------------------------------
-{-# LANGUAGE LambdaCase, FlexibleInstances, MultiParamTypeClasses,
-  DeriveGeneric, TemplateHaskell, RecordWildCards, FlexibleContexts,
-  ImplicitParams #-}
+{-# LANGUAGE DeriveGeneric         #-}
+{-# LANGUAGE FlexibleContexts      #-}
+{-# LANGUAGE FlexibleInstances     #-}
+{-# LANGUAGE ImplicitParams        #-}
+{-# LANGUAGE LambdaCase            #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE RecordWildCards       #-}
+{-# LANGUAGE TemplateHaskell       #-}
 
 -----------------------------------------------------------------------------
 module HOA.Printer
@@ -18,10 +23,25 @@ module HOA.Printer
 
 -----------------------------------------------------------------------------
 
-import Data.Maybe (maybeToList)
-import Data.List as List (sortOn, intercalate)
-import Data.Set as Set (Set, toList)
-import Finite (Finite, FiniteBounds, index, offset, v2t, values)
+import Data.List as List
+  ( intercalate
+  , sortOn
+  )
+import Data.Maybe
+  ( maybeToList
+  )
+import Data.Set as Set
+  ( Set
+  , toList
+  )
+import Finite
+  ( Finite
+  , FiniteBounds
+  , index
+  , offset
+  , v2t
+  , values
+  )
 import HOA.Format
   ( AcceptanceSet
   , AcceptanceSets
@@ -32,8 +52,13 @@ import HOA.Format
   , Label
   , State
   )
-import Sat.Finite (FormulaView(..))
-import Sat.Finite (Formula, view)
+import Sat.Finite
+  ( FormulaView(..)
+  )
+import Sat.Finite
+  ( Formula
+  , view
+  )
 
 -----------------------------------------------------------------------------
 -- | Converts a HOA to a string
@@ -55,9 +80,9 @@ printHOALines hoa@HOA {..} =
     nameAcceptanceCond =
         printFormula
           (\case
-              Fin True s -> "Fin(" ++ strInd s ++ ")"
+              Fin True s  -> "Fin(" ++ strInd s ++ ")"
               Fin False s -> "Fin(!" ++ strInd s ++ ")"
-              Inf True s -> "Inf(" ++ strInd s ++ ")"
+              Inf True s  -> "Inf(" ++ strInd s ++ ")"
               Inf False s -> "Inf(!" ++ strInd s ++ ")")
           acceptance
   in
@@ -75,7 +100,7 @@ printHOALines hoa@HOA {..} =
     ++ unwords (map strInd $ toList controllableAPs)
   , "tool: "
     ++ case tool of
-        (name, Nothing) -> quote name
+        (name, Nothing)        -> quote name
         (name, Just parameter) -> (quote name) ++ " " ++ (quote parameter)
   ]
   ++
@@ -148,22 +173,22 @@ brCurly = wrap "{" "}"
 printProperty :: HOAProperty -> String
 printProperty =
   \case
-    ONLY_STATE_LABELS -> "state-labels"
-    ONLY_TRANS_LABELS -> "trans-labels"
+    ONLY_STATE_LABELS     -> "state-labels"
+    ONLY_TRANS_LABELS     -> "trans-labels"
     PURE_STATE_ACCEPTANCE -> "state-acc"
     PURE_TRANS_ACCEPTRACE -> "trans-acc"
-    UNIV_BRANCHING -> "univ-branc"
-    NO_UNIV_BRANCHING -> "no-univ-branch"
-    DETERMINISTIC -> "deterministic"
-    COMPLETE -> "complete"
-    UNAMBIGOUS -> "unambiguous"
-    STUTTER_INVARIANT -> "stutter-invariant"
-    WEAK -> "weak"
-    VERY_WEAK -> "very-weak"
-    INHERENTLY_WEAK -> "inherently-weak"
-    TERMINAL -> "terminal"
-    TIGHT -> "tight"
-    COLORED -> "colored"
+    UNIV_BRANCHING        -> "univ-branc"
+    NO_UNIV_BRANCHING     -> "no-univ-branch"
+    DETERMINISTIC         -> "deterministic"
+    COMPLETE              -> "complete"
+    UNAMBIGOUS            -> "unambiguous"
+    STUTTER_INVARIANT     -> "stutter-invariant"
+    WEAK                  -> "weak"
+    VERY_WEAK             -> "very-weak"
+    INHERENTLY_WEAK       -> "inherently-weak"
+    TERMINAL              -> "terminal"
+    TIGHT                 -> "tight"
+    COLORED               -> "colored"
 
 -----------------------------------------------------------------------------
 -- | Converts a HOA acceptance name to a string
@@ -178,13 +203,13 @@ printAcceptanceName =
     Rabin n -> "Rabin " ++ (show n)
     GeneralizedRabin a b c ->
       "generalized-Rabin " ++ (show a) ++ " " ++ (show b) ++ " " ++ (show c)
-    ParityMinOdd n -> "parity min odd " ++ (show n)
-    ParityMaxOdd n -> "parity max odd " ++ (show n)
+    ParityMinOdd n  -> "parity min odd " ++ (show n)
+    ParityMaxOdd n  -> "parity max odd " ++ (show n)
     ParityMinEven n -> "parity min even " ++ (show n)
     ParityMaxEven n -> "parity max even " ++ (show n)
-    All -> "all"
-    None -> "none"
-    Unknown -> ""
+    All             -> "all"
+    None            -> "none"
+    Unknown         -> ""
 
 
 printFormula :: (a -> String) -> Formula a -> String

@@ -33,14 +33,14 @@ import Sat.Smart
   )
 
 import Data.Maybe
-  ( isJust
-  , Maybe(..) 
+  ( Maybe(..)
+  , isJust
   )
 
 import Data.Set as S
-  ( union
+  ( empty
   , fromList
-  , empty 
+  , union
   )
 
 import Control.Monad
@@ -48,11 +48,11 @@ import Control.Monad
   )
 
 import Text.Parsec
-  ( (<|>)
-  , sepBy1
-  , many
-  , unexpected
+  ( many
   , optionMaybe
+  , sepBy1
+  , unexpected
+  , (<|>)
   )
 
 import Text.Parsec.String
@@ -65,15 +65,15 @@ import Text.ParserCombinators.Parsec.Char
 
 import Data.Map.Strict as M
   ( empty
+  , fromAscList
   , insert
   , member
-  , fromAscList
   )
 
 -----------------------------------------------------------------------------
 
 headerParser
-  :: Parser HOAHeader 
+  :: Parser HOAHeader
 
 headerParser = do
     version <- versionParser
@@ -90,12 +90,12 @@ headerParser = do
                             name = "",
                             properties = S.empty,
                             aliases = M.empty}
-  
+
   where
     -- recursive parser: all parsers called, except endParser, call headerItemParser again
-    -- (after parsing their section and adding it to hoa) 
+    -- (after parsing their section and adding it to hoa)
     -- this is necessary because there is no fixed order for the header-items
-    headerItemParser hoa = 
+    headerItemParser hoa =
           do {keyword "States:"; statesParser hoa}
       <|> do {keyword "Start:"; startParser hoa}
       <|> do {keyword "AP:"; apParser hoa}
@@ -109,29 +109,29 @@ headerParser = do
       <|> do {keyword "--BODY--"; endParser hoa}
 
     statesParser hoa = if size hoa /= 0 then errDoubleDef "States"
-      else do 
+      else do
         num <- natParser
         headerItemParser hoa{size = num}
 
-    startParser hoa = do 
+    startParser hoa = do
         states <- sepBy1 natParser (do {_ <- char '&'; (~~)})
         headerItemParser hoa{initialStates = union (initialStates hoa) $ S.fromList states}
 
-    apParser hoa = if atomicPropositions hoa /= -1 then errDoubleDef "AP" 
+    apParser hoa = if atomicPropositions hoa /= -1 then errDoubleDef "AP"
       else do
         num <- natParser;
         aps <- many stringParser
         if num /= length aps then unexpected "number of APs did not match actual APs"
-        else headerItemParser hoa{atomicPropositions = num, atomicPropositionName = M.fromAscList $ zip [0..] aps} 
+        else headerItemParser hoa{atomicPropositions = num, atomicPropositionName = M.fromAscList $ zip [0..] aps}
 
-    aliasParser hoa = do 
-            _ <- char '@' 
+    aliasParser hoa = do
+            _ <- char '@'
             id <- identParser
             expr <- labelExprParser (aliases hoa)
             if M.member id $ aliases hoa then errDoubleDef $ "alias " ++ id
             else headerItemParser hoa{aliases = M.insert id expr (aliases hoa) }
 
-    acceptParser hoa = if acceptanceSets hoa /= -1 then errDoubleDef "Acceptance"   
+    acceptParser hoa = if acceptanceSets hoa /= -1 then errDoubleDef "Acceptance"
       else do
             nat <- natParser
             acc <- accCondParser
@@ -146,7 +146,7 @@ headerParser = do
       else do
             str <- stringParser;
             mStr <- optionMaybe stringParser;
-            headerItemParser hoa {tool = (str, mStr)} 
+            headerItemParser hoa {tool = (str, mStr)}
 
     nameParser hoa = if name hoa /= "" then errDoubleDef "name"
       else do
@@ -154,7 +154,7 @@ headerParser = do
             headerItemParser hoa {name = str}
 
     propParser hoa = do
-            prop <- propertiesParser 
+            prop <- propertiesParser
             headerItemParser hoa {properties = union (properties hoa) prop}
 
     capParser hoa = if not $ null $ controllableAPs hoa then errDoubleDef "controllable-AP"
@@ -162,19 +162,19 @@ headerParser = do
             caps <- many natParser
             headerItemParser hoa {controllableAPs = S.fromList caps}
 
-    endParser hoa = if acceptanceSets hoa == -1 then unexpected "Acceptance missing" 
+    endParser hoa = if acceptanceSets hoa == -1 then unexpected "Acceptance missing"
       else
             if atomicPropositions hoa == -1 then return hoa {atomicPropositions = 0}
             else return hoa
 
-    errDoubleDef str = 
+    errDoubleDef str =
       unexpected $
-      str ++ " (already defined)" 
+      str ++ " (already defined)"
 
 -----------------------------------------------------------------------------
 
 versionParser
-  :: Parser String 
+  :: Parser String
 
 versionParser =
   keyword "HOA:" >> identParser

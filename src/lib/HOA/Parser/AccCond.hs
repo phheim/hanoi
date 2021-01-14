@@ -29,8 +29,8 @@ import Sat.Smart
   )
 
 import Text.Parsec
-  ( (<|>)
-  , option
+  ( option
+  , (<|>)
   )
 
 import Text.Parsec.Expr
@@ -60,13 +60,13 @@ accCondParser = expr
 
     boolExrp = falseExpr <|> trueExpr
     falseExpr = do
-            _ <- char 'f' 
+            _ <- char 'f'
             (~~)
-            return fFalse 
+            return fFalse
     trueExpr = do
-            _ <- char 't' 
+            _ <- char 't'
             (~~)
-            return fTrue 
+            return fTrue
     setExpr str op = do
             keyword str
             (b, set) <- parenParser condParser

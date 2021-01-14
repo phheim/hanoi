@@ -1,18 +1,16 @@
 ----------------------------------------------------------------------------
 -- |
 -- Module      :  HOA.Utils
--- Maintainer  :  Marvin Stenger 
+-- Maintainer  :  Marvin Stenger
 --
 -- TODO
 --
 -----------------------------------------------------------------------------
-{-# LANGUAGE 
-    LambdaCase
-  , NamedFieldPuns
-  , RecordWildCards
-  , ImplicitParams
-  , DuplicateRecordFields
-  #-}
+{-# LANGUAGE DuplicateRecordFields #-}
+{-# LANGUAGE ImplicitParams        #-}
+{-# LANGUAGE LambdaCase            #-}
+{-# LANGUAGE NamedFieldPuns        #-}
+{-# LANGUAGE RecordWildCards       #-}
 
 -----------------------------------------------------------------------------
 
@@ -26,7 +24,9 @@ import HOA.Format
   , State
   )
 
-import Data.Set (Set)
+import Data.Set
+  ( Set
+  )
 import qualified Data.Set as Set
 
 -----------------------------------------------------------------------------

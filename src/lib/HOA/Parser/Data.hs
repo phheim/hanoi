@@ -8,25 +8,25 @@
 -----------------------------------------------------------------------------
 
 module HOA.Parser.Data
-  ( globalDef
+  ( AcceptanceType(..)
   , HOAHeader(..)
   , HOAProperty(..)
-  , AcceptanceType(..)
+  , globalDef
   ) where
 
 -----------------------------------------------------------------------------
 
 import Text.Parsec
-  ( (<|>)
+  ( alphaNum
   , char
   , letter
-  , alphaNum
   , oneOf
+  , (<|>)
   )
 
 import Text.Parsec.Token
-  ( LanguageDef
-  , GenLanguageDef(..)
+  ( GenLanguageDef(..)
+  , LanguageDef
   )
 
 import Text.Parsec.Language
@@ -78,7 +78,7 @@ data HOAHeader =
       size :: Int
     , -- | Set of initial states
       initialStates :: Set Int
-    , -- | Number of atomic propositions 
+    , -- | Number of atomic propositions
       atomicPropositions :: Int
     , -- | Name of the atomic proposition
       atomicPropositionName :: Map Int String

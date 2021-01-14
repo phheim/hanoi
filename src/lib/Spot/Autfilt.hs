@@ -1,23 +1,20 @@
 ----------------------------------------------------------------------------
 -- |
 -- Module      :  Spot.Autfilt
--- Maintainer  :  Marvin Stenger 
+-- Maintainer  :  Marvin Stenger
 --
 -- TODO
 --
 -----------------------------------------------------------------------------
-{-# LANGUAGE 
-    LambdaCase
-  , NamedFieldPuns
-  , RecordWildCards
-  , ImplicitParams
-  , DuplicateRecordFields
-  #-}
+{-# LANGUAGE DuplicateRecordFields #-}
+{-# LANGUAGE ImplicitParams        #-}
+{-# LANGUAGE LambdaCase            #-}
+{-# LANGUAGE NamedFieldPuns        #-}
+{-# LANGUAGE RecordWildCards       #-}
 
 -----------------------------------------------------------------------------
 module Spot.Autfilt 
-  (
-    AutfiltResult(..)
+  ( AutfiltResult(..)
   , StateBasedAcceptance(..)
   , Parity(..)
   , Acceptance(..)
@@ -71,12 +68,22 @@ module Spot.Autfilt
 
 -----------------------------------------------------------------------------
 
-import System.Directory (findExecutable)
-import System.IO.Temp (writeSystemTempFile)
-import System.Process (readProcessWithExitCode)
-import System.Exit (ExitCode(..))
+import System.Directory
+  ( findExecutable
+  )
+import System.Exit
+  ( ExitCode(..)
+  )
+import System.IO.Temp
+  ( writeSystemTempFile
+  )
+import System.Process
+  ( readProcessWithExitCode
+  )
 
-import Data.List (intercalate)
+import Data.List
+  ( intercalate
+  )
 
 -----------------------------------------------------------------------------
 data AutfiltResult =
@@ -96,7 +103,7 @@ autfiltCMD stdin args = do
     Just autfilt -> do
       (ec,out,err) <- readProcessWithExitCode autfilt args stdin
       case ec of
-        ExitSuccess -> return $ AutfiltSuccess out
+        ExitSuccess   -> return $ AutfiltSuccess out
         ExitFailure 1 -> return AutfiltNoMatch
         ExitFailure _ -> return $ AutfiltFailure err
 
@@ -104,7 +111,7 @@ autfiltCMD stdin args = do
 -----------------------------------------------------------------------------
 -- | TODO
 data StateBasedAcceptance =
-    StateBasedAcceptance       -- ^ state-based Automaton 
+    StateBasedAcceptance       -- ^ state-based Automaton
   | TransitionBasedAcceptance  -- ^ transition-based Automaton (default)
   deriving (Show)
 
@@ -137,7 +144,7 @@ data Acceptance =
 
 -----------------------------------------------------------------------------
 -- | TODO
-data SimplificationGoal = 
+data SimplificationGoal =
     SimplificationGoalDefault
   | SimplificationGoalAny            -- ^ no preference, do not bother making it small or deterministic
   | SimplificationGoalDeterministic  -- ^ prefer deterministic automata (combine with generic to be sure to obtain a deterministic automaton)
@@ -146,7 +153,7 @@ data SimplificationGoal =
 
 -----------------------------------------------------------------------------
 -- | TODO
-data SimplificationLevel = 
+data SimplificationLevel =
     SimplificationLevelDefault
   | SimplificationLevelHigh    -- ^ all available optimizations
   | SimplificationLevelMedium  -- ^ moderate optimizations
@@ -158,10 +165,10 @@ data SimplificationLevel =
 data AutfiltInput =
   AutfiltInput
     { -- | process the automaton
-      automaton :: String 
+      automaton :: String
 
     , -- |  If false, properties listed in HOA files are ignored, unless they can be easily verified.  If true (the default) any supported property is trusted.
-      trustHOA :: Bool     
+      trustHOA :: Bool
 
     , -- | output automaton acceptance
       acceptance :: Acceptance
@@ -186,7 +193,7 @@ data AutfiltInput =
 defaultAutfiltInput :: AutfiltInput
 defaultAutfiltInput =
   AutfiltInput
-    { automaton           = "" 
+    { automaton           = ""
     , trustHOA            = True
     , acceptance          = AcceptanceDefault
     , complete            = False
@@ -222,39 +229,39 @@ instance AutfiltArgument Acceptance where
     AcceptanceBuchi -> ["--ba"]
     AcceptanceCoBuchi{..} ->
       let args = ["--cobuchi"] in
-      case acceptance of 
+      case acceptance of
         StateBasedAcceptance -> args ++ ["--state-based-acceptance"]
-        _ -> args
+        _                    -> args
     AcceptanceMonitor{..} ->
       let args = ["--monitor"] in
-      case acceptance of 
+      case acceptance of
         StateBasedAcceptance -> args ++ ["--state-based-acceptance"]
-        _ -> args
+        _                    -> args
     AcceptanceParity{..} ->
       let args = ["--parity=" ++ (toString parity)] in
-      case acceptance of 
+      case acceptance of
         StateBasedAcceptance -> args ++ ["--state-based-acceptance"]
-        _ -> args
+        _                    -> args
     AcceptanceColoredParity{..} ->
       let args = ["--colored-parity=" ++ (toString parity)] in
-      case acceptance of 
+      case acceptance of
         StateBasedAcceptance -> args ++ ["--state-based-acceptance"]
-        _ -> args
+        _                    -> args
     AcceptanceTGBA -> ["--tgba"]
 
-instance AutfiltArgument SimplificationGoal where 
+instance AutfiltArgument SimplificationGoal where
   toArgs s = case s of
     SimplificationGoalDefault       -> []
     SimplificationGoalAny           -> ["--any"]
     SimplificationGoalDeterministic -> ["--deterministic"]
     SimplificationGoalSmall         -> ["--small"]
 
-instance AutfiltArgument SimplificationLevel where 
+instance AutfiltArgument SimplificationLevel where
   toArgs s = case s of
-    SimplificationLevelDefault  -> []
-    SimplificationLevelHigh     -> ["--high"]
-    SimplificationLevelMedium   -> ["--medium"]
-    SimplificationLevelLow      -> ["--low"]
+    SimplificationLevelDefault -> []
+    SimplificationLevelHigh    -> ["--high"]
+    SimplificationLevelMedium  -> ["--medium"]
+    SimplificationLevelLow     -> ["--low"]
 
 instance AutfiltArgument AutfiltInput where
   toArgs AutfiltInput{..} =
@@ -281,9 +288,9 @@ check :: [String] -> String -> IO (Either String Bool)
 check args hoa = do
   res <- autfiltCMD hoa args
   case res of
-    AutfiltSuccess _ -> return $ Right True
-    AutfiltNoMatch -> return $ Right False
-    AutfiltFailure err -> return $ Left err
+    AutfiltSuccess _     -> return $ Right True
+    AutfiltNoMatch       -> return $ Right False
+    AutfiltFailure err   -> return $ Left err
     AutfiltException err -> return $ Left err
 
 checkAutomaton :: String -> String -> IO (Either String Bool)
@@ -300,7 +307,7 @@ isAlternating = checkAutomaton "--is-alternating"
 
 isColored :: String -> IO (Either String Bool)
 isColored = checkAutomaton "--is-colored"
- 
+
 isComplete :: String -> IO (Either String Bool)
 isComplete = checkAutomaton "--is-complete"
 
@@ -340,14 +347,14 @@ checkAutomata arg = \case
     let args = [arg ++ "=" ++ headFile]
     results <- mapM (check args) hoas
     return $
-      foldl1 
+      foldl1
         (\eAcc e ->
           case eAcc of
             Left err -> Left err
             Right bAcc ->
               case e of
                 Left err -> Left err
-                Right b -> Right $ bAcc && b
+                Right b  -> Right $ bAcc && b
         )
         results
 
@@ -451,7 +458,7 @@ combineOr = combineAutomata "--sum"
 
 transformExclusiveAPs :: String -> [[String]] -> Bool -> IO (Either String String)
 transformExclusiveAPs hoa apss simplify =
-  let args = 
+  let args =
         (map (\aps -> "--exclusive-ap=" ++ (intercalate "," aps)) apss)
         ++
         ["--simplify-exclusive-ap" | simplify]
@@ -463,11 +470,11 @@ transformExclusiveAPs hoa apss simplify =
 -- quantification, or by assigning them 0 or 1
 transformRemoveAPs :: String -> [(String,Maybe Bool)] -> IO (Either String String)
 transformRemoveAPs hoa assignments =
-  let param = 
+  let param =
         "--remove-ap="
         ++
         (
-          intercalate "," (map 
+          intercalate "," (map
               (\(ap,v) ->
                 ap
                 ++
@@ -476,7 +483,7 @@ transformRemoveAPs hoa assignments =
                     Nothing    -> ""
                     Just False -> "=0"
                     Just True  -> "=1"
-                ) 
+                )
               )
             assignments
             )
@@ -494,13 +501,13 @@ transformRemoveAPs hoa assignments =
 -- environment variable(see spot-x).
 transformSATMinimize :: String -> Maybe String -> IO (Either String String)
 transformSATMinimize hoa options =
-  let param = 
+  let param =
         "--sat-minimize"
         ++
         (
           case options of
-            Nothing -> ""
+            Nothing      -> ""
             Just options -> "=" ++ options
-        )          
+        )
   in
   transformAutomaton param hoa
