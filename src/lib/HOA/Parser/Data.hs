@@ -90,10 +90,10 @@ data HOAHeader =
       acceptanceSets :: Int
     , -- | Acceptance condition
       acceptance :: Formula AcceptanceType
-    , -- | Tool name (might be empty)
-      tool :: (String, Maybe String)
+    , -- | Tool name, parameters
+      tool :: Maybe (String, Maybe String)
     , -- | Automaton name
-      name :: String
+      name :: Maybe String
     , -- | Properties
       properties :: Set HOAProperty
     , -- | Aliases

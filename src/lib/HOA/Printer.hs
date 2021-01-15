@@ -32,6 +32,7 @@ import Data.Maybe
   )
 import Data.Set as Set
   ( Set
+  , toAscList
   , toList
   )
 import Finite
@@ -75,7 +76,6 @@ printHOALines :: HOA -> [String]
 printHOALines hoa@HOA {..} =
   let ?bounds = hoa in
   let
-    startConj = intercalate "&" $ map strInd $ toList initialStates
     apNamesSorted = map (quote . atomicPropositionName) $ sortOn index values
     nameAcceptanceCond =
         printFormula
@@ -86,23 +86,44 @@ printHOALines hoa@HOA {..} =
               Inf False s -> "Inf(!" ++ strInd s ++ ")")
           acceptance
   in
-  [ "HOA: v1"
-  , "name: " ++ (quote name)
-  , "States: " ++ show size
-  , "Start: " ++ startConj
-  , "AP: "
-    ++ unwords ((show atomicPropositions) : apNamesSorted)
-  , "Acceptance: " ++ (show acceptanceSets) ++ " " ++ nameAcceptanceCond
-  , "acc-name: " ++ (printAcceptanceName acceptanceName)
-  , "properties: "
-    ++ unwords ("explicit-labels" : (map printProperty $ toList properties))
-  , "controllable-AP: "
-    ++ unwords (map strInd $ toList controllableAPs)
-  , "tool: "
-    ++ case tool of
-        (name, Nothing)        -> quote name
-        (name, Just parameter) -> (quote name) ++ " " ++ (quote parameter)
-  ]
+  [ "HOA: v1" ]
+  ++
+  -- name
+  (case name of
+    Just name -> ["name: " ++ quote name]
+    Nothing   -> []
+  )
+  ++
+  -- Start
+  ((("Start: " ++ ) . strInd) <$> (toAscList initialStates))
+  ++
+  -- acc-name
+  (case acceptanceName of
+    Just acceptanceName -> ["acc-name: " ++ (printAcceptanceName acceptanceName)]
+    Nothing -> []
+  )
+  ++
+  -- Acceptance
+  ["Acceptance: " ++ (show acceptanceSets) ++ " " ++ nameAcceptanceCond]
+  ++
+  -- AP
+  ["AP: " ++ unwords ((show atomicPropositions) : apNamesSorted)]
+  ++
+  -- controllable-AP
+  (if not $ null controllableAPs
+    then ["controllable-AP: " ++ unwords (map strInd $ toList controllableAPs)]
+    else []
+  )
+  ++
+  -- properties
+  [ "properties: " ++ unwords ("explicit-labels" : (map printProperty $ toList properties)) ]
+  ++
+  -- tool
+  (case tool of
+    Just (tool, Nothing)    -> ["tool: " ++ tool]
+    Just (tool, Just param) -> ["tool: " ++ tool ++ " " ++ param]
+    Nothing                 -> []
+  )
   ++
   ["--BODY--"]
   ++
@@ -113,17 +134,20 @@ printHOALines hoa@HOA {..} =
   where
     printState :: FiniteBounds HOA => State -> [String]
     printState s =
-      ("State: "
-        ++ strInd s
-        ++ " "
-        ++ quote (stateName s)
-        ++ case stateAcceptance s of
-            Nothing -> ""
-            Just aSets ->
-              brCurly $ unwords (map strInd $ toList aSets)
+      (unwords $
+        ["State:"]
+        ++
+        [strInd s]
+        ++
+        (maybeToList $ quote <$> stateName s)
+        ++
+        (case stateAcceptance s of
+          Just aSets -> [brCurly $ unwords (map strInd $ toAscList aSets)]
+          Nothing    -> []
+        )
       )
       :
-      map printEdge (toList $ edges s)
+      map (("  " ++) . printEdge) (toList $ edges s)
 
     printEdge ::
           FiniteBounds HOA
@@ -209,7 +233,6 @@ printAcceptanceName =
     ParityMaxEven n -> "parity max even " ++ (show n)
     All             -> "all"
     None            -> "none"
-    Unknown         -> ""
 
 
 printFormula :: (a -> String) -> Formula a -> String

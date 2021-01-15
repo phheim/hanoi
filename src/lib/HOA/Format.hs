@@ -86,7 +86,6 @@ data HOAAcceptanceName
   | ParityMaxEven Int
   | All
   | None
-  | Unknown
   deriving (Show)
 -----------------------------------------------------------------------------
 -- | The definition of an acceptance condition, which is a propositional formula
@@ -123,15 +122,15 @@ data HOA =
     , -- | Controllable APs, typically outputs (Syntcomp Extension)
       controllableAPs :: Set AP
     , -- | Acceptance name
-      acceptanceName :: HOAAcceptanceName
+      acceptanceName :: Maybe HOAAcceptanceName
     , -- | Number of acceptance sets (the sets can be computed via the type)
       acceptanceSets :: Int
     , -- | Acceptance condition
       acceptance :: AcceptanceCondition
-    , -- | Tool name (might be empty)
-      tool :: (String, Maybe String)
+    , -- | Tool name, parameters
+      tool :: Maybe (String, Maybe String)
     , -- | Automaton name
-      name :: String
+      name :: Maybe String
     , -- | Properties
       properties :: Set HOAProperty
     , -- | Set of edges for each state, an edge consists of target state
@@ -141,8 +140,8 @@ data HOA =
       stateLabel :: State -> Maybe Label
     , -- | For each state a possible set of acceptance sets
       stateAcceptance :: State -> Maybe AcceptanceSets
-    , -- | Name of a state (might be empty)
-      stateName :: State -> String
+    , -- | Name of a state
+      stateName :: State -> Maybe String
     }
 
 -----------------------------------------------------------------------------

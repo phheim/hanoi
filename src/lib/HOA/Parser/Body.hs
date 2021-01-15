@@ -43,7 +43,6 @@ import Data.Set as S
 import Text.Parsec
   ( many
   , many1
-  , option
   , optionMaybe
   , sepBy1
   , unexpected
@@ -66,13 +65,13 @@ import qualified Data.Map.Strict as M
 -- | It takes a the map of Aliases as an environment to parse explicit labels.
 
 bodyParser
-  :: Int -> M.Map String (Formula Int) -> Parser [(Int, (String, Maybe (Formula Int), Maybe (Set Int), Set (Int, Maybe (Formula Int), Maybe (Set Int))))]
+  :: Int -> M.Map String (Formula Int) -> Parser [(Int, (Maybe String, Maybe (Formula Int), Maybe (Set Int), Set (Int, Maybe (Formula Int), Maybe (Set Int))))]
 bodyParser numAPs env = do
     states <- many1 stateParser
     keyword "--END--"
     return states
   where
-    stateParser :: Parser (Int, (String, Maybe (Formula Int), Maybe (Set Int), Set (Int, Maybe (Formula Int), Maybe (Set Int))))
+    stateParser :: Parser (Int, (Maybe String, Maybe (Formula Int), Maybe (Set Int), Set (Int, Maybe (Formula Int), Maybe (Set Int))))
     stateParser = do
         (state, mLabel, name, mAccSet) <- stateNameParser
         edges <- many edgeParser
@@ -92,13 +91,13 @@ bodyParser numAPs env = do
                 else return (state, (name, mLabel, mAccSet, S.fromList $ concat edges))
         else return (state, (name, mLabel, mAccSet, S.fromList $ concat edges))
 
-    stateNameParser :: Parser (Int, Maybe (Formula Int), String, Maybe (Set Int))
+    stateNameParser :: Parser (Int, Maybe (Formula Int), Maybe String, Maybe (Set Int))
     stateNameParser = do
         keyword "State:"
         (~~)
         label <- optionMaybe (bracketParser labelParser)
         nat <- natParser
-        name <- option "" stringParser
+        name <- optionMaybe stringParser
         acc <- accSigParser
         return (nat, label, name, acc)
 

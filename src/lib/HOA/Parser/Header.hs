@@ -86,8 +86,8 @@ headerParser = do
                             acceptanceName = Nothing,
                             acceptanceSets = -1,
                             acceptance = fTrue,
-                            tool = ("", Nothing),
-                            name = "",
+                            tool = Nothing,
+                            name = Nothing,
                             properties = S.empty,
                             aliases = M.empty}
 
@@ -142,16 +142,16 @@ headerParser = do
             accName <- accNameParser
             headerItemParser hoa {acceptanceName = Just accName}
 
-    toolParser hoa = if fst (tool hoa) /= "" then errDoubleDef "tool"
+    toolParser hoa = if isJust $ tool hoa then errDoubleDef "tool"
       else do
             str <- stringParser;
             mStr <- optionMaybe stringParser;
-            headerItemParser hoa {tool = (str, mStr)}
+            headerItemParser hoa {tool = Just (str, mStr)}
 
-    nameParser hoa = if name hoa /= "" then errDoubleDef "name"
+    nameParser hoa = if isJust $ name hoa then errDoubleDef "name"
       else do
             str <- stringParser
-            headerItemParser hoa {name = str}
+            headerItemParser hoa {name = Just str}
 
     propParser hoa = do
             prop <- propertiesParser

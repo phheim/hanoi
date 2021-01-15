@@ -47,10 +47,6 @@ import qualified Data.Set as S
   , map
   )
 
-import Data.Maybe
-  ( fromMaybe
-  )
-
 import Data.Map.Strict
   ( fromList
   , mapKeysMonotonic
@@ -98,7 +94,7 @@ hoaParser =
         , atomicPropositionName =
             (!) $ mapKeysMonotonic value $ P.atomicPropositionName header
         , controllableAPs = S.map value $ P.controllableAPs header
-        , acceptanceName = fromMaybe Unknown $ P.acceptanceName header
+        , acceptanceName = P.acceptanceName header
         , acceptanceSets = P.acceptanceSets header
         , acceptance =
             smartFormulaToFinite $
