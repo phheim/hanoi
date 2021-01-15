@@ -25,6 +25,7 @@ module HOA.Printer
 
 import Data.List as List
   ( intercalate
+  , sort
   , sortOn
   )
 import Data.Maybe
@@ -247,9 +248,9 @@ printFormula showVar = printFormula'
         Var a -> showVar a
         Not f -> "!" ++ printFormula' f
         And fs ->
-          intercalate " & " $ fmap (brRound . printFormula') fs
+          intercalate " & " $ sort $ fmap (brRound . printFormula') fs
         Or fs ->
-          intercalate " | " $ fmap (brRound . printFormula') fs
+          intercalate " | " $ sort $ fmap (brRound . printFormula') fs
         Impl f1 f2 ->
           let s1 = printFormula' f1
               s2 = printFormula' f2
