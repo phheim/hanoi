@@ -137,6 +137,8 @@ printHOALines hoa@HOA {..} =
       (unwords $
         ["State:"]
         ++
+        (maybeToList $ printLabel <$> stateLabel s)
+        ++
         [strInd s]
         ++
         (maybeToList $ quote <$> stateName s)
