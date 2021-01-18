@@ -4,4 +4,5 @@ packages:
 extra-deps:
 - git: https://github.com/kleinreact/finite.git
   commit: 8a37de506728ebbcfab05ea8ac3ff50aa34a2c9d
-
+- git: git@projects.cispa.saarland:c01mast/automata-tools-wrappers.git
+  commit: f072f1ffdd19c6d090b02d173c11b3efa0c095af
