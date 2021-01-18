@@ -6,14 +6,12 @@
 -- Prints the internal HOA format
 --
 -----------------------------------------------------------------------------
-{-# LANGUAGE DeriveGeneric         #-}
 {-# LANGUAGE FlexibleContexts      #-}
 {-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE ImplicitParams        #-}
 {-# LANGUAGE LambdaCase            #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE RecordWildCards       #-}
-{-# LANGUAGE TemplateHaskell       #-}
 
 -----------------------------------------------------------------------------
 module HOA.Printer

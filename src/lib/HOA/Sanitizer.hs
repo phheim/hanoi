@@ -6,13 +6,9 @@
 -- A sanitizer for the HOA format
 --
 -----------------------------------------------------------------------------
-{-# LANGUAGE DeriveGeneric         #-}
 {-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE ImplicitParams        #-}
-{-# LANGUAGE LambdaCase            #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE RecordWildCards       #-}
-{-# LANGUAGE TemplateHaskell       #-}
 
 -----------------------------------------------------------------------------
 module HOA.Sanitizer

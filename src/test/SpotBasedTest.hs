@@ -6,10 +6,7 @@
 -- Tests done using spots hoa tools
 --
 -----------------------------------------------------------------------------
-{-# LANGUAGE LambdaCase      #-}
-{-# LANGUAGE RecordWildCards #-}
 
------------------------------------------------------------------------------
 module SpotBasedTest
   ( generateTest
   , tests

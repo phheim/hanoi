@@ -7,8 +7,6 @@
 --
 -----------------------------------------------------------------------------
 {-# LANGUAGE DuplicateRecordFields #-}
-{-# LANGUAGE ImplicitParams        #-}
-{-# LANGUAGE LambdaCase            #-}
 {-# LANGUAGE NamedFieldPuns        #-}
 {-# LANGUAGE RecordWildCards       #-}
 

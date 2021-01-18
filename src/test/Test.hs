@@ -6,10 +6,7 @@
 -- Standard TestSuite.
 --
 -----------------------------------------------------------------------------
-{-# LANGUAGE LambdaCase      #-}
-{-# LANGUAGE RecordWildCards #-}
 
------------------------------------------------------------------------------
 module Test
   ( Test.tests
   ) where
