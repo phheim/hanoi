@@ -162,10 +162,10 @@ headerParser = do
             caps <- many natParser
             headerItemParser hoa {controllableAPs = S.fromList caps}
 
-    endParser hoa = if acceptanceSets hoa == -1 then unexpected "Acceptance missing"
-      else
-            if atomicPropositions hoa == -1 then return hoa {atomicPropositions = 0}
-            else return hoa
+    endParser hoa
+      | acceptanceSets hoa == (-1) = unexpected "Acceptance missing"
+      | atomicPropositions hoa == (-1) = return hoa{atomicPropositions = 0}
+      | otherwise = return hoa
 
     errDoubleDef str =
       unexpected $
