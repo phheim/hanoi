@@ -21,27 +21,10 @@ module HOA.Printer
 
 -----------------------------------------------------------------------------
 
-import Data.List as List
-  ( intercalate
-  , sort
-  , sortOn
-  )
-import Data.Maybe
-  ( maybeToList
-  )
-import Data.Set as Set
-  ( Set
-  , toAscList
-  , toList
-  )
-import Finite
-  ( Finite
-  , FiniteBounds
-  , index
-  , offset
-  , v2t
-  , values
-  )
+import Data.List as List (intercalate, sort, sortOn)
+import Data.Maybe (maybeToList)
+import Data.Set as Set (Set, toAscList, toList)
+import Finite (Finite, FiniteBounds, index, offset, v2t, values)
 import HOA.Format
   ( AcceptanceSet
   , AcceptanceSets
@@ -52,13 +35,7 @@ import HOA.Format
   , Label
   , State
   )
-import Sat.Finite
-  ( FormulaView(..)
-  )
-import Sat.Finite
-  ( Formula
-  , view
-  )
+import Sat.Finite (Formula, FormulaView(..), view)
 
 -----------------------------------------------------------------------------
 -- | Converts a HOA to a string

@@ -18,15 +18,9 @@ module Spot.Randaut
 
 -----------------------------------------------------------------------------
 
-import System.Directory
-  ( findExecutable
-  )
-import System.Exit
-  ( ExitCode(..)
-  )
-import System.Process
-  ( readProcessWithExitCode
-  )
+import System.Directory (findExecutable)
+import System.Exit (ExitCode(..))
+import System.Process (readProcessWithExitCode)
 
 -----------------------------------------------------------------------------
 data RandautResult =

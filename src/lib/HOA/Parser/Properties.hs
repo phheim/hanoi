@@ -13,25 +13,15 @@ module HOA.Parser.Properties
 
 -----------------------------------------------------------------------------
 
-import HOA.Parser.Data
-  ( HOAProperty(..)
-  )
+import HOA.Parser.Data (HOAProperty(..))
 
 import HOA.Parser.Util
 
-import Data.Set
-  ( Set
-  , fromList
-  )
+import Data.Set (Set, fromList)
 
-import Text.Parsec
-  ( sepBy1
-  , (<|>)
-  )
+import Text.Parsec (sepBy1, (<|>))
 
-import Text.Parsec.String
-  ( Parser
-  )
+import Text.Parsec.String (Parser)
 
 -----------------------------------------------------------------------------
 

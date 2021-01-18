@@ -14,9 +14,7 @@ module HOA.Parser.Header
 
 -----------------------------------------------------------------------------
 
-import HOA.Parser.Data
-  ( HOAHeader(..)
-  )
+import HOA.Parser.Data (HOAHeader(..))
 
 import HOA.Parser.Util
 
@@ -28,47 +26,21 @@ import HOA.Parser.AccName
 
 import HOA.Parser.Properties
 
-import Sat.Smart
-  ( fTrue
-  )
+import Sat.Smart (fTrue)
 
-import Data.Maybe
-  ( Maybe(..)
-  , isJust
-  )
+import Data.Maybe (Maybe(..), isJust)
 
-import Data.Set as S
-  ( empty
-  , fromList
-  , union
-  )
+import Data.Set as S (empty, fromList, union)
 
-import Control.Monad
-  ( when
-  )
+import Control.Monad (when)
 
-import Text.Parsec
-  ( many
-  , optionMaybe
-  , sepBy1
-  , unexpected
-  , (<|>)
-  )
+import Text.Parsec (many, optionMaybe, sepBy1, unexpected, (<|>))
 
-import Text.Parsec.String
-  ( Parser
-  )
+import Text.Parsec.String (Parser)
 
-import Text.ParserCombinators.Parsec.Char
-  ( char
-  )
+import Text.ParserCombinators.Parsec.Char (char)
 
-import Data.Map.Strict as M
-  ( empty
-  , fromAscList
-  , insert
-  , member
-  )
+import Data.Map.Strict as M (empty, fromAscList, insert, member)
 
 -----------------------------------------------------------------------------
 

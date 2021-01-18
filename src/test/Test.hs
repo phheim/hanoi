@@ -14,12 +14,8 @@ module Test
 -----------------------------------------------------------------------------
 import Distribution.TestSuite
 
-import HOAExamplesTest
-  ( exampleTests
-  )
-import SpotBasedTest
-  ( tests
-  )
+import HOAExamplesTest (exampleTests)
+import SpotBasedTest (tests)
 
 -----------------------------------------------------------------------------
 -- | The Tests

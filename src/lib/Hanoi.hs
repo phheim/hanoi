@@ -18,18 +18,18 @@ module Hanoi
   , HOAProperty(..)
   , Label
   , State
-  -- Parsing
+    -- Parsing
   , hoaParser
   , parse
-  -- Printing
+    -- Printing
   , printHOA
   , printHOALines
-  -- Sanitizing
+    -- Sanitizing
   , complete
   , sanitize
-  -- Checking
+    -- Checking
   , checkValidHOA
-  -- Utils
+    -- Utils
   , numSuccessors
   , successors
   ) where
@@ -46,29 +46,15 @@ import HOA.Format
   , State
   )
 
-import Sat.Finite
-  ( Formula
-  )
+import Sat.Finite (Formula)
 
-import HOA.Printer
-  ( printHOA
-  , printHOALines
-  )
+import HOA.Printer (printHOA, printHOALines)
 
-import HOA.Parser
-  ( hoaParser
-  , parse
-  )
+import HOA.Parser (hoaParser, parse)
 
-import HOA.Sanitizer
-  ( complete
-  , sanitize
-  )
+import HOA.Sanitizer (complete, sanitize)
 
-import HOA.Utils
-  ( numSuccessors
-  , successors
-  )
+import HOA.Utils (numSuccessors, successors)
 
 import Spot.Autfilt
   ( AutfiltInput(automaton)
@@ -77,13 +63,8 @@ import Spot.Autfilt
   , defaultAutfiltInput
   )
 
-import Control.Exception
-  ( IOException
-  , try
-  )
-import System.IO
-  ( readFile
-  )
+import Control.Exception (IOException, try)
+import System.IO (readFile)
 
 -- | Check if a hoa is a valid one according to spot
 checkValidHOA :: String -> IO (Either String Bool)

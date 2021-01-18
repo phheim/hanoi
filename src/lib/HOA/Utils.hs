@@ -17,14 +17,9 @@ module HOA.Utils
   , successors
   ) where
 
-import HOA.Format
-  ( HOA(..)
-  , State
-  )
+import HOA.Format (HOA(..), State)
 
-import Data.Set
-  ( Set
-  )
+import Data.Set (Set)
 import qualified Data.Set as Set
 
 -----------------------------------------------------------------------------

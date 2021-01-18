@@ -15,22 +15,12 @@ module SpotBasedTest
 -----------------------------------------------------------------------------
 import Distribution.TestSuite
 
-import Hanoi
-  ( parse
-  , printHOA
-  )
+import Hanoi (parse, printHOA)
 import Spot.Autfilt
-import Spot.Randaut
-  ( RandautResult(..)
-  , randautCMD
-  )
+import Spot.Randaut (RandautResult(..), randautCMD)
 
-import System.Directory
-  ( findExecutable
-  )
-import System.Process
-  ( readProcessWithExitCode
-  )
+import System.Directory (findExecutable)
+import System.Process (readProcessWithExitCode)
 
 -----------------------------------------------------------------------------
 tests :: IO [TestInstance]

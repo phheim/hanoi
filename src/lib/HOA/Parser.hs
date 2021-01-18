@@ -16,42 +16,25 @@ module HOA.Parser
 -----------------------------------------------------------------------------
 import Finite
 
-import qualified Sat.Smart as Sm
-  ( Formula
-  )
+import qualified Sat.Smart as Sm (Formula)
 
 import HOA.Format
 
 import HOA.Parser.Util
 
-import qualified HOA.Parser.Data as P
-  ( AcceptanceType(..)
-  , HOAHeader(..)
-  )
+import qualified HOA.Parser.Data as P (AcceptanceType(..), HOAHeader(..))
 
 import HOA.Parser.Body
 
 import HOA.Parser.Header
 
-import Text.Parsec.String
-  ( Parser
-  )
+import Text.Parsec.String (Parser)
 
-import qualified Text.Parsec as P
-  ( parse
-  , unexpected
-  )
+import qualified Text.Parsec as P (parse, unexpected)
 
-import qualified Data.Set as S
-  ( Set
-  , map
-  )
+import qualified Data.Set as S (Set, map)
 
-import Data.Map.Strict
-  ( fromList
-  , mapKeysMonotonic
-  , (!)
-  )
+import Data.Map.Strict (fromList, mapKeysMonotonic, (!))
 
 -----------------------------------------------------------------------------
 hoaParser :: Parser HOA

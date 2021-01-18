@@ -16,34 +16,17 @@ module HOA.Parser.Data
 
 -----------------------------------------------------------------------------
 
-import Text.Parsec
-  ( alphaNum
-  , char
-  , letter
-  , oneOf
-  , (<|>)
-  )
+import Text.Parsec (alphaNum, char, letter, oneOf, (<|>))
 
-import Text.Parsec.Token
-  ( GenLanguageDef(..)
-  , LanguageDef
-  )
+import Text.Parsec.Token (GenLanguageDef(..), LanguageDef)
 
-import Text.Parsec.Language
-  ( emptyDef
-  )
+import Text.Parsec.Language (emptyDef)
 
-import Data.Set
-  ( Set
-  )
+import Data.Set (Set)
 
-import HOA.Format
-  ( HOAAcceptanceName
-  )
+import HOA.Format (HOAAcceptanceName)
 
-import Sat.Smart
-  ( Formula
-  )
+import Sat.Smart (Formula)
 
 import Data.Map.Strict as Map
 

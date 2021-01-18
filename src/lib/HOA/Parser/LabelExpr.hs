@@ -15,39 +15,17 @@ module HOA.Parser.LabelExpr
 
 import HOA.Parser.Util
 
-import Sat.Smart
-  ( Formula
-  , fVar
-  , fNot
-  , fAnd
-  , fOr
-  , fFalse
-  , fTrue
-  )
+import Sat.Smart (Formula, fAnd, fFalse, fNot, fOr, fTrue, fVar)
 
-import Data.Map.Strict as M
-  ( Map
-  , lookup
-  )
+import Data.Map.Strict as M (Map, lookup)
 
-import Text.Parsec
-  ( unexpected
-  , (<|>)
-  )
+import Text.Parsec (unexpected, (<|>))
 
-import Text.Parsec.Expr
-  ( Assoc(..)
-  , Operator(..)
-  , buildExpressionParser
-  )
+import Text.Parsec.Expr (Assoc(..), Operator(..), buildExpressionParser)
 
-import Text.Parsec.String
-  ( Parser
-  )
+import Text.Parsec.String (Parser)
 
-import Text.ParserCombinators.Parsec.Char
-  ( char
-  )
+import Text.ParserCombinators.Parsec.Char (char)
 
 -----------------------------------------------------------------------------
 

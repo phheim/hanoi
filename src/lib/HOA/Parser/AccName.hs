@@ -13,17 +13,11 @@ module HOA.Parser.AccName
 -----------------------------------------------------------------------------
 import HOA.Parser.Util
 
-import HOA.Format
-  ( HOAAcceptanceName(..)
-  )
+import HOA.Format (HOAAcceptanceName(..))
 
-import Text.Parsec
-  ( (<|>)
-  )
+import Text.Parsec ((<|>))
 
-import Text.Parsec.String
-  ( Parser
-  )
+import Text.Parsec.String (Parser)
 
 -----------------------------------------------------------------------------
 accNameParser :: Parser HOAAcceptanceName

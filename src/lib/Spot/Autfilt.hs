@@ -12,7 +12,7 @@
 {-# LANGUAGE RecordWildCards       #-}
 
 -----------------------------------------------------------------------------
-module Spot.Autfilt 
+module Spot.Autfilt
   ( AutfiltResult(..)
   , StateBasedAcceptance(..)
   , Parity(..)
@@ -67,22 +67,12 @@ module Spot.Autfilt
 
 -----------------------------------------------------------------------------
 
-import System.Directory
-  ( findExecutable
-  )
-import System.Exit
-  ( ExitCode(..)
-  )
-import System.IO.Temp
-  ( writeSystemTempFile
-  )
-import System.Process
-  ( readProcessWithExitCode
-  )
+import System.Directory (findExecutable)
+import System.Exit (ExitCode(..))
+import System.IO.Temp (writeSystemTempFile)
+import System.Process (readProcessWithExitCode)
 
-import Data.List
-  ( intercalate
-  )
+import Data.List (intercalate)
 
 -----------------------------------------------------------------------------
 data AutfiltResult =

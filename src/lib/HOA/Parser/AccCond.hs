@@ -15,33 +15,17 @@ module HOA.Parser.AccCond
 
 import HOA.Parser.Util
 
-import HOA.Parser.Data
-  ( AcceptanceType(..)
-  )
+import HOA.Parser.Data (AcceptanceType(..))
 
-import Sat.Smart
-  ( Formula
-  , fVar
-  , fAnd
-  , fOr
-  , fTrue
-  , fFalse
-  )
+import Sat.Smart (Formula, fAnd, fFalse, fOr, fTrue, fVar)
 
-import Text.Parsec
-  ( option
-  , (<|>)
-  )
+import Text.Parsec (option, (<|>))
 
 import Text.Parsec.Expr
 
-import Text.Parsec.String
-  ( Parser
-  )
+import Text.Parsec.String (Parser)
 
-import Text.ParserCombinators.Parsec.Char
-  ( char
-  )
+import Text.ParserCombinators.Parsec.Char (char)
 
 -----------------------------------------------------------------------------
 

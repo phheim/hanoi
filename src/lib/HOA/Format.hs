@@ -17,20 +17,11 @@
 module HOA.Format where
 
 -----------------------------------------------------------------------------
-import Data.Set as Set
-  ( Set
-  )
+import Data.Set as Set (Set)
 import Finite
-import Finite.TH
-  ( baseInstance
-  , newInstance
-  )
-import GHC.Generics
-  ( Generic
-  )
-import Sat.Finite
-  ( Formula
-  )
+import Finite.TH (baseInstance, newInstance)
+import GHC.Generics (Generic)
+import Sat.Finite (Formula)
 
 -----------------------------------------------------------------------------
 -- | The type of a state, generated using the Finite library

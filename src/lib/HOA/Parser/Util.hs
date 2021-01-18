@@ -15,53 +15,34 @@ module HOA.Parser.Util where
 
 -----------------------------------------------------------------------------
 
-import HOA.Parser.Data
-  ( HOAProperty(..)
-  , globalDef
-  )
+import HOA.Parser.Data (HOAProperty(..), globalDef)
 
-import qualified HOA.Format as F
-  ( HOAProperty(..)
-  )
+import qualified HOA.Format as F (HOAProperty(..))
 
-import Data.Functor.Identity
-  ( Identity
-  )
+import Data.Functor.Identity (Identity)
 
-import Data.Set
-  ( Set
-  , empty
-  , insert
-  )
+import Data.Set (Set, empty, insert)
 
-import Control.Monad
-  ( void
-  )
+import Control.Monad (void)
 
-import Text.Parsec.String
-  ( Parser
-  )
+import Text.Parsec.String (Parser)
 
 import Text.Parsec.Token
 
-import Sat.Smart as Sm
-  ( Formula
-  , FormulaView(..)
-  , view
-  )
+import Sat.Smart as Sm (Formula, FormulaView(..), view)
 
 import qualified Sat.Finite as Fin
   ( Formula
   , UnfinishedFormula
-  , fVar
-  , fTrue
-  , fFalse
-  , fNot
   , fAnd
-  , fOr
-  , fXOr
   , fEquiv
+  , fFalse
   , fImplies
+  , fNot
+  , fOr
+  , fTrue
+  , fVar
+  , fXOr
   , finalize
   )
 

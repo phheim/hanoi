@@ -17,48 +17,21 @@ import HOA.Parser.Util
 
 import HOA.Parser.LabelExpr
 
-import Sat.Smart
-  ( Formula
-  , fAnd
-  , fVar
-  , fNot
-  )
+import Sat.Smart (Formula, fAnd, fNot, fVar)
 
-import Data.Bits
-  ( shiftR
-  , testBit
-  )
+import Data.Bits (shiftR, testBit)
 
-import Data.Maybe
-  ( Maybe(..)
-  , isJust
-  , isNothing
-  )
+import Data.Maybe (Maybe(..), isJust, isNothing)
 
-import Data.Set as S
-  ( Set
-  , fromList
-  )
+import Data.Set as S (Set, fromList)
 
-import Text.Parsec
-  ( many
-  , many1
-  , optionMaybe
-  , sepBy1
-  , unexpected
-  )
+import Text.Parsec (many, many1, optionMaybe, sepBy1, unexpected)
 
-import Text.Parsec.String
-  ( Parser
-  )
+import Text.Parsec.String (Parser)
 
-import Text.ParserCombinators.Parsec.Char
-  ( char
-  )
+import Text.ParserCombinators.Parsec.Char (char)
 
-import qualified Data.Map.Strict as M
-  ( Map
-  )
+import qualified Data.Map.Strict as M (Map)
 
 -----------------------------------------------------------------------------
 -- | The body parser takes the number of atomic propositions to parse implicitly labeled edges.

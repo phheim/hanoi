@@ -17,12 +17,8 @@ module HOA.Sanitizer
   ) where
 
 -----------------------------------------------------------------------------
-import Data.Maybe
-  ( isNothing
-  )
-import Data.Set
-  ( insert
-  )
+import Data.Maybe (isNothing)
+import Data.Set (insert)
 import Finite
 import HOA.Format
 

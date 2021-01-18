@@ -14,9 +14,7 @@ module HOAExamplesTest
 -----------------------------------------------------------------------------
 import Distribution.TestSuite
 
-import SpotBasedTest
-  ( generateTest
-  )
+import SpotBasedTest (generateTest)
 
 -----------------------------------------------------------------------------
 exampleTests :: [TestInstance]
