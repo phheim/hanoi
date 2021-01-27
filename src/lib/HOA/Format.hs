@@ -105,7 +105,7 @@ data HOA =
     { -- | Number of states (set can be computed via the type)
       size :: Int
     , -- | Set of initial states
-      initialStates :: Set State
+      initialStates :: Set [State]
     , -- | Number of atomic propositions (set can be computed via the type)
       atomicPropositions :: Int
     , -- | Name of the atomic proposition
@@ -126,7 +126,7 @@ data HOA =
       properties :: Set HOAProperty
     , -- | Set of edges for each state, an edge consists of target state
       -- a optional label and an optional set of acceptance sets
-      edges :: State -> Set (State, Maybe Label, Maybe AcceptanceSets)
+      edges :: State -> Set ([State], Maybe Label, Maybe AcceptanceSets)
     , -- | For each state a possible label
       stateLabel :: State -> Maybe Label
     , -- | For each state a possible set of acceptance sets

@@ -38,31 +38,30 @@ import qualified Data.Map.Strict as M (Map)
 -- | It takes a the map of Aliases as an environment to parse explicit labels.
 
 bodyParser
-  :: Int -> M.Map String (Formula Int) -> Parser [(Int, (Maybe String, Maybe (Formula Int), Maybe (Set Int), Set (Int, Maybe (Formula Int), Maybe (Set Int))))]
+  :: Int -> M.Map String (Formula Int) -> Parser [(Int, (Maybe String, Maybe (Formula Int), Maybe (Set Int), Set ([Int], Maybe (Formula Int), Maybe (Set Int))))]
 bodyParser numAPs env = do
     states <- many1 stateParser
     keyword "--END--"
     return states
   where
-    stateParser :: Parser (Int, (Maybe String, Maybe (Formula Int), Maybe (Set Int), Set (Int, Maybe (Formula Int), Maybe (Set Int))))
+    stateParser :: Parser (Int, (Maybe String, Maybe (Formula Int), Maybe (Set Int), Set ([Int], Maybe (Formula Int), Maybe (Set Int))))
     stateParser = do
         (state, mLabel, name, mAccSet) <- stateNameParser
         edges <- many edgeParser
         if isNothing mLabel then do
-            let representEdges = map head edges
-            let implicitLabels = foldr (\(_, l, _) -> (&&) (isNothing l)) True representEdges
+            let implicitLabels = foldr (\(_, l, _) -> (&&) (isNothing l)) True edges
             if implicitLabels then do
                 let expectedEdges = 2^numAPs
-                let actualEdges = length representEdges
-                if  expectedEdges == actualEdges then do
-                    let labeledEdges = map (\(n, xs) -> map (\(s, _, mA) -> (s, Just $ implicitLabel numAPs n, mA)) xs) $ zip [0..] edges
-                    return (state, (name, mLabel, mAccSet, S.fromList $ concat labeledEdges))
+                let actualEdges = length edges
+                if expectedEdges == actualEdges then do
+                    let labeledEdges = zipWith (\n (s, _, mA) -> (s, Just $ implicitLabel numAPs n, mA)) [0..] edges
+                    return (state, (name, mLabel, mAccSet, S.fromList labeledEdges))
                 else unexpected $ "Implicit labeled edges should be: " ++ show expectedEdges ++ " but were: " ++ show actualEdges
             else do
-                let explicitLabels = foldr (\(_, l, _) -> (&&) (isJust l)) True representEdges
+                let explicitLabels = foldr (\(_, l, _) -> (&&) (isJust l)) True edges
                 if not explicitLabels then unexpected "Edge Labels inconsitent (some labeled, some not labeled)"
-                else return (state, (name, mLabel, mAccSet, S.fromList $ concat edges))
-        else return (state, (name, mLabel, mAccSet, S.fromList $ concat edges))
+                else return (state, (name, mLabel, mAccSet, S.fromList edges))
+        else return (state, (name, mLabel, mAccSet, S.fromList edges))
 
     stateNameParser :: Parser (Int, Maybe (Formula Int), Maybe String, Maybe (Set Int))
     stateNameParser = do
@@ -74,13 +73,13 @@ bodyParser numAPs env = do
         acc <- accSigParser
         return (nat, label, name, acc)
 
-    edgeParser :: Parser [(Int, Maybe (Formula Int), Maybe (Set Int))]
+    edgeParser :: Parser ([Int], Maybe (Formula Int), Maybe (Set Int))
     edgeParser = do
         (~~)
         label <- optionMaybe (bracketParser labelParser)
         natStates <- sepBy1 natParser (do {_ <- char '&'; (~~)})
         accSet <- accSigParser
-        return (foldl (\xs state -> (state, label, accSet):xs) [] natStates)
+        return (natStates, label, accSet)
 
     accSigParser :: Parser (Maybe (Set Int))
     accSigParser =  optionMaybe $ braceParser $ do

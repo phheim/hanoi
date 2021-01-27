@@ -23,7 +23,7 @@ module HOA.Printer
 
 import Data.List as List (intercalate, sort, sortOn)
 import Data.Maybe (maybeToList)
-import Data.Set as Set (Set, toAscList, toList)
+import Data.Set as Set (Set, elems, toList)
 import Finite (Finite, FiniteBounds, index, offset, v2t, values)
 import HOA.Format
   ( AcceptanceSet
@@ -66,8 +66,10 @@ printHOALines hoa@HOA {..} =
     Nothing   -> []
   )
   ++
+  [ "States: " ++ show size ]
+  ++
   -- Start
-  ((("Start: " ++ ) . strInd) <$> (toAscList initialStates))
+  (("Start: " ++ ) . printStateConj <$> elems initialStates)
   ++
   -- acc-name
   (case acceptanceName of
@@ -116,7 +118,7 @@ printHOALines hoa@HOA {..} =
         (maybeToList $ quote <$> stateName s)
         ++
         (case stateAcceptance s of
-          Just aSets -> [brCurly $ unwords (map strInd $ toAscList aSets)]
+          Just aSets -> [brCurly $ unwords (map strInd $ elems aSets)]
           Nothing    -> []
         )
       )
@@ -125,14 +127,14 @@ printHOALines hoa@HOA {..} =
 
     printEdge ::
           FiniteBounds HOA
-      => (State, Maybe Label, Maybe (Set AcceptanceSet))
+      => ([State], Maybe Label, Maybe (Set AcceptanceSet))
       -> String
     printEdge edge =
       let (target, label, aSets) = edge
       in
       unwords . concat $
         [ maybeToList $ printLabel <$> label
-        , [strInd target]
+        , [printStateConj target]
         , maybeToList $ printAcceptingSets <$> aSets
         ]
 
@@ -142,7 +144,11 @@ printHOALines hoa@HOA {..} =
 
     printLabel :: FiniteBounds HOA => Label -> String
     printLabel label = brBox $ printFormula strInd label
-
+    
+    printStateConj :: FiniteBounds HOA => [State] -> String
+    printStateConj = intercalate " & " . map strInd
+    
+    
 -----------------------------------------------------------------------------
 -- | Different library related printing methods
 
@@ -230,7 +236,7 @@ printFormula showVar = printFormula'
           let s1 = printFormula' f1
               s2 = printFormula' f2
            in "(" ++
-              s1 ++ "&" ++ s2 ++ ") | ((!(" ++ s1 ++ ")) & (!(" ++ s2 ++ ")))"
+              s1 ++ " & " ++ s2 ++ ") | ((!(" ++ s1 ++ ")) & (!(" ++ s2 ++ ")))"
         XOr f1 f2 ->
           let s1 = printFormula' f1
               s2 = printFormula' f2

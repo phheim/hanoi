@@ -72,7 +72,7 @@ hoaParser =
       return
         HOA
         { size = length states
-        , initialStates = S.map value $ P.initialStates header
+        , initialStates = S.map (map value) $ P.initialStates header
         , atomicPropositions = P.atomicPropositions header
         , atomicPropositionName =
             (!) $ mapKeysMonotonic value $ P.atomicPropositionName header
@@ -81,7 +81,7 @@ hoaParser =
         , acceptanceSets = P.acceptanceSets header
         , acceptance =
             smartFormulaToFinite $
-            fmap convertAccType $ P.acceptance header
+            convertAccType <$> P.acceptance header
         , tool = P.tool header
         , name = P.name header
         , properties = toFormatProperties $ P.properties header
@@ -94,10 +94,10 @@ hoaParser =
   where
     convertEdge ::
          (FiniteBounds HOA)
-      => (Int, Maybe (Sm.Formula Int), Maybe (S.Set Int))
-      -> (State, Maybe Label, Maybe AcceptanceSets)
+      => ([Int], Maybe (Sm.Formula Int), Maybe (S.Set Int))
+      -> ([State], Maybe Label, Maybe AcceptanceSets)
     convertEdge (s, mFml, mAcc) =
-      ( value s
+      ( map value s
       , fmap (smartFormulaToFinite . fmap value) mFml
       , fmap (S.map value) mAcc)
     convertAccType :: (FiniteBounds HOA) => P.AcceptanceType -> AcceptanceType

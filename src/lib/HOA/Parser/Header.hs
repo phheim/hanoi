@@ -30,7 +30,7 @@ import Sat.Smart (fTrue)
 
 import Data.Maybe (Maybe(..), isJust)
 
-import Data.Set as S (empty, fromList, union)
+import Data.Set as S (empty, fromList, union, insert)
 
 import Control.Monad (when)
 
@@ -87,7 +87,7 @@ headerParser = do
 
     startParser hoa = do
         states <- sepBy1 natParser (do {_ <- char '&'; (~~)})
-        headerItemParser hoa{initialStates = union (initialStates hoa) $ S.fromList states}
+        headerItemParser hoa{initialStates = S.insert states (initialStates hoa) }
 
     apParser hoa = if atomicPropositions hoa /= -1 then errDoubleDef "AP"
       else do

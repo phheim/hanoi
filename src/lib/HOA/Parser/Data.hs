@@ -60,7 +60,7 @@ data HOAHeader =
     { -- | Number of states
       size :: Int
     , -- | Set of initial states
-      initialStates :: Set Int
+      initialStates :: Set [Int]
     , -- | Number of atomic propositions
       atomicPropositions :: Int
     , -- | Name of the atomic proposition
