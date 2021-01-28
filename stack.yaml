@@ -2,6 +2,6 @@ resolver: lts-14.17
 packages:
 - .
 extra-deps:
-- git: ssh://git@git.intelligent-conception.de:4352/libraries/finite
-  commit: 86a5adf9d5b56cb74780aa96ee29d3c3cc0381e3
+- git: https://github.com/kleinreact/finite.git
+  commit: 8a37de506728ebbcfab05ea8ac3ff50aa34a2c9d
 
