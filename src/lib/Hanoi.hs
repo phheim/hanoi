@@ -12,7 +12,7 @@ module Hanoi
   , AcceptanceCondition
   , AcceptanceSet
   , AcceptanceType
-  , Formula
+  , Formula(..)
   , HOA(..)
   , HOAAcceptanceName(..)
   , HOAProperty(..)
@@ -46,7 +46,7 @@ import HOA.Format
   , State
   )
 
-import Sat.Finite (Formula)
+import HOA.Formula (Formula(..))
 
 import HOA.Printer (printHOA, printHOALines)
 

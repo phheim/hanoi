@@ -16,7 +16,7 @@ module HOA.Parser
 -----------------------------------------------------------------------------
 import Finite
 
-import qualified Sat.Smart as Sm (Formula)
+import HOA.Formula (Formula)
 
 import HOA.Format
 
@@ -58,7 +58,7 @@ hoaParser =
         labels =
             map
               (\(s, (_, l, _, _)) ->
-                  (value s, fmap (smartFormulaToFinite . fmap value) l))
+                  (value s, fmap (fmap value) l))
               states
         accept =
             map
@@ -80,7 +80,6 @@ hoaParser =
         , acceptanceName = P.acceptanceName header
         , acceptanceSets = P.acceptanceSets header
         , acceptance =
-            smartFormulaToFinite $
             convertAccType <$> P.acceptance header
         , tool = P.tool header
         , name = P.name header
@@ -94,11 +93,11 @@ hoaParser =
   where
     convertEdge ::
          (FiniteBounds HOA)
-      => ([Int], Maybe (Sm.Formula Int), Maybe (S.Set Int))
+      => ([Int], Maybe (Formula Int), Maybe (S.Set Int))
       -> ([State], Maybe Label, Maybe AcceptanceSets)
     convertEdge (s, mFml, mAcc) =
       ( map value s
-      , fmap (smartFormulaToFinite . fmap value) mFml
+      , fmap (fmap value) mFml
       , fmap (S.map value) mAcc)
     convertAccType :: (FiniteBounds HOA) => P.AcceptanceType -> AcceptanceType
     convertAccType (P.Fin b n) = Fin b $ value n

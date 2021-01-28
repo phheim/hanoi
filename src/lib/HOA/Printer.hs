@@ -35,7 +35,7 @@ import HOA.Format
   , Label
   , State
   )
-import Sat.Finite (Formula, FormulaView(..), view)
+import HOA.Formula (Formula(..))
 
 -----------------------------------------------------------------------------
 -- | Converts a HOA to a string
@@ -144,11 +144,11 @@ printHOALines hoa@HOA {..} =
 
     printLabel :: FiniteBounds HOA => Label -> String
     printLabel label = brBox $ printFormula strInd label
-    
+
     printStateConj :: FiniteBounds HOA => [State] -> String
     printStateConj = intercalate " & " . map strInd
-    
-    
+
+
 -----------------------------------------------------------------------------
 -- | Different library related printing methods
 
@@ -216,29 +216,13 @@ printAcceptanceName =
 
 
 printFormula :: (a -> String) -> Formula a -> String
-printFormula showVar = printFormula'
-  where
-    printFormula' form =
-      case view form of
-        TTrue -> "t"
+printFormula showVar = \case
+        FTrue -> "t"
         FFalse -> "f"
-        Var a -> showVar a
-        Not f -> "!" ++ printFormula' f
-        And fs ->
-          intercalate " & " $ sort $ fmap (brRound . printFormula') fs
-        Or fs ->
-          intercalate " | " $ sort $ fmap (brRound . printFormula') fs
-        Impl f1 f2 ->
-          let s1 = printFormula' f1
-              s2 = printFormula' f2
-           in "(!(" ++ s1 ++ ")) | " ++ s2
-        Equiv f1 f2 ->
-          let s1 = printFormula' f1
-              s2 = printFormula' f2
-           in "(" ++
-              s1 ++ " & " ++ s2 ++ ") | ((!(" ++ s1 ++ ")) & (!(" ++ s2 ++ ")))"
-        XOr f1 f2 ->
-          let s1 = printFormula' f1
-              s2 = printFormula' f2
-           in "((!(" ++
-              s1 ++ ")) & " ++ s2 ++ ") | ((!(" ++ s2 ++ ")) & " ++ s1 ++ ")"
+        FVar a -> showVar a
+        FNot f -> "!" ++ (brRound . printFormula showVar) f
+        FAnd fs ->
+          intercalate " & " $ sort $ fmap (brRound . printFormula showVar) fs
+        FOr fs ->
+          intercalate " | " $ sort $ fmap (brRound . printFormula showVar) fs
+

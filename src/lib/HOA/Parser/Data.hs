@@ -26,7 +26,7 @@ import Data.Set (Set)
 
 import HOA.Format (HOAAcceptanceName)
 
-import Sat.Smart (Formula)
+import HOA.Formula (Formula)
 
 import Data.Map.Strict as Map
 

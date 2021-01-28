@@ -17,7 +17,7 @@ import HOA.Parser.Util
 
 import HOA.Parser.LabelExpr
 
-import Sat.Smart (Formula, fAnd, fNot, fVar)
+import HOA.Formula (Formula(FAnd, FNot, FVar))
 
 import Data.Bits (shiftR, testBit)
 
@@ -90,11 +90,11 @@ bodyParser numAPs env = do
 
     -- creates a label with numAP many atomic propositions and binary valuation according to n
     implicitLabel :: Int -> Int -> Formula Int
-    implicitLabel numAP n = fAnd $ map props $ take numAP $ zip [0..] $ bits n
+    implicitLabel numAP n = FAnd $ map props $ take numAP $ zip [0..] $ bits n
 
     props :: (Int, Bool) -> Formula Int
-    props (n, True)  = fVar n
-    props (n, False) = fNot $ fVar n
+    props (n, True)  = FVar n
+    props (n, False) = FNot $ FVar n
 
     bits n = (testBit n 0) : (bits (shiftR n 1))
 -----------------------------------------------------------------------------
