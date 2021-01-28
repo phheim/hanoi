@@ -52,9 +52,9 @@ labelExprParser env = expr
             _ <- char 't'
             (~~)
             return FTrue
-            
+
     intLabel = FVar <$> natParser
-            
+
     stringLabel = do
             _ <- char '@'
             id <- identParser

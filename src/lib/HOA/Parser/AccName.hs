@@ -49,8 +49,8 @@ accNameParser = accName
       keyword str2
       keyword str3
       op <$> natParser
-      
+
     natName str op = do
       keyword str
       op <$> natParser
-      
+

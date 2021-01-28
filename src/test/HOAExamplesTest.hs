@@ -14,11 +14,11 @@ module HOAExamplesTest
 -----------------------------------------------------------------------------
 import Distribution.TestSuite
 
-import SpotBasedTest (generateTest, generateAlternatingTest)
+import SpotBasedTest (generateAlternatingTest, generateTest)
 
 -----------------------------------------------------------------------------
 exampleTests :: [TestInstance]
-exampleTests = zipWith generateTest hoaExamples [2001, 2002, 2003, 2032, 2004, 2005, 2006, 2007, 2008] 
+exampleTests = zipWith generateTest hoaExamples [2001, 2002, 2003, 2032, 2004, 2005, 2006, 2007, 2008]
                 ++ zipWith generateAlternatingTest alternatingExamples [2011]
 
 
@@ -201,9 +201,9 @@ hoaExamples =
     , "--END--"
     ]
   ]
-  
+
 alternatingExamples :: [String]
-alternatingExamples =  
+alternatingExamples =
   [ unlines -- aut11.hoa
     [ "HOA: v1"
     , "name: \"(Fa & G(b&Xc)) | c\""
