@@ -71,6 +71,7 @@ test-suite default
     HOAExamplesTest
     Hanoi
     HOA.Format
+    HOA.Formula
     HOA.Parser
     HOA.Parser.Util
     HOA.Parser.Data
