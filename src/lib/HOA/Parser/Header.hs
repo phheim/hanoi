@@ -26,11 +26,11 @@ import HOA.Parser.AccName
 
 import HOA.Parser.Properties
 
-import Sat.Smart (fTrue)
+import HOA.Formula (Formula(FTrue))
 
 import Data.Maybe (Maybe(..), isJust)
 
-import Data.Set as S (empty, fromList, union, insert)
+import Data.Set as S (empty, fromList, insert, union)
 
 import Control.Monad (when)
 
@@ -57,7 +57,7 @@ headerParser = do
                             controllableAPs = S.empty,
                             acceptanceName = Nothing,
                             acceptanceSets = -1,
-                            acceptance = fTrue,
+                            acceptance = FTrue,
                             tool = Nothing,
                             name = Nothing,
                             properties = S.empty,

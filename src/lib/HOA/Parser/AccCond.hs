@@ -17,7 +17,7 @@ import HOA.Parser.Util
 
 import HOA.Parser.Data (AcceptanceType(..))
 
-import Sat.Smart (Formula, fAnd, fFalse, fOr, fTrue, fVar)
+import HOA.Formula (Formula(..))
 
 import Text.Parsec (option, (<|>))
 
@@ -33,8 +33,8 @@ accCondParser :: Parser (Formula AcceptanceType)
 accCondParser = expr
   where
     expr = buildExpressionParser table term
-    table = [   [binary "&" (\x y -> fAnd [x,y]) AssocLeft],
-                [binary "|" (\x y -> fOr [x,y]) AssocLeft]
+    table = [   [binary "&" (\x y -> FAnd [x,y]) AssocLeft],
+                [binary "|" (\x y -> FOr [x,y]) AssocLeft]
             ]
     binary  name fun = Infix (do{ rOp name; return fun })
     term = parenParser expr
@@ -46,15 +46,15 @@ accCondParser = expr
     falseExpr = do
             _ <- char 'f'
             (~~)
-            return fFalse
+            return FFalse
     trueExpr = do
             _ <- char 't'
             (~~)
-            return fTrue
+            return FTrue
     setExpr str op = do
             keyword str
             (b, set) <- parenParser condParser
-            return $ fVar $ op b set
+            return $ FVar $ op b set
     condParser = do
             b <- option True (char '!'>> return False)
             set <- natParser

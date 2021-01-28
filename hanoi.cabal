@@ -24,7 +24,6 @@ library
       base >=4.7 && <4.13
     , containers >= 0.6.0.1
     , finite >= 1.4.1
-    , sat >= 1.0.6.0
     , parsec
     , directory >= 1.3.3.0
     , process >= 1.6.5.0
@@ -36,6 +35,7 @@ library
 
   other-modules:
     HOA.Format
+    HOA.Formula
     HOA.Parser
     HOA.Parser.Util
     HOA.Parser.Data
@@ -96,7 +96,6 @@ test-suite default
       base >=4.7 && <4.13
     , containers >= 0.6.0.1
     , finite >= 1.4.1
-    , sat >= 1.0.4.0
     , parsec
     , QuickCheck
     , Cabal >=2.4
