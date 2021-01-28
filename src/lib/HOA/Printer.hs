@@ -21,7 +21,7 @@ module HOA.Printer
 
 -----------------------------------------------------------------------------
 
-import Data.List as List (intercalate, sort, sortOn)
+import Data.List as List (intercalate, sortOn)
 import Data.Maybe (maybeToList)
 import Data.Set as Set (Set, elems, toList)
 import Finite (Finite, FiniteBounds, index, offset, v2t, values)
@@ -222,7 +222,7 @@ printFormula showVar = \case
         FVar a -> showVar a
         FNot f -> "!" ++ (brRound . printFormula showVar) f
         FAnd fs ->
-          intercalate " & " $ sort $ fmap (brRound . printFormula showVar) fs
+          intercalate " & " $ fmap (brRound . printFormula showVar) fs
         FOr fs ->
-          intercalate " | " $ sort $ fmap (brRound . printFormula showVar) fs
+          intercalate " | " $ fmap (brRound . printFormula showVar) fs
 
