@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Hanoi
--- Maintainer  :  Philippe Heim (Heim@ProjectJARVIS.de)
---                Gideon Geier (geier@projectjarvis.de)
+-- Maintainer  :  Philippe Heim
+--                Gideon Geier
 --
 -- This module exports all stuff of the hanoi library
 --

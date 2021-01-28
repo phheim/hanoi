@@ -2,11 +2,16 @@ name:                hanoi
 version:             0.0.0.1
 synopsis:            Library for automata and the HOA format
 description:         Library for automata and the HOA format
-author:              Felix Klein <Klein@ProjectJARVIS.de>
-                     Philippe Heim <Heim@ProjectJARVIS.de>
-                     Gideon Geier <Geier@ProjectJARVIS.de>
-                     Marvin Stenger <Stenger@ProjectJARVIS.de>
-maintainer:          Klein@ProjectJARVIS.de
+author:              Felix Klein <felix.klein@cispa.de>
+                     Philippe Heim <philippe.heim@cispa.de>
+                     Gideon Geier <gideon.geier@cispa.de>
+                     Marvin Stenger <marvin.stenger@cispa.de>
+
+maintainer:          Felix Klein <felix.klein@cispa.de>
+                     Philippe Heim <philippe.heim@cispa.de>
+                     Gideon Geier <gideon.geier@cispa.de>
+                     Marvin Stenger <marvin.stenger@cispa.de>
+
 category:            Automata
 build-type:          Simple
 cabal-version:       >=1.10
