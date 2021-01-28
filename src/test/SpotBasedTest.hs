@@ -13,6 +13,7 @@
 
 module SpotBasedTest
   ( generateTest
+  , generateAlternatingTest
   , tests
   ) where
 
@@ -100,6 +101,55 @@ generateTest hoa ind =
                         Right False -> do
                           putStrLn
                             "Printed HOA is not isomorphic to original one"
+                          putStrLn "Original:"
+                          putStrLn hoa
+                          putStrLn "Printed:"
+                          putStrLn printed
+                          return $ Finished $ Fail "PARSER- or PRINTERBUG"
+                        Right True -> return $ Finished Pass
+          , name = "Spot based parser/printer test " ++ (show ind)
+          , tags = ["spot", "parser", "printer"]
+          , options = []
+          , setOption = \_ _ -> Right inst
+          }
+   in inst
+
+-----------------------------------------------------------------------------
+-- | Generates a parser/printer test given an alternating HOA and an name index
+-- should be removed as soon as autfilt supports isomorphism checks on
+-- alternating automata
+generateAlternatingTest :: String -> Int -> TestInstance
+generateAlternatingTest hoa ind =
+  let inst =
+        TestInstance
+          { run =
+              case parse hoa of
+                Left err -> do
+                  putStrLn $ "Parser returned with error: " ++ err ++ " on:"
+                  putStrLn hoa
+                  return $ Finished $ Fail "PARSERBUG"
+                Right parsedHoa -> do
+                  let printed = printHOA parsedHoa
+                  valid <- checkValidHOA printed
+                  case valid of
+                    Left err ->
+                      return $ Finished $ Fail $ "TESTING FAILURE: " ++ err
+                    Right (Just err) -> do
+                      putStrLn "Printed HOA is not valid. Error:"
+                      putStrLn err
+                      putStrLn "Original:"
+                      putStrLn hoa
+                      putStrLn "Printed:"
+                      putStrLn printed
+                      return $ Finished $ Fail "PRINTERBUG"
+                    Right Nothing -> do
+                      equivalent <- areEquivalent2 hoa printed
+                      case equivalent of
+                        Left err ->
+                          return $ Finished $ Fail $ "TESTING FAILURE: " ++ err
+                        Right False -> do
+                          putStrLn
+                            "Printed HOA is not equivalent to original one"
                           putStrLn "Original:"
                           putStrLn hoa
                           putStrLn "Printed:"
