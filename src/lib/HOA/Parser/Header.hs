@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  HOA.Parser.Header
--- Maintainer  :  Gideon Geier (geier@projectjarvis.de)
+-- Maintainer  :  Gideon Geier
 --
 -- Parser for the Header section.
 --
@@ -26,11 +26,11 @@ import HOA.Parser.AccName
 
 import HOA.Parser.Properties
 
-import Sat.Smart (fTrue)
+import HOA.Formula (Formula(FTrue))
 
 import Data.Maybe (Maybe(..), isJust)
 
-import Data.Set as S (empty, fromList, union)
+import Data.Set as S (empty, fromList, insert, union)
 
 import Control.Monad (when)
 
@@ -57,7 +57,7 @@ headerParser = do
                             controllableAPs = S.empty,
                             acceptanceName = Nothing,
                             acceptanceSets = -1,
-                            acceptance = fTrue,
+                            acceptance = FTrue,
                             tool = Nothing,
                             name = Nothing,
                             properties = S.empty,
@@ -87,7 +87,7 @@ headerParser = do
 
     startParser hoa = do
         states <- sepBy1 natParser (do {_ <- char '&'; (~~)})
-        headerItemParser hoa{initialStates = union (initialStates hoa) $ S.fromList states}
+        headerItemParser hoa{initialStates = S.insert states (initialStates hoa) }
 
     apParser hoa = if atomicPropositions hoa /= -1 then errDoubleDef "AP"
       else do

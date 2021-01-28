@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Hanoi
--- Maintainer  :  Philippe Heim (Heim@ProjectJARVIS.de)
---                Gideon Geier (geier@projectjarvis.de)
+-- Maintainer  :  Philippe Heim
+--                Gideon Geier
 --
 -- This module exports all stuff of the hanoi library
 --
@@ -12,7 +12,7 @@ module Hanoi
   , AcceptanceCondition
   , AcceptanceSet
   , AcceptanceType
-  , Formula
+  , Formula(..)
   , HOA(..)
   , HOAAcceptanceName(..)
   , HOAProperty(..)
@@ -46,7 +46,7 @@ import HOA.Format
   , State
   )
 
-import Sat.Finite (Formula)
+import HOA.Formula (Formula(..))
 
 import HOA.Printer (printHOA, printHOALines)
 

@@ -25,7 +25,7 @@ import qualified Data.Set as Set
 -----------------------------------------------------------------------------
 
 successors
-  :: HOA -> State -> Set State
+  :: HOA -> State -> Set [State]
 
 successors HOA{..} s =
   Set.map (\(s',_,_) -> s' ) $ edges s

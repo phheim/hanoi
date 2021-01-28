@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  HOA.Parser.AccName
--- Maintainer  :  Gideon Geier (geier@projectjarvis.de)
+-- Maintainer  :  Gideon Geier
 --
 -- Parser for the acc-name header-item.
 --
@@ -42,17 +42,15 @@ accNameParser = accName
       keyword "generalized-Rabin"
       nat1 <- natParser
       nat2 <- natParser
-      nat3 <- natParser
-      return $ GeneralizedRabin nat1 nat2 nat3
+      GeneralizedRabin nat1 nat2 <$> natParser
 
     parityName str1 str2 str3 op = do
       keyword str1
       keyword str2
       keyword str3
-      nat <- natParser
-      return $ op nat
+      op <$> natParser
 
     natName str op = do
       keyword str
-      nat <- natParser
-      return $ op nat
+      op <$> natParser
+

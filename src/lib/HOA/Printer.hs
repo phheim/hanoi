@@ -1,9 +1,10 @@
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  HOA.Printer
--- Maintainer  :  Philippe Heim (Heim@ProjectJARVIS.de)
+-- Maintainer  :  Philippe Heim
+-- Description :  Prints an HOA
 --
--- Prints the internal HOA format
+-- This module prints an 'HOA' as a string.
 --
 -----------------------------------------------------------------------------
 {-# LANGUAGE FlexibleContexts      #-}
@@ -21,9 +22,9 @@ module HOA.Printer
 
 -----------------------------------------------------------------------------
 
-import Data.List as List (intercalate, sort, sortOn)
+import Data.List as List (intercalate, sortOn)
 import Data.Maybe (maybeToList)
-import Data.Set as Set (Set, toAscList, toList)
+import Data.Set as Set (Set, elems, toList)
 import Finite (Finite, FiniteBounds, index, offset, v2t, values)
 import HOA.Format
   ( AcceptanceSet
@@ -35,15 +36,18 @@ import HOA.Format
   , Label
   , State
   )
-import Sat.Finite (Formula, FormulaView(..), view)
+import HOA.Formula (Formula(..))
 
 -----------------------------------------------------------------------------
--- | Converts a HOA to a string
+-- | 'printHOA' prints a 'HOA' to as a 'String'
+
 printHOA :: HOA -> String
 printHOA = unlines . printHOALines
 
 -----------------------------------------------------------------------------
--- | Converts a HOA to a list of strings (different potential lines)
+-- | 'printHOA' prints a 'HOA' as a list of 'String's representing
+-- different lines
+
 printHOALines :: HOA -> [String]
 printHOALines hoa@HOA {..} =
   let ?bounds = hoa in
@@ -66,29 +70,28 @@ printHOALines hoa@HOA {..} =
     Nothing   -> []
   )
   ++
+  [ "States: " ++ show size ]
+  ++
   -- Start
-  ((("Start: " ++ ) . strInd) <$> (toAscList initialStates))
+  (("Start: " ++ ) . printStateConj <$> elems initialStates)
   ++
   -- acc-name
   (case acceptanceName of
-    Just acceptanceName -> ["acc-name: " ++ (printAcceptanceName acceptanceName)]
-    Nothing -> []
+    Just acceptanceName -> ["acc-name: " ++ printAcceptanceName acceptanceName]
+    Nothing             -> []
   )
   ++
   -- Acceptance
-  ["Acceptance: " ++ (show acceptanceSets) ++ " " ++ nameAcceptanceCond]
+  ["Acceptance: " ++ show acceptanceSets ++ " " ++ nameAcceptanceCond]
   ++
   -- AP
-  ["AP: " ++ unwords ((show atomicPropositions) : apNamesSorted)]
+  ["AP: " ++ unwords (show atomicPropositions : apNamesSorted)]
   ++
   -- controllable-AP
-  (if not $ null controllableAPs
-    then ["controllable-AP: " ++ unwords (map strInd $ toList controllableAPs)]
-    else []
-  )
+  ["controllable-AP: " ++ unwords (map strInd $ toList controllableAPs) | not (null controllableAPs)]
   ++
   -- properties
-  [ "properties: " ++ unwords ("explicit-labels" : (map printProperty $ toList properties)) ]
+  [ "properties: " ++ unwords ("explicit-labels" : map printProperty (toList properties)) ]
   ++
   -- tool
   (case tool of
@@ -106,17 +109,17 @@ printHOALines hoa@HOA {..} =
   where
     printState :: FiniteBounds HOA => State -> [String]
     printState s =
-      (unwords $
-        ["State:"]
-        ++
-        (maybeToList $ printLabel <$> stateLabel s)
+      unwords (
+        "State:"
+        :
+        maybeToList (printLabel <$> stateLabel s)
         ++
         [strInd s]
         ++
-        (maybeToList $ quote <$> stateName s)
+        maybeToList (quote <$> stateName s)
         ++
         (case stateAcceptance s of
-          Just aSets -> [brCurly $ unwords (map strInd $ toAscList aSets)]
+          Just aSets -> [brCurly $ unwords (map strInd $ elems aSets)]
           Nothing    -> []
         )
       )
@@ -125,14 +128,14 @@ printHOALines hoa@HOA {..} =
 
     printEdge ::
           FiniteBounds HOA
-      => (State, Maybe Label, Maybe (Set AcceptanceSet))
+      => ([State], Maybe Label, Maybe (Set AcceptanceSet))
       -> String
     printEdge edge =
       let (target, label, aSets) = edge
       in
       unwords . concat $
         [ maybeToList $ printLabel <$> label
-        , [strInd target]
+        , [printStateConj target]
         , maybeToList $ printAcceptingSets <$> aSets
         ]
 
@@ -142,6 +145,10 @@ printHOALines hoa@HOA {..} =
 
     printLabel :: FiniteBounds HOA => Label -> String
     printLabel label = brBox $ printFormula strInd label
+
+    printStateConj :: FiniteBounds HOA => [State] -> String
+    printStateConj = intercalate " & " . map strInd
+
 
 -----------------------------------------------------------------------------
 -- | Different library related printing methods
@@ -167,7 +174,8 @@ brCurly = wrap "{" "}"
 
 
 -----------------------------------------------------------------------------
--- | Converts a HOA property to a string
+-- | 'printProperty' prints a 'HOAProperty' as a 'String'
+
 printProperty :: HOAProperty -> String
 printProperty =
   \case
@@ -189,50 +197,40 @@ printProperty =
     COLORED               -> "colored"
 
 -----------------------------------------------------------------------------
--- | Converts a HOA acceptance name to a string
+-- | 'printAcceptanceName' prints an 'HOAAcceptanceName' as a 'String'
+
 printAcceptanceName :: HOAAcceptanceName -> String
 printAcceptanceName =
   \case
     Buchi -> "Buchi"
     CoBuchi -> "co-Buchi"
-    GeneralizedBuchi n -> "generalized-Buchi " ++ (show n)
-    GeneralizedCoBuchi n -> "generalized-co-Buchi " ++ (show n)
-    Streett n -> "Streett " ++ (show n)
-    Rabin n -> "Rabin " ++ (show n)
+    GeneralizedBuchi n -> "generalized-Buchi " ++ show n
+    GeneralizedCoBuchi n -> "generalized-co-Buchi " ++ show n
+    Streett n -> "Streett " ++ show n
+    Rabin n -> "Rabin " ++ show n
     GeneralizedRabin a b c ->
-      "generalized-Rabin " ++ (show a) ++ " " ++ (show b) ++ " " ++ (show c)
-    ParityMinOdd n  -> "parity min odd " ++ (show n)
-    ParityMaxOdd n  -> "parity max odd " ++ (show n)
-    ParityMinEven n -> "parity min even " ++ (show n)
-    ParityMaxEven n -> "parity max even " ++ (show n)
+      "generalized-Rabin " ++ show a ++ " " ++ show b ++ " " ++ show c
+    ParityMinOdd n  -> "parity min odd " ++ show n
+    ParityMaxOdd n  -> "parity max odd " ++ show n
+    ParityMinEven n -> "parity min even " ++ show n
+    ParityMaxEven n -> "parity max even " ++ show n
     All             -> "all"
     None            -> "none"
 
 
+-----------------------------------------------------------------------------
+-- | 'printFormula' prints a 'Formula' as a 'String'. Note that the way
+-- of printing these formulas is HOA specific and therefore not part of
+-- the HOA.Formula module.
+
 printFormula :: (a -> String) -> Formula a -> String
-printFormula showVar = printFormula'
-  where
-    printFormula' form =
-      case view form of
-        TTrue -> "t"
+printFormula showVar = \case
+        FTrue -> "t"
         FFalse -> "f"
-        Var a -> showVar a
-        Not f -> "!" ++ printFormula' f
-        And fs ->
-          intercalate " & " $ sort $ fmap (brRound . printFormula') fs
-        Or fs ->
-          intercalate " | " $ sort $ fmap (brRound . printFormula') fs
-        Impl f1 f2 ->
-          let s1 = printFormula' f1
-              s2 = printFormula' f2
-           in "(!(" ++ s1 ++ ")) | " ++ s2
-        Equiv f1 f2 ->
-          let s1 = printFormula' f1
-              s2 = printFormula' f2
-           in "(" ++
-              s1 ++ "&" ++ s2 ++ ") | ((!(" ++ s1 ++ ")) & (!(" ++ s2 ++ ")))"
-        XOr f1 f2 ->
-          let s1 = printFormula' f1
-              s2 = printFormula' f2
-           in "((!(" ++
-              s1 ++ ")) & " ++ s2 ++ ") | ((!(" ++ s2 ++ ")) & " ++ s1 ++ ")"
+        FVar a -> showVar a
+        FNot f -> "!" ++ (brRound . printFormula showVar) f
+        FAnd fs ->
+          intercalate " & " $ fmap (brRound . printFormula showVar) fs
+        FOr fs ->
+          intercalate " | " $ fmap (brRound . printFormula showVar) fs
+

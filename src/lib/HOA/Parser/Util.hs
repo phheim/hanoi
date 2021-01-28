@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  HOA.Parser.Util
--- Maintainer  :  Gideon Geier (geier@projectjarvis.de)
+-- Maintainer  :  Gideon Geier
 --
 -- Utils used in all Parts of the Parser.
 --
@@ -28,25 +28,6 @@ import Control.Monad (void)
 import Text.Parsec.String (Parser)
 
 import Text.Parsec.Token
-
-import Sat.Smart as Sm (Formula, FormulaView(..), view)
-
-import qualified Sat.Finite as Fin
-  ( Formula
-  , UnfinishedFormula
-  , fAnd
-  , fEquiv
-  , fFalse
-  , fImplies
-  , fNot
-  , fOr
-  , fTrue
-  , fVar
-  , fXOr
-  , finalize
-  )
-
-import Finite
 
 -----------------------------------------------------------------------------
 
@@ -81,7 +62,7 @@ braceParser = braces tokenparser
 natParser
   :: Parser Int
 
-natParser = fmap fromInteger $ natural tokenparser
+natParser = fromInteger <$> natural tokenparser
 
 -----------------------------------------------------------------------------
 
@@ -147,18 +128,3 @@ translateProperty s = \case
   EXPLICIT_LABELS       -> s
 
 -----------------------------------------------------------------------------
--- | Translates a Formula from Sat.Smart to Sat.Finite
-smartFormulaToFinite :: (Finite b a, FiniteBounds b)
-  => Sm.Formula a -> Fin.Formula a
-smartFormulaToFinite = (Fin.finalize . smartFormulaToFinite') . Sm.view
-smartFormulaToFinite' :: (Finite b a, FiniteBounds b)
-  => FormulaView Sm.Formula a -> Fin.UnfinishedFormula a
-smartFormulaToFinite' TTrue             = Fin.fTrue
-smartFormulaToFinite' FFalse            = Fin.fFalse
-smartFormulaToFinite' (Var v)           = Fin.fVar v
-smartFormulaToFinite' (Not fml)         = Fin.fNot $ (smartFormulaToFinite' . view) fml
-smartFormulaToFinite' (And xs)          = Fin.fAnd $ map (smartFormulaToFinite' . view) xs
-smartFormulaToFinite' (Or xs)           = Fin.fOr  $ map (smartFormulaToFinite' . view) xs
-smartFormulaToFinite' (Equiv fmlA fmlB) = Fin.fEquiv    ((smartFormulaToFinite' . view) fmlA) ((smartFormulaToFinite' . view) fmlB)
-smartFormulaToFinite' (Impl fmlA fmlB)  = Fin.fImplies  ((smartFormulaToFinite' . view) fmlA) ((smartFormulaToFinite' . view) fmlB)
-smartFormulaToFinite' (XOr fmlA fmlB)   = Fin.fXOr      ((smartFormulaToFinite' . view) fmlA) ((smartFormulaToFinite' . view) fmlB)

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  HOA.Parser
--- Maintainer  :  Gideon Geier (geier@projectjarvis.de)
+-- Maintainer  :  Gideon Geier
 --
 -- Parser for Automata in HOA Format.
 --
@@ -16,7 +16,7 @@ module HOA.Parser
 -----------------------------------------------------------------------------
 import Finite
 
-import qualified Sat.Smart as Sm (Formula)
+import HOA.Formula (Formula)
 
 import HOA.Format
 
@@ -48,7 +48,7 @@ hoaParser =
           , acceptanceSets = P.acceptanceSets header
           }
 
-    if (P.size header) /= 0 && (P.size header) /= (length states)
+    if P.size header /= 0 && P.size header /= length states
     then P.unexpected "Number of States does not match number given in \"States:\""
     else
       -- process raw parsed states to internal format
@@ -58,7 +58,7 @@ hoaParser =
         labels =
             map
               (\(s, (_, l, _, _)) ->
-                  (value s, fmap (smartFormulaToFinite . fmap value) l))
+                  (value s, fmap (fmap value) l))
               states
         accept =
             map
@@ -72,7 +72,7 @@ hoaParser =
       return
         HOA
         { size = length states
-        , initialStates = S.map value $ P.initialStates header
+        , initialStates = S.map (map value) $ P.initialStates header
         , atomicPropositions = P.atomicPropositions header
         , atomicPropositionName =
             (!) $ mapKeysMonotonic value $ P.atomicPropositionName header
@@ -80,8 +80,7 @@ hoaParser =
         , acceptanceName = P.acceptanceName header
         , acceptanceSets = P.acceptanceSets header
         , acceptance =
-            smartFormulaToFinite $
-            fmap convertAccType $ P.acceptance header
+            convertAccType <$> P.acceptance header
         , tool = P.tool header
         , name = P.name header
         , properties = toFormatProperties $ P.properties header
@@ -94,11 +93,11 @@ hoaParser =
   where
     convertEdge ::
          (FiniteBounds HOA)
-      => (Int, Maybe (Sm.Formula Int), Maybe (S.Set Int))
-      -> (State, Maybe Label, Maybe AcceptanceSets)
+      => ([Int], Maybe (Formula Int), Maybe (S.Set Int))
+      -> ([State], Maybe Label, Maybe AcceptanceSets)
     convertEdge (s, mFml, mAcc) =
-      ( value s
-      , fmap (smartFormulaToFinite . fmap value) mFml
+      ( map value s
+      , fmap (fmap value) mFml
       , fmap (S.map value) mAcc)
     convertAccType :: (FiniteBounds HOA) => P.AcceptanceType -> AcceptanceType
     convertAccType (P.Fin b n) = Fin b $ value n

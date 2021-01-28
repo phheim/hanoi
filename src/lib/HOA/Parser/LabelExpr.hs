@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  HOA.Parser.LabelExpr
--- Maintainer  :  Gideon Geier (geier@projectjarvis.de)
+-- Maintainer  :  Gideon Geier
 --
 -- Parser for LabelExpressions in Aliases and State/Edge Labels.
 --
@@ -15,7 +15,7 @@ module HOA.Parser.LabelExpr
 
 import HOA.Parser.Util
 
-import Sat.Smart (Formula, fAnd, fFalse, fNot, fOr, fTrue, fVar)
+import HOA.Formula (Formula(..))
 
 import Data.Map.Strict as M (Map, lookup)
 
@@ -33,9 +33,9 @@ labelExprParser :: Map String (Formula Int) -> Parser (Formula Int)
 labelExprParser env = expr
   where
     expr = buildExpressionParser table term
-    table = [   [prefix "!" fNot],
-                [binary "&" (\x y -> fAnd [x,y]) AssocLeft],
-                [binary "|" (\x y -> fOr  [x,y]) AssocLeft]
+    table = [   [prefix "!" FNot],
+                [binary "&" (\x y -> FAnd [x,y]) AssocLeft],
+                [binary "|" (\x y -> FOr  [x,y]) AssocLeft]
             ]
     binary  name fun = Infix  (do{ rOp name; return fun })
     prefix  name fun = Prefix (do{ rOp name; return fun })
@@ -47,14 +47,14 @@ labelExprParser env = expr
     falseLabel = do
             _ <- char 'f'
             (~~)
-            return fFalse
+            return FFalse
     trueLabel = do
             _ <- char 't'
             (~~)
-            return fTrue
-    intLabel = do
-            num <- natParser
-            return $ fVar num
+            return FTrue
+
+    intLabel = FVar <$> natParser
+
     stringLabel = do
             _ <- char '@'
             id <- identParser
