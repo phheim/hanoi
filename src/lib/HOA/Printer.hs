@@ -220,7 +220,7 @@ printFormula showVar = \case
         FTrue -> "t"
         FFalse -> "f"
         FVar a -> showVar a
-        FNot f -> "!" ++ printFormula showVar f
+        FNot f -> "!" ++ (brRound . printFormula showVar) f
         FAnd fs ->
           intercalate " & " $ sort $ fmap (brRound . printFormula showVar) fs
         FOr fs ->
