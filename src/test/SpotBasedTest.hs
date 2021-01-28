@@ -167,7 +167,7 @@ generateAlternatingTest hoa ind =
 -- | Creates a list of test given a seed, atomic proposition list
 createTests :: [(Int, Int)] -> IO (Either Error [TestInstance])
 createTests seeds = do
-  potHOAs <- mapM (\(s, ap) -> randHOA s ap) seeds
+  potHOAs <- mapM (uncurry randHOA) seeds
   let potHOAList = help potHOAs
   case potHOAList of
     Left err -> return $ Left err

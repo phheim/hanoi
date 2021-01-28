@@ -81,7 +81,7 @@ braceParser = braces tokenparser
 natParser
   :: Parser Int
 
-natParser = fmap fromInteger $ natural tokenparser
+natParser = fromInteger <$> natural tokenparser
 
 -----------------------------------------------------------------------------
 

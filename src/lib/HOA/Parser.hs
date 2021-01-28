@@ -48,7 +48,7 @@ hoaParser =
           , acceptanceSets = P.acceptanceSets header
           }
 
-    if (P.size header) /= 0 && (P.size header) /= (length states)
+    if P.size header /= 0 && P.size header /= length states
     then P.unexpected "Number of States does not match number given in \"States:\""
     else
       -- process raw parsed states to internal format
