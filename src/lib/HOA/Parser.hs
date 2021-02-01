@@ -6,7 +6,10 @@
 -- Parser for Automata in HOA Format.
 --
 -----------------------------------------------------------------------------
+
 {-# LANGUAGE ImplicitParams #-}
+
+-----------------------------------------------------------------------------
 
 module HOA.Parser
   ( hoaParser
@@ -19,6 +22,8 @@ import Finite
 import HOA.Formula (Formula)
 
 import HOA.Format
+
+import HOA.Utils (genBounds)
 
 import HOA.Parser.Util
 
@@ -42,11 +47,11 @@ hoaParser =
   (~~) >> do
     header <- headerParser
     states <- bodyParser (P.atomicPropositions header) (P.aliases header)
-    let ?bounds = HOA
-          { size = length states
-          , atomicPropositions = P.atomicPropositions header
-          , acceptanceSets = P.acceptanceSets header
-          }
+    let
+      ?size = length states
+      ?atomicPropositions = P.atomicPropositions header
+      ?acceptanceSets = P.acceptanceSets header
+    let ?bounds = genBounds
 
     if P.size header /= 0 && P.size header /= length states
     then P.unexpected "Number of States does not match number given in \"States:\""

@@ -88,6 +88,7 @@ test-suite default
     HOA.Parser.Properties
     HOA.Printer
     HOA.Sanitizer
+    HOA.Utils
     Spot.Autfilt
     Spot.Randaut
 
