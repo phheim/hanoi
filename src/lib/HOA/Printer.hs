@@ -136,11 +136,11 @@ printHOALines hoa@HOA {..} =
       unwords . concat $
         [ maybeToList $ printLabel <$> label
         , [printStateConj target]
-        , maybeToList $ printAcceptingSets <$> aSets
+        , maybeToList $ printAcceptanceSets <$> aSets
         ]
 
-    printAcceptingSets :: FiniteBounds HOA => AcceptanceSets -> String
-    printAcceptingSets aSets =
+    printAcceptanceSets :: FiniteBounds HOA => AcceptanceSets -> String
+    printAcceptanceSets aSets =
       brCurly $ unwords $ map strInd $ toList aSets
 
     printLabel :: FiniteBounds HOA => Label -> String
