@@ -225,12 +225,15 @@ printAcceptanceName =
 
 printFormula :: (a -> String) -> Formula a -> String
 printFormula showVar = \case
-        FTrue -> "t"
-        FFalse -> "f"
-        FVar a -> showVar a
-        FNot f -> "!" ++ (brRound . printFormula showVar) f
-        FAnd fs ->
-          intercalate " & " $ fmap (brRound . printFormula showVar) fs
-        FOr fs ->
-          intercalate " | " $ fmap (brRound . printFormula showVar) fs
+  FTrue -> "t"
+  FFalse -> "f"
+  FVar a -> showVar a
+  FNot f -> "!" ++ printSubFormula f
+  FAnd fs ->
+    intercalate " & " $ fmap printSubFormula fs
+  FOr fs ->
+    intercalate " | " $ fmap printSubFormula fs
+
+  where
+    printSubFormula = (brRound . printFormula showVar)
 
