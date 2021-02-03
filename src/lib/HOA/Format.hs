@@ -104,7 +104,8 @@ data HOA =
   HOA
     { -- | Number of states (set can be computed via the type)
       size :: Int
-    , -- | Set of initial states
+    , -- | Set of initial states (singletons) or conjuncts of initial states
+      -- for alternating automata, each list forms a conjunct
       initialStates :: Set [State]
     , -- | Number of atomic propositions (set can be computed via the type)
       atomicPropositions :: Int
@@ -125,7 +126,7 @@ data HOA =
     , -- | Properties
       properties :: Set HOAProperty
     , -- | Set of edges for each state, an edge consists of target state
-      -- a optional label and an optional set of acceptance sets
+      -- (-conjunct) a optional label and an optional set of acceptance sets
       edges :: State -> Set ([State], Maybe Label, Maybe AcceptanceSets)
     , -- | For each state a possible label
       stateLabel :: State -> Maybe Label
