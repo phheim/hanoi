@@ -24,9 +24,6 @@ import Hanoi (parse, printHOA)
 import Spot.Autfilt
 import Spot.Randaut (RandautResult(..), randautCMD)
 
-import System.Directory (findExecutable)
-import System.Process (readProcessWithExitCode)
-
 -----------------------------------------------------------------------------
 tests :: IO [TestInstance]
 tests = do
