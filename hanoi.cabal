@@ -29,7 +29,6 @@ library
       base >=4.7 && <4.13
     , containers >= 0.6.0.1
     , finite >= 1.4.1
-    , automata-tools-wrappers
     , parsec
 
 

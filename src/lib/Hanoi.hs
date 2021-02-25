@@ -7,6 +7,7 @@
 -- This module exports all stuff of the hanoi library
 --
 -----------------------------------------------------------------------------
+
 module Hanoi
   ( AP
   , AcceptanceCondition
@@ -27,12 +28,12 @@ module Hanoi
     -- Sanitizing
   , complete
   , sanitize
-    -- Checking
-  , checkValidHOA
     -- Utils
   , numSuccessors
   , successors
   ) where
+
+-----------------------------------------------------------------------------
 
 import HOA.Format
   ( AP
@@ -56,27 +57,10 @@ import HOA.Sanitizer (complete, sanitize)
 
 import HOA.Utils (numSuccessors, successors)
 
-import Spot.Autfilt
-  ( AutfiltInput(automaton)
-  , AutfiltResult(..)
-  , autfilt
-  , defaultAutfiltInput
-  )
-
 import Control.Exception (IOException, try)
 import System.IO (readFile)
 
--- | Check if a hoa is a valid one according to spot
-checkValidHOA :: String -> IO (Either String Bool)
-checkValidHOA hoa = do
-  let input = defaultAutfiltInput {automaton = hoa}
-  res <- autfilt input
-  case res of
-    AutfiltSuccess _     -> return $ Right True
-    AutfiltNoMatch       -> return $ Right False
-    AutfiltFailure _     -> return $ Right False
-    AutfiltException err -> return $ Left err
-
+-----------------------------------------------------------------------------
 
 wrap :: (String -> Either String b) -> HOA -> Either String b
 wrap f hoa = f (printHOA hoa)
