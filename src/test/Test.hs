@@ -14,17 +14,18 @@ module Test
 -----------------------------------------------------------------------------
 import Distribution.TestSuite
 
-import HOAExamplesTest (exampleParsePrintIdempotenceTest, exampleTests)
-import SpotBasedTest (tests)
+import HOAExamplesTest (exampleIdempotenceTests, exampleIsomorphicTests)
+import SpotBasedTest (idempotenceTests, isomorphicTests)
 
 -----------------------------------------------------------------------------
 -- | The Tests
 tests :: IO [Test]
 tests = do
   dummyTest <- dummy
-  spotTests <- SpotBasedTest.tests
+  spotIsomorphicTests <- SpotBasedTest.isomorphicTests
+  spotIdempotenceTests <- SpotBasedTest.idempotenceTests
   return $ map Test $
-    [dummyTest] ++ spotTests ++ exampleTests ++ exampleParsePrintIdempotenceTest
+    [dummyTest] ++ spotIsomorphicTests ++ exampleIsomorphicTests ++ spotIdempotenceTests ++ exampleIdempotenceTests
 
 -----------------------------------------------------------------------------
 -- | This is the dummy test

@@ -13,10 +13,11 @@
 -----------------------------------------------------------------------------
 
 module SpotBasedTest
-  ( generateTest
-  , generateAlternatingTest
-  , generateParsePrintIdempotenceTest
-  , tests
+  ( generateIsomorphicTest
+  , generateAlternatingEquivalenceTest
+  , generateIdempotenceTest
+  , isomorphicTests
+  , idempotenceTests
   ) where
 
 -----------------------------------------------------------------------------
@@ -27,11 +28,23 @@ import Spot.Autfilt
 import Spot.Randaut (RandautResult(..), randautCMD)
 
 -----------------------------------------------------------------------------
-tests :: IO [TestInstance]
-tests = do
+
+isomorphicTests :: IO [TestInstance]
+isomorphicTests = do
   let seeds = [1 .. 100]
   let apCounts = [1 .. 10]
-  spotTests <- createTests [(s,a) | s <- seeds, a <- apCounts]
+  spotTests <- createTests generateIsomorphicTest [(s,a) | s <- seeds, a <- apCounts]
+  case spotTests of
+    Left err -> do
+      putStrLn err
+      error err
+    Right tests -> return tests
+
+idempotenceTests :: IO [TestInstance]
+idempotenceTests = do
+  let seeds = [1 .. 100]
+  let apCounts = [1 .. 10]
+  spotTests <- createTests generateIdempotenceTest [(s,a) | s <- seeds, a <- apCounts]
   case spotTests of
     Left err -> do
       putStrLn err
@@ -68,8 +81,8 @@ checkValidHOA hoa = do
 
 -----------------------------------------------------------------------------
 -- | Generates a parser/printer test given an HOA and an name index
-generateTest :: String -> Int -> TestInstance
-generateTest hoa ind =
+generateIsomorphicTest :: String -> Int -> TestInstance
+generateIsomorphicTest hoa ind =
   let inst =
         TestInstance
           { run =
@@ -107,7 +120,7 @@ generateTest hoa ind =
                           return $ Finished $ Fail "PARSER- or PRINTERBUG"
                         Right True -> return $ Finished Pass
           , name = "Spot based parser/printer test " ++ (show ind)
-          , tags = ["spot", "parser", "printer"]
+          , tags = ["spot", "parser", "printer", "isomorphic"]
           , options = []
           , setOption = \_ _ -> Right inst
           }
@@ -117,8 +130,8 @@ generateTest hoa ind =
 -- | Generates a parser/printer test given an alternating HOA and an name index
 -- should be removed as soon as autfilt supports isomorphism checks on
 -- alternating automata
-generateAlternatingTest :: String -> Int -> TestInstance
-generateAlternatingTest hoa ind =
+generateAlternatingEquivalenceTest :: String -> Int -> TestInstance
+generateAlternatingEquivalenceTest hoa ind =
   let inst =
         TestInstance
           { run =
@@ -156,7 +169,7 @@ generateAlternatingTest hoa ind =
                           return $ Finished $ Fail "PARSER- or PRINTERBUG"
                         Right True -> return $ Finished Pass
           , name = "Spot based parser/printer test " ++ (show ind)
-          , tags = ["spot", "parser", "printer"]
+          , tags = ["spot", "parser", "printer", "alternating"]
           , options = []
           , setOption = \_ _ -> Right inst
           }
@@ -164,8 +177,8 @@ generateAlternatingTest hoa ind =
 
 -----------------------------------------------------------------------------
 -- | Generates a parser-printer-parser-printer idempotence test given an HOA and an name index
-generateParsePrintIdempotenceTest :: String -> Int -> TestInstance
-generateParsePrintIdempotenceTest hoa ind =
+generateIdempotenceTest :: String -> Int -> TestInstance
+generateIdempotenceTest hoa ind =
   let inst =
         TestInstance
           { run =
@@ -232,14 +245,14 @@ generateParsePrintIdempotenceTest hoa ind =
 
 -----------------------------------------------------------------------------
 -- | Creates a list of test given a seed, atomic proposition list
-createTests :: [(Int, Int)] -> IO (Either Error [TestInstance])
-createTests seeds = do
+createTests :: (String -> Int -> TestInstance) -> [(Int, Int)] -> IO (Either Error [TestInstance])
+createTests generator seeds = do
   potHOAs <- mapM (uncurry randHOA) seeds
   let potHOAList = help potHOAs
   case potHOAList of
     Left err -> return $ Left err
     Right hoas ->
-      return $ Right $ map (\(n, h) -> generateTest h n) $ zip [1 ..] hoas
+      return $ Right $ map (\(n, h) -> generator h n) $ zip [1 ..] hoas
   where
     help :: [Either Error String] -> Either Error [String]
     help [] = Right []

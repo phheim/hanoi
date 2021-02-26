@@ -4,12 +4,12 @@
 -- Maintainer  :  Gideon Geier
 --                Marvin Stenger
 --
--- Tests done using spots hoa tools
+-- Tests using hoa format example automata
 --
 -----------------------------------------------------------------------------
 module HOAExamplesTest
-  ( exampleTests
-  , exampleParsePrintIdempotenceTest
+  ( exampleIsomorphicTests
+  , exampleIdempotenceTests
   , hoaExamples
   ) where
 
@@ -17,21 +17,21 @@ module HOAExamplesTest
 import Distribution.TestSuite
 
 import SpotBasedTest
-  ( generateAlternatingTest
-  , generateParsePrintIdempotenceTest
-  , generateTest
+  ( generateAlternatingEquivalenceTest
+  , generateIdempotenceTest
+  , generateIsomorphicTest
   )
 
 -----------------------------------------------------------------------------
 
-exampleTests :: [TestInstance]
-exampleTests = zipWith generateTest hoaExamples [2001, 2002, 2003, 2032, 2004, 2005, 2006, 2007, 2008]
-                ++ zipWith generateAlternatingTest alternatingExamples [2011]
+exampleIsomorphicTests :: [TestInstance]
+exampleIsomorphicTests = zipWith generateIsomorphicTest hoaExamples [2001, 2002, 2003, 2032, 2004, 2005, 2006, 2007, 2008]
+                         ++ zipWith generateAlternatingEquivalenceTest alternatingExamples [2011]
 
 
-exampleParsePrintIdempotenceTest :: [TestInstance]
-exampleParsePrintIdempotenceTest =
-  zipWith generateParsePrintIdempotenceTest (hoaExamples ++ alternatingExamples) [3001..]
+exampleIdempotenceTests :: [TestInstance]
+exampleIdempotenceTests =
+  zipWith generateIdempotenceTest (hoaExamples ++ alternatingExamples) [2001..]
 
 
 hoaExamples :: [String]
