@@ -14,7 +14,7 @@ module Test
 -----------------------------------------------------------------------------
 import Distribution.TestSuite
 
-import HOAExamplesTest (exampleTests)
+import HOAExamplesTest (exampleParsePrintIdempotenceTest, exampleTests)
 import SpotBasedTest (tests)
 
 -----------------------------------------------------------------------------
@@ -23,7 +23,8 @@ tests :: IO [Test]
 tests = do
   dummyTest <- dummy
   spotTests <- SpotBasedTest.tests
-  return $ map Test $ [dummyTest] ++ spotTests ++ exampleTests
+  return $ map Test $
+    [dummyTest] ++ spotTests ++ exampleTests ++ exampleParsePrintIdempotenceTest
 
 -----------------------------------------------------------------------------
 -- | This is the dummy test

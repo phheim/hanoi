@@ -2,25 +2,36 @@
 -- |
 -- Module      :  HOAExamplesTest
 -- Maintainer  :  Gideon Geier
+--                Marvin Stenger
 --
 -- Tests done using spots hoa tools
 --
 -----------------------------------------------------------------------------
 module HOAExamplesTest
   ( exampleTests
+  , exampleParsePrintIdempotenceTest
   , hoaExamples
   ) where
 
 -----------------------------------------------------------------------------
 import Distribution.TestSuite
 
-import SpotBasedTest (generateAlternatingTest, generateTest)
+import SpotBasedTest
+  ( generateAlternatingTest
+  , generateParsePrintIdempotenceTest
+  , generateTest
+  )
 
 -----------------------------------------------------------------------------
+
 exampleTests :: [TestInstance]
 exampleTests = zipWith generateTest hoaExamples [2001, 2002, 2003, 2032, 2004, 2005, 2006, 2007, 2008]
                 ++ zipWith generateAlternatingTest alternatingExamples [2011]
 
+
+exampleParsePrintIdempotenceTest :: [TestInstance]
+exampleParsePrintIdempotenceTest =
+  zipWith generateParsePrintIdempotenceTest (hoaExamples ++ alternatingExamples) [3001..]
 
 
 hoaExamples :: [String]

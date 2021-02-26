@@ -2,6 +2,7 @@
 -- |
 -- Module      :  SpotBasedTest
 -- Maintainer  :  Philippe Heim
+--                Marvin Stenger
 --
 -- Tests done using spots hoa tools
 --
@@ -14,6 +15,7 @@
 module SpotBasedTest
   ( generateTest
   , generateAlternatingTest
+  , generateParsePrintIdempotenceTest
   , tests
   ) where
 
@@ -155,6 +157,74 @@ generateAlternatingTest hoa ind =
                         Right True -> return $ Finished Pass
           , name = "Spot based parser/printer test " ++ (show ind)
           , tags = ["spot", "parser", "printer"]
+          , options = []
+          , setOption = \_ _ -> Right inst
+          }
+   in inst
+
+-----------------------------------------------------------------------------
+-- | Generates a parser-printer-parser-printer idempotence test given an HOA and an name index
+generateParsePrintIdempotenceTest :: String -> Int -> TestInstance
+generateParsePrintIdempotenceTest hoa ind =
+  let inst =
+        TestInstance
+          { run =
+              case parse hoa of
+                Left err -> do
+                  putStrLn $ "Parser returned with error: " ++ err ++ " on original:"
+                  putStrLn hoa
+                  return $ Finished $ Fail "PARSERBUG"
+                Right parsedHoa -> do
+                  let printed = printHOA parsedHoa
+                  valid <- checkValidHOA printed
+                  case valid of
+                    Left err ->
+                      return $ Finished $ Fail $ "TESTING FAILURE: " ++ err
+                    Right (Just err) -> do
+                      putStrLn "Printed HOA is not valid. Error:"
+                      putStrLn err
+                      putStrLn "Original:"
+                      putStrLn hoa
+                      putStrLn "Printed:"
+                      putStrLn printed
+                      return $ Finished $ Fail "PRINTERBUG"
+                    Right Nothing -> do
+                      case parse printed of
+                        Left err -> do
+                          putStrLn $ "Parser returned with error: " ++ err ++ " on printed:"
+                          putStrLn printed
+                          return $ Finished $ Fail "PRINTERBUG / PARSERBUG"
+                        Right parsedHoa -> do
+                          let printed' = printHOA parsedHoa
+                          valid <- checkValidHOA printed'
+                          case valid of
+                            Left err ->
+                              return $ Finished $ Fail $ "TESTING FAILURE: " ++ err
+                            Right (Just err) -> do
+                              putStrLn "Printed HOA is not valid. Error:"
+                              putStrLn err
+                              putStrLn "Original:"
+                              putStrLn hoa
+                              putStrLn "Printed 1:"
+                              putStrLn printed
+                              putStrLn "Printed 2:"
+                              putStrLn printed'
+                              return $ Finished $ Fail "PRINTERBUG / PARSERBUG"
+                            Right Nothing -> do
+                              if printed /= printed
+                              then do
+                                putStrLn "Printed HOAs are not identical -> parsing+printing not idempotent"
+                                putStrLn "Original:"
+                                putStrLn hoa
+                                putStrLn "Printed 1:"
+                                putStrLn printed
+                                putStrLn "Printed 2:"
+                                putStrLn printed'
+                                return $ Finished $ Fail "PARSERBUG / PRINTERBUG"
+                              else
+                                return $ Finished Pass
+          , name = "Parser/Printer idempotence test " ++ (show ind)
+          , tags = ["parser", "printer", "idempotence"]
           , options = []
           , setOption = \_ _ -> Right inst
           }
