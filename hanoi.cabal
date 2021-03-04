@@ -1,24 +1,24 @@
 name:                hanoi
-version:             0.0.0.1
+version:             0.1.0.0
 synopsis:            Library for automata and the HOA format
-description:         Library for automata and the HOA format
+description:         A library for ω-regular automata and processing of files in HOA format
 author:              Felix Klein <felix.klein@cispa.de>
                      Philippe Heim <philippe.heim@cispa.de>
                      Gideon Geier <gideon.geier@cispa.de>
                      Marvin Stenger <marvin.stenger@cispa.de>
-
 maintainer:          Felix Klein <felix.klein@cispa.de>
                      Philippe Heim <philippe.heim@cispa.de>
                      Gideon Geier <gideon.geier@cispa.de>
                      Marvin Stenger <marvin.stenger@cispa.de>
-
+license:             MIT
+license-file:        LICENSE
 category:            Automata
 build-type:          Simple
 cabal-version:       >=1.10
 
 source-repository head
   type:     git
-  location: ssh://git@git.intelligent-conception.de:4352/libraries/hanoi
+  location: https://github.com/reactive-systems/hanoi
 
 library
 
@@ -26,8 +26,8 @@ library
     -Wall -Wno-name-shadowing -fno-ignore-asserts
 
   build-depends:
-      base >=4.7 && <4.13
-    , containers >= 0.6.0.1
+      base >=4.7 && <4.15
+    , containers >= 0.6.0.1 && <0.7
     , finite >= 1.4.1
     , parsec
 
@@ -91,16 +91,16 @@ test-suite default
 
   ghc-options:
     -Wall -Wno-name-shadowing -fno-ignore-asserts
-  
+
   build-depends:
-      base >=4.7 && <4.13
-    , containers >= 0.6.0.1
+      base >=4.7 && <4.15
+    , containers >= 0.6.0.1 && <0.7
     , finite >= 1.4.1
     , automata-tools-wrappers
     , parsec
     , QuickCheck
     , Cabal >=2.4
-    , hanoi == 0.0.0.1
+    , hanoi
     , directory >= 1.3.3.0
     , process >= 1.6.5.0
     , temporary >= 1.3
