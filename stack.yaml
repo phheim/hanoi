@@ -1,4 +1,4 @@
-resolver: lts-17.0
+resolver: lts-21.15
 packages:
 - .
 extra-deps:
@@ -6,3 +6,4 @@ extra-deps:
   commit: 8a37de506728ebbcfab05ea8ac3ff50aa34a2c9d
 - git: https://github.com/reactive-systems/automata-tools-wrappers.git
   commit: fdeefb53c57600a5217a82015886f7abbf65263d
+allow-newer: true
