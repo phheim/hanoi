@@ -12,7 +12,7 @@ module Hanoi
   ( AP
   , AcceptanceCondition
   , AcceptanceSet
-  , AcceptanceType
+  , AcceptanceType(..)
   , Formula(..)
   , HOA(..)
   , HOAAcceptanceName(..)
