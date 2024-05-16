@@ -39,7 +39,7 @@ import HOA.Format
   ( AP
   , AcceptanceCondition
   , AcceptanceSet
-  , AcceptanceType
+  , AcceptanceType(..)
   , HOA(..)
   , HOAAcceptanceName(..)
   , HOAProperty(..)
