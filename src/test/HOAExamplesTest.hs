@@ -211,6 +211,33 @@ hoaExamples =
     , " [!0&!1] 3 {0}"
     , "--END--"
     ]
+
+    , unlines -- aut9.hoa
+    [ "HOA: v1"
+    , "name: \"(Gap1 | FG!ap3) & G((ap1 | ap2) & (!ap1 | !ap2))\""
+    , "Start: 0"
+    , "acc-name: parity max odd 3"
+    , "Acceptance:  3 Fin(2) & (Inf(1) | Fin(0))"
+    , "AP: 3 \"ap1\" \"ap2\" \"ap3\""
+    , "properties: trans-labels explicit-labels state-acc colored complete"
+    , "properties: deterministic stutter-invariant"
+    , "--BODY--"
+    , "State: 0 {1}"
+    , "[0&!1] 0"
+    , "[!0&1] 1"
+    , "[!0&!1 | 0&1] 3"
+    , "State: 1 {2}"
+    , "[!0&1&2 | 0&!1&2] 1"
+    , "[!0&1&!2 | 0&!1&!2] 2"
+    , "[!0&!1 | 0&1] 3"
+    , "State: 2 {1}"
+    , "[!0&1&2 | 0&!1&2] 1"
+    , "[!0&1&!2 | 0&!1&!2] 2"
+    , "[!0&!1 | 0&1] 3"
+    , "State: 3 {2}"
+    , "[t] 3"
+    , "--END--"
+    ]
   ]
 
 alternatingExamples :: [String]
