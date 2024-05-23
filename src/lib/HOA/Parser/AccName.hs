@@ -15,7 +15,7 @@ import HOA.Parser.Util
 
 import HOA.Format (HOAAcceptanceName(..))
 
-import Text.Parsec ((<|>))
+import Text.Parsec ((<|>), try)
 
 import Text.Parsec.String (Parser)
 
@@ -32,9 +32,9 @@ accNameParser = accName
       (natName "generalized-co-Buchi" GeneralizedCoBuchi) <|>
       (natName "Streett" Streett) <|>
       (natName "Rabin" Rabin) <|>
-      (parityName "parity" "min" "odd" ParityMinOdd) <|>
-      (parityName "parity" "max" "odd" ParityMaxOdd) <|>
-      (parityName "parity" "min" "even" ParityMinEven) <|>
+      try(parityName "parity" "min" "odd" ParityMinOdd) <|>
+      try(parityName "parity" "max" "odd" ParityMaxOdd) <|>
+      try(parityName "parity" "min" "even" ParityMinEven) <|>
       (parityName "parity" "max" "even" ParityMaxEven) <|>
       genRabin
 
