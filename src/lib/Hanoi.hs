@@ -12,7 +12,7 @@ module Hanoi
   ( AP
   , AcceptanceCondition
   , AcceptanceSet
-  , AcceptanceType
+  , AcceptanceType(..)
   , Formula(..)
   , HOA(..)
   , HOAAcceptanceName(..)
@@ -39,7 +39,7 @@ import HOA.Format
   ( AP
   , AcceptanceCondition
   , AcceptanceSet
-  , AcceptanceType
+  , AcceptanceType(..)
   , HOA(..)
   , HOAAcceptanceName(..)
   , HOAProperty(..)
