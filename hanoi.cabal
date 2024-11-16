@@ -1,5 +1,5 @@
 name:                hanoi
-version:             0.1.0.0
+version:             0.1.0.1
 synopsis:            Library for automata and the HOA format
 description:         A library for ω-regular automata and processing of files in HOA format
 author:              Felix Klein <felix.klein@cispa.de>
