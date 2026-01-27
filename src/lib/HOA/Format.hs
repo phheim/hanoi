@@ -1,44 +1,33 @@
 -----------------------------------------------------------------------------
------------------------------------------------------------------------------
-{-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE FlexibleContexts #-}
-{-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE LambdaCase #-}
-{-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE RecordWildCards #-}
-{-# LANGUAGE TemplateHaskell #-}
-{-# LANGUAGE ImplicitParams #-}
-
------------------------------------------------------------------------------
-
 -- |
 -- Module      :  HOA.Format
 -- Maintainer  :  Philippe Heim
 --
 -- The internal representation of an HOA
+--
+-----------------------------------------------------------------------------
+{-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE RecordWildCards #-}
+
+-----------------------------------------------------------------------------
 module HOA.Format where
 
 -----------------------------------------------------------------------------
-import Data.Set as Set (Set)
-import Data.List as List
-import Finite
-import Finite.TH (baseInstance, newInstance)
-import GHC.Generics (Generic)
+import Data.Set(Set)
 
 -----------------------------------------------------------------------------
 
--- | The type of a state, generated using the Finite library
-newInstance "State"
+-- | The type of a state
+newtype State = State Int
+    deriving (Eq, Ord, Show)
 
------------------------------------------------------------------------------
+-- | The type of an atomic proposition
+newtype AP = AP Int
+    deriving (Eq, Ord, Show)
 
--- | The type of an atomic proposition, generated using the Finite library
-newInstance "AP"
-
------------------------------------------------------------------------------
-
--- | The type of an acceptance set, generated using the Finite library
-newInstance "AcceptanceSet"
+-- | The type of an acceptance set
+newtype AcceptanceSet = AcceptanceSet Int
+    deriving (Eq, Ord, Show)
 
 type AcceptanceSets = Set AcceptanceSet
 
@@ -93,7 +82,7 @@ data HOAAcceptanceName
 data AcceptanceType
   = Fin Bool AcceptanceSet
   | Inf Bool AcceptanceSet
-  deriving (Eq, Ord, Show, Generic)
+  deriving (Eq, Ord, Show)
 
 data  Formula a =
     -- | Constant true
@@ -123,8 +112,6 @@ instance Functor Formula where
 
 type AcceptanceCondition = Formula AcceptanceType
 
-instance Finite HOA Bool
-
 -----------------------------------------------------------------------------
 
 -- | The definition of a label, which is a propositional formula over
@@ -136,12 +123,12 @@ type Label = Formula AP
 -- | The internal presentation of an HOA, note that alias and implicit labels
 -- are not represented anymore
 data HOA = HOA
-  { -- | Number of states (set can be computed via the type)
+  { -- | Number of states
     size :: Int,
     -- | Set of initial states (singletons) or conjuncts of initial states
     -- for alternating automata, each list forms a conjunct
     initialStates :: Set [State],
-    -- | Number of atomic propositions (set can be computed via the type)
+    -- | Number of atomic propositions
     atomicPropositions :: Int,
     -- | Name of the atomic proposition
     atomicPropositionName :: AP -> String,
@@ -170,33 +157,14 @@ data HOA = HOA
     stateName :: State -> Maybe String
   }
 
------------------------------------------------------------------------------
-
--- | The instantiation of the State type
-baseInstance [t|HOA|] [|size|] "State"
-
------------------------------------------------------------------------------
-
--- | The instantiation of the atomic proposition type
-baseInstance [t|HOA|] [|atomicPropositions|] "AP"
-
------------------------------------------------------------------------------
-
--- | The instantiation of the acceptance set type
-baseInstance [t|HOA|] [|acceptanceSets|] "AcceptanceSet"
-
-instance Finite HOA AcceptanceType
-
 -- | 'states' returns all states of a 'HOA'
+-- in order of index number
 states :: HOA -> [State]
-states hoa =
-  let ?bounds = hoa
-   in List.sortOn index values
+states hoa = map State [0 .. size hoa - 1]
 
 -- | 'atomicProps' returns all atomic propositions of a 'HOA'
+-- in order of index number
 atomicProps :: HOA -> [AP]
-atomicProps hoa =
-  let ?bounds = hoa
-   in List.sortOn index values
+atomicProps hoa = map AP [0 .. atomicPropositions hoa - 1]
 
-
+-----------------------------------------------------------------------------

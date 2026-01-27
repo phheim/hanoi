@@ -7,8 +7,6 @@
 -- This module prints an 'HOA' as a string.
 --
 -----------------------------------------------------------------------------
-{-# LANGUAGE FlexibleContexts      #-}
-{-# LANGUAGE ImplicitParams        #-}
 {-# LANGUAGE LambdaCase            #-}
 {-# LANGUAGE RecordWildCards       #-}
 
@@ -20,10 +18,10 @@ module HOA.Printer
 
 -----------------------------------------------------------------------------
 
-import Data.List as List (intercalate, sortOn)
+import Data.List as List (intercalate)
 import Data.Maybe (maybeToList)
 import Data.Set as Set (Set, elems, toList)
-import Finite (Finite, FiniteBounds, index, offset, v2t, values)
+
 import HOA.Format
   ( AcceptanceSet
   , AcceptanceSets
@@ -33,7 +31,11 @@ import HOA.Format
   , HOAAcceptanceName(..)
   , HOAProperty(..)
   , Label
-  , State
+  , State(..)
+  , AP(..)
+  , AcceptanceSet(..)
+  , atomicProps
+  , states
   )
 
 -----------------------------------------------------------------------------
@@ -48,16 +50,15 @@ printHOA = unlines . printHOALines
 
 printHOALines :: HOA -> [String]
 printHOALines hoa@HOA {..} =
-  let ?bounds = hoa in
   let
-    apNamesSorted = map (quote . atomicPropositionName) $ sortOn index values
+    apNamesSorted = map (quote . atomicPropositionName) $ atomicProps hoa
     nameAcceptanceCond =
         printFormula
           (\case
-              Fin True s  -> "Fin(" ++ strInd s ++ ")"
-              Fin False s -> "Fin(!" ++ strInd s ++ ")"
-              Inf True s  -> "Inf(" ++ strInd s ++ ")"
-              Inf False s -> "Inf(!" ++ strInd s ++ ")")
+              Fin True s  -> "Fin(" ++ strIndAcc s ++ ")"
+              Fin False s -> "Fin(!" ++ strIndAcc s ++ ")"
+              Inf True s  -> "Inf(" ++ strIndAcc s ++ ")"
+              Inf False s -> "Inf(!" ++ strIndAcc s ++ ")")
           acceptance
   in
   [ "HOA: v1" ]
@@ -86,7 +87,7 @@ printHOALines hoa@HOA {..} =
   ["AP: " ++ unwords (show atomicPropositions : apNamesSorted)]
   ++
   -- controllable-AP
-  ["controllable-AP: " ++ unwords (map strInd $ toList controllableAPs) | not (null controllableAPs)]
+  ["controllable-AP: " ++ unwords (map strIndAP $ toList controllableAPs) | not (null controllableAPs)]
   ++
   -- properties
   [ "properties: " ++ unwords ("explicit-labels" : map printProperty (toList properties)) ]
@@ -100,24 +101,24 @@ printHOALines hoa@HOA {..} =
   ++
   ["--BODY--"]
   ++
-  concatMap printState values
+  concatMap printState (states hoa)
   ++
   ["--END--"]
 
   where
-    printState :: FiniteBounds HOA => State -> [String]
+    printState :: State -> [String]
     printState s =
       unwords (
         "State:"
         :
         maybeToList (printLabel <$> stateLabel s)
         ++
-        [strInd s]
+        [strIndS s]
         ++
         maybeToList (quote <$> stateName s)
         ++
         (case stateAcceptance s of
-          Just aSets -> [brCurly $ unwords (map strInd $ elems aSets)]
+          Just aSets -> [brCurly $ unwords (map strIndAcc $ elems aSets)]
           Nothing    -> []
         )
       )
@@ -125,8 +126,7 @@ printHOALines hoa@HOA {..} =
       map (("  " ++) . printEdge) (toList $ edges s)
 
     printEdge ::
-          FiniteBounds HOA
-      => ([State], Maybe Label, Maybe (Set AcceptanceSet))
+         ([State], Maybe Label, Maybe (Set AcceptanceSet))
       -> String
     printEdge edge =
       let (target, label, aSets) = edge
@@ -137,22 +137,27 @@ printHOALines hoa@HOA {..} =
         , maybeToList $ printAcceptanceSets <$> aSets
         ]
 
-    printAcceptanceSets :: FiniteBounds HOA => AcceptanceSets -> String
+    printAcceptanceSets :: AcceptanceSets -> String
     printAcceptanceSets aSets =
-      brCurly $ unwords $ map strInd $ toList aSets
+      brCurly $ unwords $ map strIndAcc $ toList aSets
 
-    printLabel :: FiniteBounds HOA => Label -> String
-    printLabel label = brBox $ printFormula strInd label
+    printLabel :: Label -> String
+    printLabel label = brBox $ printFormula strIndAP label
 
-    printStateConj :: FiniteBounds HOA => [State] -> String
-    printStateConj = intercalate " & " . map strInd
+    printStateConj :: [State] -> String
+    printStateConj = intercalate " & " . map strIndS
 
 
 -----------------------------------------------------------------------------
 -- | Different library related printing methods
+strIndS :: State -> String
+strIndS (State n) = show n
 
-strInd :: (Finite HOA a, FiniteBounds HOA) => a -> String
-strInd a = show (index a - offset (v2t a))
+strIndAP :: AP -> String
+strIndAP (AP n) = show n
+
+strIndAcc :: AcceptanceSet -> String
+strIndAcc (AcceptanceSet n) = show n
 
 wrap :: String -> String -> String -> String
 wrap prefix suffix s = prefix ++ s ++ suffix

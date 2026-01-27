@@ -22,7 +22,6 @@ module Hanoi
   , states
   , atomicProps
     -- Parsing
-  , hoaParser
   , parse
     -- Printing
   , printHOA
@@ -46,6 +45,6 @@ import HOA.Format
   , atomicProps
   )
 
-import HOA.Parser (hoaParser, parse)
+import HOA.Parser (parse)
 
 import HOA.Printer (printHOA, printHOALines)

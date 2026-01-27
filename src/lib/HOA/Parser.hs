@@ -6,20 +6,11 @@
 -- Parser for Automata in HOA Format.
 --
 -----------------------------------------------------------------------------
-
-{-# LANGUAGE ImplicitParams #-}
-{-# OPTIONS_GHC -Wno-missing-fields #-}
-
------------------------------------------------------------------------------
-
 module HOA.Parser
-  ( hoaParser
-  , parse
+  ( parse
   ) where
 
 -----------------------------------------------------------------------------
-import Finite
-
 import HOA.Format
 
 import HOA.Parser.Util
@@ -44,41 +35,35 @@ hoaParser =
   (~~) >> do
     header <- headerParser
     states <- bodyParser (P.atomicPropositions header) (P.aliases header)
-    let
-      ?size = length states
-      ?atomicPropositions = P.atomicPropositions header
-      ?acceptanceSets = P.acceptanceSets header
-    let ?bounds = genBounds
-
     if P.size header /= 0 && P.size header /= length states
     then P.unexpected "Number of States does not match number given in \"States:\""
     else
       -- process raw parsed states to internal format
       -- using the finite library
       let
-        names = map (\(s, (n, _, _, _)) -> (value s, n)) states
+        names = map (\(s, (n, _, _, _)) -> (State s, n)) states
         labels =
             map
               (\(s, (_, l, _, _)) ->
-                  (value s, fmap (fmap value) l))
+                  (State s, fmap (fmap AP) l))
               states
         accept =
             map
-              (\(s, (_, _, a, _)) -> (value s, fmap (S.map value) a))
+              (\(s, (_, _, a, _)) -> (State s, fmap (S.map AcceptanceSet) a))
               states
         edges =
             map
-              (\(s, (_, _, _, e)) -> (value s, S.map convertEdge e))
+              (\(s, (_, _, _, e)) -> (State s, S.map convertEdge e))
               states
       in
       return
         HOA
         { size = length states
-        , initialStates = S.map (map value) $ P.initialStates header
+        , initialStates = S.map (map State) $ P.initialStates header
         , atomicPropositions = P.atomicPropositions header
         , atomicPropositionName =
-            (!) $ mapKeysMonotonic value $ P.atomicPropositionName header
-        , controllableAPs = S.map value $ P.controllableAPs header
+            (!) $ mapKeysMonotonic AP $ P.atomicPropositionName header
+        , controllableAPs = S.map AP $ P.controllableAPs header
         , acceptanceName = P.acceptanceName header
         , acceptanceSets = P.acceptanceSets header
         , acceptance =
@@ -94,27 +79,15 @@ hoaParser =
 
   where
     convertEdge ::
-         (FiniteBounds HOA)
-      => ([Int], Maybe (Formula Int), Maybe (S.Set Int))
+         ([Int], Maybe (Formula Int), Maybe (S.Set Int))
       -> ([State], Maybe Label, Maybe AcceptanceSets)
     convertEdge (s, mFml, mAcc) =
-      ( map value s
-      , fmap (fmap value) mFml
-      , fmap (S.map value) mAcc)
-    convertAccType :: (FiniteBounds HOA) => P.AcceptanceType -> AcceptanceType
-    convertAccType (P.Fin b n) = Fin b $ value n
-    convertAccType (P.Inf b n) = Inf b $ value n
-
-genBounds ::
-  (?size :: Int) =>
-  (?atomicPropositions :: Int) =>
-  (?acceptanceSets :: Int) =>
-  HOA
-genBounds = HOA
-  { size = ?size
-  , atomicPropositions = ?atomicPropositions
-  , acceptanceSets = ?acceptanceSets
-  }
+      ( map State s
+      , fmap (fmap AP) mFml
+      , fmap (S.map AcceptanceSet) mAcc)
+    convertAccType :: P.AcceptanceType -> AcceptanceType
+    convertAccType (P.Fin b n) = Fin b $ AcceptanceSet n
+    convertAccType (P.Inf b n) = Inf b $ AcceptanceSet n
 
 -----------------------------------------------------------------------------
 type Error = String
