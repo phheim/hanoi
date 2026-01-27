@@ -17,11 +17,11 @@ import HOA.Parser.Util
 
 import HOA.Parser.LabelExpr
 
-import HOA.Formula (Formula(FAnd, FNot, FVar))
+import HOA.Format (Formula(FAnd, FNot, FVar))
 
 import Data.Bits (shiftR, testBit)
 
-import Data.Maybe (Maybe(..), isJust, isNothing)
+import Data.Maybe (isJust, isNothing)
 
 import Data.Set as S (Set, fromList)
 

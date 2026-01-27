@@ -8,10 +8,8 @@
 --
 -----------------------------------------------------------------------------
 {-# LANGUAGE FlexibleContexts      #-}
-{-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE ImplicitParams        #-}
 {-# LANGUAGE LambdaCase            #-}
-{-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE RecordWildCards       #-}
 
 -----------------------------------------------------------------------------
@@ -30,13 +28,13 @@ import HOA.Format
   ( AcceptanceSet
   , AcceptanceSets
   , AcceptanceType(..)
+  , Formula(..)
   , HOA(..)
   , HOAAcceptanceName(..)
   , HOAProperty(..)
   , Label
   , State
   )
-import HOA.Formula (Formula(..))
 
 -----------------------------------------------------------------------------
 -- | 'printHOA' prints a 'HOA' to as a 'String'

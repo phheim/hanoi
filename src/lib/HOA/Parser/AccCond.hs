@@ -17,7 +17,7 @@ import HOA.Parser.Util
 
 import HOA.Parser.Data (AcceptanceType(..))
 
-import HOA.Formula (Formula(..))
+import HOA.Format (Formula(..))
 
 import Text.Parsec (option, (<|>))
 

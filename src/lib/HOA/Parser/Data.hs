@@ -24,9 +24,7 @@ import Text.Parsec.Language (emptyDef)
 
 import Data.Set (Set)
 
-import HOA.Format (HOAAcceptanceName)
-
-import HOA.Formula (Formula)
+import HOA.Format (HOAAcceptanceName, Formula)
 
 import Data.Map.Strict as Map
 

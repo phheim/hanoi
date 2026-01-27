@@ -7,6 +7,7 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE ImplicitParams #-}
 
 -----------------------------------------------------------------------------
 
@@ -19,10 +20,10 @@ module HOA.Format where
 
 -----------------------------------------------------------------------------
 import Data.Set as Set (Set)
+import Data.List as List
 import Finite
 import Finite.TH (baseInstance, newInstance)
 import GHC.Generics (Generic)
-import HOA.Formula (Formula)
 
 -----------------------------------------------------------------------------
 
@@ -94,6 +95,32 @@ data AcceptanceType
   | Inf Bool AcceptanceSet
   deriving (Eq, Ord, Show, Generic)
 
+data  Formula a =
+    -- | Constant true
+    FTrue |
+    -- | Constant false
+    FFalse |
+    -- | Variable
+    FVar a |
+    -- | Disjunction
+    FOr [Formula a] |
+    -- | Conjunction
+    FAnd [Formula a] |
+    -- | Negation
+    FNot (Formula a)
+ deriving (Show, Eq, Ord)
+
+-------------------------------------------------------------------------------
+-- | Derive the 'Functor' class for 'Formula'
+instance Functor Formula where
+    fmap f = \case
+        FTrue   -> FTrue
+        FFalse  -> FFalse
+        FVar v  -> FVar (f v)
+        FOr fs  -> FOr (fmap (fmap f) fs)
+        FAnd fs -> FAnd (fmap (fmap f) fs)
+        FNot sf -> FNot (fmap f sf)
+
 type AcceptanceCondition = Formula AcceptanceType
 
 instance Finite HOA Bool
@@ -159,3 +186,17 @@ baseInstance [t|HOA|] [|atomicPropositions|] "AP"
 baseInstance [t|HOA|] [|acceptanceSets|] "AcceptanceSet"
 
 instance Finite HOA AcceptanceType
+
+-- | 'states' returns all states of a 'HOA'
+states :: HOA -> [State]
+states hoa =
+  let ?bounds = hoa
+   in List.sortOn index values
+
+-- | 'atomicProps' returns all atomic propositions of a 'HOA'
+atomicProps :: HOA -> [AP]
+atomicProps hoa =
+  let ?bounds = hoa
+   in List.sortOn index values
+
+

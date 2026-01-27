@@ -4,5 +4,3 @@ packages:
 extra-deps:
 - git: https://github.com/phheim/finite.git
   commit: af77f552896e082403fa95a6c7e02f669535930a
-- git: https://github.com/phheim/automata-tools-wrappers.git
-  commit: 01250e451724eeb4c385c63e5beb8409b406ef6d

@@ -8,6 +8,7 @@
 -----------------------------------------------------------------------------
 
 {-# LANGUAGE ImplicitParams #-}
+{-# OPTIONS_GHC -Wno-missing-fields #-}
 
 -----------------------------------------------------------------------------
 
@@ -19,11 +20,7 @@ module HOA.Parser
 -----------------------------------------------------------------------------
 import Finite
 
-import HOA.Formula (Formula)
-
 import HOA.Format
-
-import HOA.Utils (genBounds)
 
 import HOA.Parser.Util
 
@@ -107,6 +104,17 @@ hoaParser =
     convertAccType :: (FiniteBounds HOA) => P.AcceptanceType -> AcceptanceType
     convertAccType (P.Fin b n) = Fin b $ value n
     convertAccType (P.Inf b n) = Inf b $ value n
+
+genBounds ::
+  (?size :: Int) =>
+  (?atomicPropositions :: Int) =>
+  (?acceptanceSets :: Int) =>
+  HOA
+genBounds = HOA
+  { size = ?size
+  , atomicPropositions = ?atomicPropositions
+  , acceptanceSets = ?acceptanceSets
+  }
 
 -----------------------------------------------------------------------------
 type Error = String

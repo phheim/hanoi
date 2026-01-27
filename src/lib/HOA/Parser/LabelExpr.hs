@@ -15,7 +15,7 @@ module HOA.Parser.LabelExpr
 
 import HOA.Parser.Util
 
-import HOA.Formula (Formula(..))
+import HOA.Format (Formula(..))
 
 import Data.Map.Strict as M (Map, lookup)
 

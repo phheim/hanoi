@@ -26,9 +26,9 @@ import HOA.Parser.AccName
 
 import HOA.Parser.Properties
 
-import HOA.Formula (Formula(FTrue))
+import HOA.Format (Formula(FTrue))
 
-import Data.Maybe (Maybe(..), isJust)
+import Data.Maybe (isJust)
 
 import Data.Set as S (empty, fromList, insert, union)
 
