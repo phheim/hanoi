@@ -122,5 +122,5 @@ bodyParser numAPs env = do
     props :: (Int, Bool) -> Formula Int
     props (n, True) = FVar n
     props (n, False) = FNot $ FVar n
-    bits n = (testBit n 0) : (bits (shiftR n 1))
+    bits n = testBit n 0 : bits (shiftR n 1)
 -----------------------------------------------------------------------------

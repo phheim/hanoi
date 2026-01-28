@@ -203,4 +203,4 @@ printFormula showVar =
     FAnd fs -> intercalate " & " $ fmap printSubFormula fs
     FOr fs -> intercalate " | " $ fmap printSubFormula fs
   where
-    printSubFormula = (brRound . printFormula showVar)
+    printSubFormula = brRound . printFormula showVar

@@ -163,7 +163,7 @@ headerParser = do
           headerItemParser hoa {name = Just str}
     propParser hoa = do
       prop <- propertiesParser
-      headerItemParser hoa {properties = union (properties hoa) prop}
+      headerItemParser hoa {properties = properties hoa `union` prop}
     capParser hoa =
       if not $ null $ controllableAPs hoa
         then errDoubleDef "controllable-AP"

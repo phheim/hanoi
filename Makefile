@@ -16,7 +16,7 @@ format:
 lint:
 	${LINTING} src/lib/*.hs
 	${LINTING} src/lib/*/*.hs
-	${LINTING} src/libi/*/*/*.hs
+	${LINTING} src/lib/*/*/*.hs
 
 doc-gen:
 	stack haddock --haddock-internal --only-locals
