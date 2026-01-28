@@ -27,33 +27,29 @@ accNameParser :: Parser HOAAcceptanceName
 accNameParser = accName
   where
     accName =
-      (keyword "Buchi" >> return Buchi) <|>
-      (keyword "co-Buchi" >> return CoBuchi) <|>
-      (keyword "all" >> return All) <|>
-      (keyword "none" >> return None) <|>
-      (natName "generalized-Buchi" GeneralizedBuchi) <|>
-      (natName "generalized-co-Buchi" GeneralizedCoBuchi) <|>
-      (natName "Streett" Streett) <|>
-      (natName "Rabin" Rabin) <|>
-      try(parityName "parity" "min" "odd" ParityMinOdd) <|>
-      try(parityName "parity" "max" "odd" ParityMaxOdd) <|>
-      try(parityName "parity" "min" "even" ParityMinEven) <|>
-      (parityName "parity" "max" "even" ParityMaxEven) <|>
-      genRabin
-
+      (keyword "Buchi" >> return Buchi)
+        <|> (keyword "co-Buchi" >> return CoBuchi)
+        <|> (keyword "all" >> return All)
+        <|> (keyword "none" >> return None)
+        <|> (natName "generalized-Buchi" GeneralizedBuchi)
+        <|> (natName "generalized-co-Buchi" GeneralizedCoBuchi)
+        <|> (natName "Streett" Streett)
+        <|> (natName "Rabin" Rabin)
+        <|> try (parityName "parity" "min" "odd" ParityMinOdd)
+        <|> try (parityName "parity" "max" "odd" ParityMaxOdd)
+        <|> try (parityName "parity" "min" "even" ParityMinEven)
+        <|> (parityName "parity" "max" "even" ParityMaxEven)
+        <|> genRabin
     genRabin = do
       keyword "generalized-Rabin"
       nat1 <- natParser
       nat2 <- natParser
       GeneralizedRabin nat1 nat2 <$> natParser
-
     parityName str1 str2 str3 op = do
       keyword str1
       keyword str2
       keyword str3
       op <$> natParser
-
     natName str op = do
       keyword str
       op <$> natParser
-

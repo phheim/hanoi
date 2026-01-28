@@ -11,10 +11,12 @@ clean:
 format:
 	hindent --line-length 100 src/lib/*.hs
 	hindent --line-length 100 src/lib/*/*.hs
+	hindent --line-length 100 src/lib/*/*/*.hs
 
 lint:
 	${LINTING} src/lib/*.hs
 	${LINTING} src/lib/*/*.hs
+	${LINTING} src/libi/*/*/*.hs
 
 doc-gen:
 	stack haddock --haddock-internal --only-locals
