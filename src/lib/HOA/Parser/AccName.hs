@@ -6,6 +6,9 @@
 -- Parser for the acc-name header-item.
 --
 -----------------------------------------------------------------------------
+{-# LANGUAGE Safe #-}
+
+-----------------------------------------------------------------------------
 module HOA.Parser.AccName
   ( accNameParser
   ) where

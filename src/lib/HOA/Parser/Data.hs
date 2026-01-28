@@ -6,7 +6,9 @@
 -- Common data used by the parser module.
 --
 -----------------------------------------------------------------------------
+{-# LANGUAGE Safe #-}
 
+-----------------------------------------------------------------------------
 module HOA.Parser.Data
   ( AcceptanceType(..)
   , HOAHeader(..)

@@ -6,6 +6,9 @@
 -- Parser for the acceptance-cond part of the Acceptance header-item.
 --
 -----------------------------------------------------------------------------
+{-# LANGUAGE Safe #-}
+
+-----------------------------------------------------------------------------
 
 module HOA.Parser.AccCond
   ( accCondParser

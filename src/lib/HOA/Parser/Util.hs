@@ -6,9 +6,8 @@
 -- Utils used in all Parts of the Parser.
 --
 -----------------------------------------------------------------------------
-
+{-# LANGUAGE Safe #-}
 {-# LANGUAGE LambdaCase #-}
-
 -----------------------------------------------------------------------------
 
 module HOA.Parser.Util where

@@ -6,6 +6,10 @@
 -- Parser for the properties header-item.
 --
 -----------------------------------------------------------------------------
+{-# LANGUAGE Safe #-}
+
+-----------------------------------------------------------------------------
+
 
 module HOA.Parser.Properties
   ( propertiesParser

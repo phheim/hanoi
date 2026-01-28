@@ -6,7 +6,9 @@
 -- Parser for the Header section.
 --
 -----------------------------------------------------------------------------
+{-# LANGUAGE Safe #-}
 
+-----------------------------------------------------------------------------
 module HOA.Parser.Header
   ( headerParser
   , versionParser

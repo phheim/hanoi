@@ -6,6 +6,7 @@
 -- The internal representation of an HOA
 --
 -----------------------------------------------------------------------------
+{-# LANGUAGE Safe #-}
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE RecordWildCards #-}
 

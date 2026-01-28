@@ -6,7 +6,9 @@
 -- Parser for LabelExpressions in Aliases and State/Edge Labels.
 --
 -----------------------------------------------------------------------------
+{-# LANGUAGE Safe #-}
 
+-----------------------------------------------------------------------------
 module HOA.Parser.LabelExpr
   ( labelExprParser
   ) where

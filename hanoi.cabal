@@ -1,35 +1,38 @@
-name:                hanoi
-version:             0.1.0.1
-synopsis:            Library for automata and the HOA format
-description:         A library for ω-regular automata and processing of files in HOA format
-author:              Felix Klein <felix.klein@cispa.de>
-                     Philippe Heim <philippe.heim@cispa.de>
-                     Gideon Geier <gideon.geier@cispa.de>
-                     Marvin Stenger <marvin.stenger@cispa.de>
-maintainer:          Felix Klein <felix.klein@cispa.de>
-                     Philippe Heim <philippe.heim@cispa.de>
-                     Gideon Geier <gideon.geier@cispa.de>
-                     Marvin Stenger <marvin.stenger@cispa.de>
-license:             MIT
-license-file:        LICENSE
-category:            Automata
-build-type:          Simple
-cabal-version:       >=1.10
+cabal-version:      3.0
+name:               hanoi
+version:            0.2.0.1
+synopsis:           Library for automata and the HOA format
+description:        A library for ω-regular automata and processing of files in HOA format
+maintainer:         Philippe Heim
+author:             Felix Klein
+                    Philippe Heim
+                    Gideon Geier
+                    Marvin Stenger
+license:            MIT
+license-file:       LICENSE
+category:           Automata
+build-type:         Simple
 
-source-repository head
-  type:     git
-  location: https://github.com/reactive-systems/hanoi
 
 library
 
   ghc-options:
-    -Wall -Wno-name-shadowing -fno-ignore-asserts
+    -Wall
+    -Wno-name-shadowing
+    -Werror
+    -Wwarn=unused-imports
+    -Wwarn=unused-matches
+    -Wwarn=unused-top-binds
+    -Wwarn=unused-local-binds
+    -Wwarn=unused-pattern-binds
+    -Wwarn=type-defaults
+    -fno-ignore-asserts
+    -static
 
   build-depends:
       base >=4.7
-    , containers >= 0.6.0.1 
-    , parsec
-
+    , containers >= 0.6.0.1
+    , parsec >= 3.1.13
 
   exposed-modules:
     Hanoi

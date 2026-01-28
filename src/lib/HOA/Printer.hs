@@ -7,6 +7,7 @@
 -- This module prints an 'HOA' as a string.
 --
 -----------------------------------------------------------------------------
+{-# LANGUAGE Safe                  #-}
 {-# LANGUAGE LambdaCase            #-}
 {-# LANGUAGE RecordWildCards       #-}
 
