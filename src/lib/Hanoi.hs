@@ -10,7 +10,6 @@
 {-# LANGUAGE Safe #-}
 
 -----------------------------------------------------------------------------
-
 module Hanoi
   ( AP
   , AcceptanceCondition
@@ -24,28 +23,27 @@ module Hanoi
   , State
   , states
   , atomicProps
-    -- Parsing
-  , parse
-    -- Printing
-  , printHOA
+  , -- Parsing
+    parse
+  , -- Printing
+    printHOA
   , printHOALines
   ) where
 
 -----------------------------------------------------------------------------
-
 import HOA.Format
   ( AP
   , AcceptanceCondition
   , AcceptanceSet
   , AcceptanceType(..)
+  , Formula(..)
   , HOA(..)
   , HOAAcceptanceName(..)
   , HOAProperty(..)
-  , Formula(..)
   , Label
   , State
-  , states
   , atomicProps
+  , states
   )
 
 import HOA.Parser (parse)

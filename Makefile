@@ -1,27 +1,25 @@
-TOOLS=
-
-STACKPATH=$(shell if [ -d "dist" ]; then echo ""; else stack path | grep local-install-root | sed 's/local-install-root: //'; fi)
-BLDTOOL=$(shell if [ -d "dist" ]; then echo "cabal"; else echo "stack"; fi)
+STACKPATH=$(shell stack path | grep local-install-root | sed 's/local-install-root: //')
+DOCPATH=$(shell stack path | grep local-doc-root | sed 's/local-doc-root: //')
+LINTING=hlint -i "Use tuple-section"
 
 default:
-	${BLDTOOL} build
-	@for i in ${TOOLS}; do if [ -d "dist" ]; then cp ./dist/build/$${i}/$${i} $${i}; else cp ${STACKPATH}/bin/$${i} $${i}; fi; done
-
-install:
-	${BLDTOOL} install
-
-test:
-	${BLDTOOL} test
-
-doc:
-	${BLDTOOL} haddock --open
-
-format:
-	stylish-haskell  -c .stylish-haskell.yaml  -i  -r src/
+	stack build
 
 clean:
-	${BLDTOOL} clean
-	@for i in ${TOOLS}; do rm -f $${i}; done
+	stack clean
 
-.PHONY: install test doc format clean
-.SILENT:
+format:
+	hindent --line-length 100 src/lib/*.hs
+	hindent --line-length 100 src/lib/*/*.hs
+
+lint:
+	${LINTING} src/lib/*.hs
+	${LINTING} src/lib/*/*.hs
+
+doc-gen:
+	stack haddock --haddock-internal --only-locals
+
+doc-open:
+	@echo "Open ${DOCPATH}/index.html"
+	@xdg-open ${DOCPATH}/index.html
+
